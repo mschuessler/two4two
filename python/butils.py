@@ -1,0 +1,62 @@
+import bpy
+import numpy as np
+from scipy.stats import truncnorm
+
+def clear_all():
+    object_mode()
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False)
+
+def edit_mode():
+    if not bpy.context.mode == 'EDIT':
+        bpy.ops.object.mode_set(mode='EDIT')
+
+def object_mode():
+    if not bpy.context.mode == 'OBJECT':
+        bpy.ops.object.mode_set(mode='OBJECT')
+
+def select(object_name, add_to_selection=True):
+    object_mode()
+    if not add_to_selection:
+        bpy.ops.object.select_all(action='DESELECT')
+    bpy.data.objects[object_name].select_set(True)
+
+def select_object():
+    select('object')
+    select('skeleton', True)
+
+def set_active(object_name):
+    active_object = bpy.data.objects[object_name]
+    bpy.context.view_layer.objects.active = active_object
+    return active_object
+
+def get_boundaries(object_name):
+    obj = bpy.data.objects[object_name]
+
+    matrix_world = obj.matrix_world
+
+    glob_vertex_coordinates = [ matrix_world @ v.co for v in obj.data.vertices ]
+
+    min_x = min([ co.x for co in glob_vertex_coordinates ])
+    max_x = max([ co.x for co in glob_vertex_coordinates ])
+
+    min_y = min([ co.y for co in glob_vertex_coordinates ])
+    max_y = max([ co.y for co in glob_vertex_coordinates ])
+
+    min_z = min([ co.z for co in glob_vertex_coordinates ])
+    max_z = max([ co.z for co in glob_vertex_coordinates ])
+
+    boundaries = ((min_x, max_x),
+                  (min_y, max_y),
+                  (min_z, max_z))
+    return boundaries
+
+def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
+    return truncnorm(
+        (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
+
+rv_move_arm_right = get_truncated_normal(0, 0.35, 0, 0.6)
+rv_move_arm_left = get_truncated_normal(0, 0.35, -0.6, 0)
+
+def get_random_arm_shift():
+    return rv_move_arm_left.rvs(), rv_move_arm_right.rvs()
