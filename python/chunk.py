@@ -23,14 +23,11 @@ class Chunk():
                 
                 parameter_list.append(parameters)
         
-        print(len(parameter_list))
         padding = len(parameter_list) % chunk_size
         for _ in range(padding):
             parameter_list.append(None)
-        print(len(parameter_list))
         
         num_chunks = len(parameter_list) // chunk_size
-        print(num_chunks)
         param_idx = 0
         
         for idx in range(num_chunks):
@@ -45,6 +42,8 @@ class Chunk():
             self.file_names.append(save_name)
             
             with open(save_name, mode='x') as fsave:
+
+        
                 for _ in range(chunk_size):
                     if parameter_list[param_idx] is not None:
                         parameter_list[param_idx].save_parameters(fsave)

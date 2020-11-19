@@ -1,6 +1,5 @@
 import numpy as np
 import json
-import tqdm.auto as tqdm_auto
 from color_generator import ColorGenerator
 from scipy.stats import truncnorm
 
@@ -90,7 +89,7 @@ class Parameters():
             raise Exception(structure_types)
             
         with open(save_location, mode='x') as f:
-            for i in tqdm_auto.trange(n):
+            for i in range(n):
                 self.generate_parameters(obj_type[i],
                                          structure[i])
                 self.save_parameters(f)
