@@ -1,12 +1,14 @@
 import numpy as np
 import json
-import butils
 import tqdm.auto as tqdm_auto
-import tempfile
 from color_generator import ColorGenerator
+from scipy.stats import truncnorm
 
 class Parameters():
-        
+    
+    def get_truncated_normal(self, mean=0, sd=1, low=0, upp=10):
+        return truncnorm((low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
+       
     def generate_parameters(self,
                             obj_name,
                             spherical=None,
@@ -40,13 +42,13 @@ class Parameters():
 
         self.position = np.random.uniform(-0.5, 0.5, size=2).tolist()
 
-        rv_move_arm_right = butils.get_truncated_normal(0, 0.30, 0, 0.55)
-        rv_move_arm_left = butils.get_truncated_normal(0, 0.30, -0.55, 0)
+        rv_move_arm_right = self.get_truncated_normal(0, 0.30, 0, 0.55)
+        rv_move_arm_left = self.get_truncated_normal(0, 0.30, -0.55, 0)
         if obj_name == 'sticky':
-            rv_color = butils.get_truncated_normal(1, 0.6, 0, 1)
+            rv_color = self.get_truncated_normal(1, 0.6, 0, 1)
             self.arm_shift = rv_move_arm_right.rvs()
         elif obj_name == 'stretchy':
-            rv_color = butils.get_truncated_normal(0, 0.6, 0, 1)
+            rv_color = self.get_truncated_normal(0, 0.6, 0, 1)
             self.arm_shift = rv_move_arm_left.rvs()
         else:
             raise Exception(obj_name)
@@ -55,6 +57,7 @@ class Parameters():
 
         back_color = np.random.uniform(0.05, 0.80)
         self.back_color = ColorGenerator('binary').get_color(back_color)
+        
     
     def save_parameters(self, file_handle):
         params = self.__dict__
@@ -72,7 +75,6 @@ class Parameters():
             obj_type = np.full(n, 'stretchy')
             mask = np.random.randint(2, size=n)
             obj_type[np.where(mask)] = 'sticky'
-            print(obj_type)
         else:
             raise Exception(object_types)
         

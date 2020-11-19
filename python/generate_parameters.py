@@ -1,14 +1,13 @@
 import os, sys
-import bpy
-
-blend_dir = os.path.dirname(bpy.data.filepath)
-if blend_dir not in sys.path:
-   sys.path.append(blend_dir)
 
 from parameters import Parameters
 
 if __name__ == '__main__':
     parameters = Parameters()
+    # n
+    # save_location
+    # object_types
+    # structure_types
     parameters.generate_many(sys.argv[-4],
                              sys.argv[-3],
                              sys.argv[-2],

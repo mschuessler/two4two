@@ -51,12 +51,5 @@ def get_boundaries(object_name):
                   (min_z, max_z))
     return boundaries
 
-def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
-    return truncnorm(
-        (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd)
-
-rv_move_arm_right = get_truncated_normal(0, 0.35, 0, 0.6)
-rv_move_arm_left = get_truncated_normal(0, 0.35, -0.6, 0)
-
 def get_random_arm_shift():
     return rv_move_arm_left.rvs(), rv_move_arm_right.rvs()
