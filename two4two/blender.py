@@ -1,20 +1,25 @@
 import subprocess
 import time
-from chunk import Chunk
+from two4two.chunk import Chunk
 import os
 
 class Blender():
-
+    
     def StartNew(self):
         """ Start a new subprocess if there is work to do """
         if self.next_chunk < self.num_of_chunks:
-            proc = subprocess.Popen(['/home/philipp/242/blender/blender',
-                                     '--background',
-                                     '--python',
-                                     '/home/philipp/242/python/render_samples.py',
-                                     self.parameter_chunks[self.next_chunk],
-                                     self.output_dir,
-                                     'params_chunk_{}.json'.format(self.next_chunk)])
+            args = [
+                self.blender_path,
+                '--background',
+                '-noaudio',
+                '--python',
+                self.render_script,
+                '--',
+                self.parameter_chunks[self.next_chunk],
+                self.output_dir,
+                'params_chunk_{}.json'.format(self.next_chunk)
+            ]
+            proc = subprocess.Popen(args)
             print("Started to Process {}".format(self.parameter_chunks[self.next_chunk]))
             self.next_chunk += 1
             self.processes.append(proc)
@@ -28,12 +33,16 @@ class Blender():
 
         while (len(self.processes) < self.n_processes) and (self.next_chunk < self.num_of_chunks): # More to do and some spare slots
             self.StartNew()
-
+    
     def __init__(self,
                  parameter_file,
                  output_dir,
                  n_processes,
                  chunk_size):
+        
+        self.package_directory = '/home/philipp/two4two'
+        self.blender_path = os.path.join(self.package_directory, 'blender/blender')
+        self.render_script = os.path.join(self.package_directory, 'two4two/render_samples.py')
         
         chunks = Chunk(parameter_file, chunk_size)
         
@@ -50,12 +59,16 @@ class Blender():
         while (len(self.processes) > 0):
             time.sleep(0.1)
             self.CheckRunning()
+        
+        print("Test")
             
         parameter_output = os.path.join(self.output_dir, 'parameters.json')
+        print(parameter_output)
         with open(parameter_output, mode='x') as fparams:
             for i in range(self.num_of_chunks):
                 file = os.path.join(self.output_dir, 
                                     'params_chunk_{}.json'.format(i))
+                print(file)
                 with open(file) as f:
                      fparams.write(f.read())
                 os.remove(file)

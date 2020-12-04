@@ -1,6 +1,6 @@
 import numpy as np
 import json
-from color_generator import ColorGenerator
+from two4two.color_generator import ColorGenerator
 from scipy.stats import truncnorm
 
 class Parameters():

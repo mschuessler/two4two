@@ -1,7 +1,7 @@
 import json
 import os
 
-from parameters import Parameters
+from two4two.parameters import Parameters
 
 class Chunk():
     
@@ -28,6 +28,8 @@ class Chunk():
             parameter_list.append(None)
         
         num_chunks = len(parameter_list) // chunk_size
+        if len(parameter_list) % chunk_size != 0:
+            num_chunks += 1
         param_idx = 0
         
         for idx in range(num_chunks):

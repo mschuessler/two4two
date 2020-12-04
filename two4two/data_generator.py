@@ -3,9 +3,9 @@ import sys
 import os
 import numpy as np
 
-import butils
+import two4two.butils
 
-from blender_object import BlenderObject
+from two4two.blender_object import BlenderObject
 
 class DataGenerator():
 
@@ -99,48 +99,48 @@ class DataGenerator():
         black = (0, 0, 0, 1)
         blue = (0, 0, 1, 1)
 
-        butils.select_object()
-        butils.edit_mode()
+        two4two.butils.select_object()
+        two4two.butils.edit_mode()
         bpy.ops.mesh.separate(type='LOOSE')
-        butils.object_mode()
+        two4two.butils.object_mode()
 
-        active_object = butils.set_active('object.003')
+        active_object = two4two.butils.set_active('object.003')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = colors[0]
 
-        active_object = butils.set_active('object.004')
+        active_object = two4two.butils.set_active('object.004')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = colors[2]
 
-        active_object = butils.set_active('object.005')
+        active_object = two4two.butils.set_active('object.005')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = colors[4]
 
 
-        active_object = butils.set_active('object')
+        active_object = two4two.butils.set_active('object')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = blue
 
-        active_object = butils.set_active('object.001')
+        active_object = two4two.butils.set_active('object.001')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = black
 
-        active_object = butils.set_active('object.002')
+        active_object = two4two.butils.set_active('object.002')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = colors[1]
 
-        active_object = butils.set_active('object.006')
+        active_object = two4two.butils.set_active('object.006')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = colors[3]
 
-        active_object = butils.set_active('object.007')
+        active_object = two4two.butils.set_active('object.007')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = colors[5]
@@ -152,10 +152,9 @@ class DataGenerator():
 
 
     def __init__(self,
-                 parameters,
-                 resolution=(128, 128)):
-        
-        butils.clear_all()
+                 parameters):
+
+        two4two.butils.clear_all()
 
         self.obj = BlenderObject(parameters.obj_name,
                                  parameters.spherical,
@@ -164,7 +163,7 @@ class DataGenerator():
         blend_dir = os.path.dirname(bpy.data.filepath)
         if blend_dir not in sys.path:
             sys.path.append(blend_dir)
-            
+
         self.set_pose(parameters.bone_bend,
                        parameters.bone_rotation)
         self.set_rotation(parameters.obj_incline,
@@ -173,8 +172,9 @@ class DataGenerator():
         x,y = parameters.position
         self.set_position(x,y)
         self.scene(parameters.back_color)
-
+        
+        res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'
         bpy.context.scene.cycles.device = 'GPU'
-        bpy.context.scene.render.resolution_x = resolution[0]
-        bpy.context.scene.render.resolution_y = resolution[1]
+        bpy.context.scene.render.resolution_x = res_x
+        bpy.context.scene.render.resolution_y = res_y
