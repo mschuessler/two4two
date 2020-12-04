@@ -159,6 +159,8 @@ class DataGenerator():
         self.obj = BlenderObject(parameters.obj_name,
                                  parameters.spherical,
                                  parameters.arm_shift)
+        
+        self.obj.add_material(parameters.obj_color)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
         if blend_dir not in sys.path:

@@ -40,13 +40,16 @@ class Blender():
                  n_processes,
                  chunk_size):
         
-        self.package_directory = '/home/philipp/two4two'
+        self.package_directory = '/home/philipp/242'
         self.blender_path = os.path.join(self.package_directory, 'blender/blender')
         self.render_script = os.path.join(self.package_directory, 'two4two/render_samples.py')
         
+        self.output_dir = output_dir
+        parameter_output = os.path.join(self.output_dir, 'parameters.json')
+        assert not os.path.exists(parameter_output)
+        
         chunks = Chunk(parameter_file, chunk_size)
         
-        self.output_dir = output_dir
         self.n_processes = n_processes
         self.parameter_chunks = chunks.file_names
         self.processes = []
@@ -63,7 +66,6 @@ class Blender():
         print("Test")
             
         parameter_output = os.path.join(self.output_dir, 'parameters.json')
-        print(parameter_output)
         with open(parameter_output, mode='x') as fparams:
             for i in range(self.num_of_chunks):
                 file = os.path.join(self.output_dir, 

@@ -95,6 +95,8 @@ class Parameters():
                 self.save_parameters(f)
    
     def __init__(self, obj_name=None):
+        
+        self.filename = None
        
         if obj_name is not None:
             self.generate_parameters(obj_name)

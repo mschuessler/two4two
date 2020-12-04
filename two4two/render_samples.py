@@ -19,17 +19,18 @@ def render(param_file, save_location, save_param_file):
         with open(param_file) as fparam:
             for line in fparam.readlines():
                 params = json.loads(line)
-
-                img_id = uuid.uuid1(np.random.randint(int(1e14)))
-                basename = "{}.png".format(img_id)
-
                 parameters = Parameters()
                 parameters.__dict__.update(params)
-                parameters.filename = basename
+
+                if parameters.filename is None:
+                    img_id = uuid.uuid1(np.random.randint(int(1e14)))
+                    basename = "{}.png".format(img_id)
+                    parameters.filename = basename
+                
                 parameters.save_parameters(fsave)
 
                 scene = DataGenerator(parameters)
-                render_name = os.path.join(save_location, basename)
+                render_name = os.path.join(save_location, parameters.filename)
                 scene.render(render_name)
 
 if __name__ == '__main__':
