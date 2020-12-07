@@ -9,14 +9,11 @@ You can either install the module and create your own datasets or download an [e
 
 ## Installation
 The installation process is less then ideal.
-Download this repository:
+Download this repository and run make.
 
 `git clone https://github.com/laserschwelle/242.git`
 
-Then modify the `self.package_directory` in `two4two/blender.py` to the location where you cloned this repo.
-Finally, run
-
-`make`.
+`make`
 
 The programm can only run, if Blender 2.83 is installed in `two4two/blender`.
 The programm was tested with version 2.83.9.
