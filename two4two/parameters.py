@@ -97,6 +97,7 @@ class Parameters():
     def __init__(self, obj_name=None):
         
         self.filename = None
+        self.resolution = [128, 128]
        
         if obj_name is not None:
             self.generate_parameters(obj_name)

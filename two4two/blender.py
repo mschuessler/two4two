@@ -20,7 +20,6 @@ class Blender():
                 'params_chunk_{}.json'.format(self.next_chunk)
             ]
             proc = subprocess.Popen(args)
-            print("Started to Process {}".format(self.parameter_chunks[self.next_chunk]))
             self.next_chunk += 1
             self.processes.append(proc)
 
@@ -63,14 +62,11 @@ class Blender():
             time.sleep(0.1)
             self.CheckRunning()
         
-        print("Test")
-            
         parameter_output = os.path.join(self.output_dir, 'parameters.json')
         with open(parameter_output, mode='x') as fparams:
             for i in range(self.num_of_chunks):
                 file = os.path.join(self.output_dir, 
                                     'params_chunk_{}.json'.format(i))
-                print(file)
                 with open(file) as f:
                      fparams.write(f.read())
                 os.remove(file)

@@ -8,8 +8,6 @@ blend_dir = os.path.dirname(bpy.data.filepath)
 if blend_dir not in sys.path:
    sys.path.append(blend_dir)
 
-# sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 from two4two.parameters import Parameters
 from two4two.data_generator import DataGenerator
 
