@@ -13,7 +13,7 @@ Download this repository.
 
 `git clone https://github.com/laserschwelle/242.git`
 
-Create a python3 environment and install run
+Create a python3 environment and install the requirements.
 
 `pip install -r requirements.txt`
 
