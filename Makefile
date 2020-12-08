@@ -7,10 +7,12 @@ PIP3=$(PYTHON_PATH:=pip3)
 PYTHON3=$(PYTHON_PATH:=python3.7m)
 
 all: blender $(wildcard two4two/**/*)
-    sed -i "s|^\(\ *self.package_directory\ *=\ *\)'.*'$|\1'`pwd`'|" two4two/blender.py
+	cd two4two
+	sed -i "s|^\(\ *self.package_directory\ *=\ *\)'.*'$|\1'`pwd`'|" blender.py
+	cd ..
 	python setup.py install
 	$(PYTHON3) setup.py install
-    
+
 blender: blender.tar.xz get-pip.py
 	tar -xf blender.tar.xz
 	mv blender-2.83.9-linux64 blender
