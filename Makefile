@@ -8,10 +8,10 @@ PYTHON3=$(PYTHON_PATH:=python3.7m)
 
 all: blender $(wildcard two4two/**/*)
 	cd two4two
-	sed -i "s|^\(\ *self.package_directory\ *=\ *\)'.*'$|\1'`pwd`'|" blender.py
+	sed -ri "s|^(\ *self.package_directory\ *=\ *)'.*'$|\1'`pwd`'|" blender.py
 	cd ..
-	python setup.py install
-	$(PYTHON3) setup.py install
+	python setup.py install --user
+	$(PYTHON3) setup.py install --user
 
 blender: blender.tar.xz get-pip.py
 	tar -xf blender.tar.xz
