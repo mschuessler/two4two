@@ -17,7 +17,7 @@ Create a python3 environment and install the requirements.
 
 `pip install -r requirements.txt`
 
-Open `two4two/blender.py` and change 'self.package_directory' to the path where you cloned this directory.
+Open `two4two/blender.py` and change `self.package_directory` to the path where you cloned this directory.
 
 `make`
 
