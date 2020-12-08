@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 setuptools.setup(
     name="two4two-laserschwelle",
     version="0.0.1",
-    author="Philipp Weiß",
+    author="Philipp Weiss",
     author_email="philipp@itp.tu-berlin.de",
     description="Generate biased image data to train and test classifiers.",
     license='GPLv2+',
