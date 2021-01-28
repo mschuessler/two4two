@@ -8,16 +8,35 @@ See [Section Classes](#classes) for details.
 You can either install the module and create your own datasets or download an [example dataset](#example-dataset) with 300,000 images.
 
 ## Installation
-The installation process is less then ideal.
+Currently this project is not available through pip but has to installed manually.
+
 Download this repository.
 
-`git clone https://github.com/laserschwelle/242.git`
+```
+git clone https://github.com/mschuessler/242.git
+cd 242
+´´´
 
-Create a python3 environment and install the requirements.
+*On Mac Os*
+```
+`sed -i '' 's?REPLACE-WITH-PWD?'`pwd`'?' two4two/blender.py`
+´´´
+On all other *UNIX systems*:
+```
+`sed -i 's?REPLACE-WITH-PWD?'`pwd`'?' two4two/blender.py`
+´´´
+We suggest to create a python3 or conda environment instead of using your system python and install the requirements.
+```
+python3 -m venv ~/242_enviroment
+source ~/242_enviroment/bin/activate
+´´´
 
-`pip install -r requirements.txt`
+```
+pip install --upgrade pip
+pip install -r requirements.txt
+```
 
-Open `two4two/blender.py` and change `self.package_directory` to the path where you cloned this directory.
+Since we are using Blender to generate the images, it needs to know its absolute path we it will be run from. Unfortunately we have not implemented a more elegant way to address this. For now  
 
 `make`
 
