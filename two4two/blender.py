@@ -61,7 +61,7 @@ class Blender():
                  n_processes,
                  chunk_size):
 
-        self.package_directory = "/home/leon/phd/papers/two4two/242/"
+        self.package_directory = "REPLACE-WITH-PWD"
         self.blender_path = os.path.join(self.package_directory, 'blender/blender')
         self.render_script = os.path.join(self.package_directory, 'two4two/render_samples.py')
 
