@@ -7,6 +7,7 @@ import two4two.butils
 
 from two4two.blender_object import BlenderObject
 
+
 class DataGenerator():
 
     def random_pose(self, bend_range, rotation_range):
@@ -30,10 +31,10 @@ class DataGenerator():
         self.obj.rotate(incline_variation*incline, 'Y')
         head_pos = np.random.uniform(-np.pi/4, np.pi/4)
         self.obj.rotate(rotation_variation*head_pos, 'Z')
-        flipped=False
+        flipped = False
         if random_flip:
             if np.random.uniform() < 0.5:
-                flipped=True
+                flipped = True
                 self.flip_orientation()
         self.obj.center()
 
@@ -51,12 +52,12 @@ class DataGenerator():
 
     def position_randomly_within_frame(self):
         x, y = np.random.uniform(-0.5, 0.5, size=2)
-        self.obj.move((0,x,y))
+        self.obj.move((0, x, y))
 
         return x, y
 
     def set_position(self, x, y):
-        self.obj.move((0,x,y))
+        self.obj.move((0, x, y))
 
     def scene(self,
               background_color,
@@ -159,7 +160,7 @@ class DataGenerator():
         self.obj = BlenderObject(parameters.obj_name,
                                  parameters.spherical,
                                  parameters.arm_shift)
-        
+
         self.obj.add_material(parameters.obj_color)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
@@ -174,7 +175,7 @@ class DataGenerator():
         x,y = parameters.position
         self.set_position(x,y)
         self.scene(parameters.back_color)
-        
+
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'
         bpy.context.scene.cycles.device = 'GPU'
