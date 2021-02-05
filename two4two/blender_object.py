@@ -24,21 +24,15 @@ class BlenderObject():
                                         enter_editmode=False,
                                         location=(0,2,0))
 
-        # Defining arms
-        if self.right == 'sticky':
-            arm_pos = 1.5
-        elif self.right == 'stretchy':
-            arm_pos = 2.5
-        else:
-            raise "Arms must be either 'sticky' or 'stretchy'."
-            
-        bpy.ops.mesh.primitive_cube_add(size=self.cube_size,
-                                        enter_editmode=False,
-                                        location=(0,arm_pos  + self.arm_shift,-1))
+        arm_pos = 1.5 + self.arm_position
 
         bpy.ops.mesh.primitive_cube_add(size=self.cube_size,
                                         enter_editmode=False,
-                                        location=(0,arm_pos + self.arm_shift,1))
+                                        location=(0, arm_pos, -1))
+
+        bpy.ops.mesh.primitive_cube_add(size=self.cube_size,
+                                        enter_editmode=False,
+                                        location=(0, arm_pos, 1))
 
 
         bpy.ops.mesh.primitive_cube_add(size=self.cube_size,
@@ -75,15 +69,18 @@ class BlenderObject():
         if self.right == 'sticky':
             bpy.context.active_bone.select_tail = False
             bpy.context.active_bone.select_head = True
+            arm_shift = self.arm_position
+        else:
+            arm_shift = 1 - self.arm_position
 
         bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked":False},
-                                          TRANSFORM_OT_translate={"value":(0, 0.5+self.arm_shift, 1)})
+                                      TRANSFORM_OT_translate={"value":(0, 0.5 + arm_shift, 1)})
 
         bpy.context.active_bone.select_tail = False
         bpy.context.active_bone.select_head = True
-        
+
         bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked":False},
-                                      TRANSFORM_OT_translate={"value":(0, 0.5+self.arm_shift, -1)})
+                                      TRANSFORM_OT_translate={"value":(0, 0.5 + arm_shift, -1)})
 
     def make_parent(self):
         two4two.butils.select('object', add_to_selection=False)
@@ -203,15 +200,12 @@ class BlenderObject():
     def __init__(self,
                  right,
                  spherical=0,
-                 arm_shift=None):
-        
+                 arm_position=None):
+
         # Object Type. 'Sticky' or 'Stretchy'
         self.right = right
-        
-        if arm_shift is None:
-            self.arm_shift, _ = two4two.butils.get_random_arm_shift()
-        else:
-            self.arm_shift = arm_shift
+
+        self.arm_position = arm_position
 
         self.num_of_cubes = 8
         base_width = 0.8

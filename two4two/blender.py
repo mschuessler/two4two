@@ -1,6 +1,6 @@
+from typing import Sequence
 import subprocess
 import time
-from two4two.chunk import Chunk
 import os
 
 
@@ -18,7 +18,6 @@ class Blender():
                 '--',
                 self.parameter_chunks[self.next_chunk],
                 self.output_dir,
-                'params_chunk_{}.json'.format(self.next_chunk)
             ]
             proc = subprocess.Popen(args)
             self.next_chunk += 1
@@ -38,13 +37,31 @@ class Blender():
         while (len(self.processes) < self.n_processes) and (self.next_chunk < self.num_of_chunks):
             self.StartNew()
 
+    @staticmethod
+    def _split_param_file(parameter_file: str, chunk_size: int) -> Sequence[str]:
+        with open(parameter_file) as f:
+            lines = f.readlines()
+
+        num_chunks = len(lines) // chunk_size
+        if len(lines) % chunk_size != 0:
+            num_chunks += 1
+
+        splits = []
+        name, ext = os.path.splitext(parameter_file)
+        for idx in range(num_chunks):
+            filename = f'{name}_chunk_{idx + 1}.{ext}'
+            splits.append(filename)
+            with open(filename, 'x') as f:
+                f.writelines(lines[idx * chunk_size:(idx + 1) * chunk_size])
+        return splits
+
     def __init__(self,
                  parameter_file,
                  output_dir,
                  n_processes,
                  chunk_size):
 
-        self.package_directory = 'REPLACE-WITH-PWD'
+        self.package_directory = "/home/leon/phd/papers/two4two/242/"
         self.blender_path = os.path.join(self.package_directory, 'blender/blender')
         self.render_script = os.path.join(self.package_directory, 'two4two/render_samples.py')
 
@@ -52,10 +69,8 @@ class Blender():
         parameter_output = os.path.join(self.output_dir, 'parameters.json')
         assert not os.path.exists(parameter_output)
 
-        chunks = Chunk(parameter_file, chunk_size)
-
         self.n_processes = n_processes
-        self.parameter_chunks = chunks.file_names
+        self.parameter_chunks = self._split_param_file(parameter_file, chunk_size)
         self.processes = []
         self.num_of_chunks = len(self.parameter_chunks)
         self.next_chunk = 0
@@ -67,13 +82,13 @@ class Blender():
             time.sleep(0.1)
             self.CheckRunning()
 
-        parameter_output = os.path.join(self.output_dir, 'parameters.json')
-        with open(parameter_output, mode='x') as fparams:
-            for i in range(self.num_of_chunks):
-                file = os.path.join(self.output_dir,
-                                    'params_chunk_{}.json'.format(i))
-                with open(file) as f:
-                     fparams.write(f.read())
-                os.remove(file)
+        # parameter_output = os.path.join(self.output_dir, 'parameters.json')
+        # with open(parameter_output, mode='x') as fparams:
+        #     for i in range(self.num_of_chunks):
+        #         file = os.path.join(self.output_dir,
+        #                             'params_chunk_{}.json'.format(i))
+        #         with open(file) as f:
+        #              fparams.write(f.read())
+        #         os.remove(file)
 
-        chunks.remove_chunks()
+        # chunks.remove_chunks()

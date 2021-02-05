@@ -159,7 +159,7 @@ class DataGenerator():
 
         self.obj = BlenderObject(parameters.obj_name,
                                  parameters.spherical,
-                                 parameters.arm_shift)
+                                 parameters.arm_position)
 
         self.obj.add_material(parameters.obj_color)
 
@@ -174,7 +174,7 @@ class DataGenerator():
                            parameters.flip)
         x,y = parameters.position
         self.set_position(x,y)
-        self.scene(parameters.back_color)
+        self.scene(parameters.bg_color)
 
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'
