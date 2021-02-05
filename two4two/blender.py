@@ -81,14 +81,3 @@ class Blender():
         while (len(self.processes) > 0):
             time.sleep(0.1)
             self.CheckRunning()
-
-        # parameter_output = os.path.join(self.output_dir, 'parameters.json')
-        # with open(parameter_output, mode='x') as fparams:
-        #     for i in range(self.num_of_chunks):
-        #         file = os.path.join(self.output_dir,
-        #                             'params_chunk_{}.json'.format(i))
-        #         with open(file) as f:
-        #              fparams.write(f.read())
-        #         os.remove(file)
-
-        # chunks.remove_chunks()
