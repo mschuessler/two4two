@@ -39,7 +39,7 @@ class SceneParameters:
     def clone(self, discard_filename=True):
         clone = copy.deepcopy(self)
         if discard_filename and hasattr(clone, 'filename'):
-            del clone.__dict__['filename']
+            clone.filename = None
         return clone
 
 
