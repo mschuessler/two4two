@@ -12,6 +12,7 @@ from scipy.stats import truncnorm
 @dataclasses.dataclass()
 class SceneParameters:
     obj_name: str = None
+    wrong_obj_name_label: bool = False
     spherical: float = None
     bone_bend: Sequence[float] = None
     bone_rotation: Sequence[float] = None
@@ -42,6 +43,19 @@ class SceneParameters:
             clone.filename = None
         return clone
 
+    @property
+    def real_obj_name(self):
+        if not self.wrong_obj_name:
+            return self.obj_name
+
+        if self.obj_name == 'sticky':
+            return 'stretchy'
+
+        if self.obj_name == 'stretchy':
+            return 'sticky'
+
+        raise ValueError(f"Unknown `real_obj_name` because obj_name is: {self.obj_name}")
+
 
 @dataclasses.dataclass()
 class SampleSceneParameters:
@@ -50,6 +64,7 @@ class SampleSceneParameters:
     bone_bend: float = 0.3
     bone_rotation: float = 0.2
     obj_type: float = 0.5
+    label_error_probability: float = 0.
     obj_incline: float = 0.1
     obj_rotation: float = 0.7
     flip: float = 0.
@@ -74,6 +89,9 @@ class SampleSceneParameters:
 
     def sample_obj_type(self, params: SceneParameters):
         params.obj_name = ['sticky', 'stretchy'][int(np.random.uniform() > self.obj_type)]
+
+    def sample_wrong_obj_name_label(self, params: SceneParameters):
+        params.wrong_obj_name_label = bool(np.random.uniform() < self.label_error_probability)
 
     def sample_spherical(self, params: SceneParameters):
         params.spherical = float(np.random.beta(*self.spherical))
@@ -108,9 +126,9 @@ class SampleSceneParameters:
 
         rv = get_truncated_normal(mean=0, sd=0.40, low=0, upp=0.65)
         arm_shift = float(rv.rvs())
-        if params.obj_name == 'sticky':
+        if params.real_obj_name == 'sticky':
             params.arm_position = arm_shift
-        elif params.obj_name == 'stretchy':
+        elif params.real_obj_name == 'stretchy':
             params.arm_position = 1 - arm_shift
         else:
             raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
