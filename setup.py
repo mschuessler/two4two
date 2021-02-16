@@ -22,5 +22,14 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
         "Operating System :: POSIX :: Linux"
     ],
+    extras_require={
+        'dev': [
+            'pytest',
+            'flake8',
+            'flake8-import-order',
+            'flake8-annotations',
+            'flake8-docstrings',
+        ]
+    }
     python_requires='>=3.7',
 )
