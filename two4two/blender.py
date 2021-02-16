@@ -1,14 +1,109 @@
-from typing import Sequence, Iterator, Optional, Tuple
-import subprocess
-import time
+"""Module to render images using blender."""
 import json
-import tempfile
 import os
+import shutil
+import subprocess
+import tempfile
+from typing import Dict, Iterator, Optional, Sequence, Tuple
 
-import numpy as np
 import imageio
+import numpy as np
 
 from two4two import scene_parameters
+
+
+def _download_blender(blender_dir: str):
+    """Downloads blender to the given directory."""
+    download_script = os.path.join(os.path.dirname(__file__),
+                                   'download_blender.sh')
+
+    args = [
+        'sh',
+        '-c',
+        f"{download_script} \"{blender_dir}\"",
+    ]
+    print(f"Downloading Blender to {blender_dir}")
+    subprocess.check_output(args)
+
+
+def _ensure_blender_available(blender_dir: str, download_blender: bool):
+    """Ensures blender is available in the given directory."""
+    blender_binary = os.path.join(blender_dir, "blender/blender")
+    found_blender = os.path.exists(blender_binary)
+
+    if not found_blender and not download_blender:
+        raise FileNotFoundError(
+            "Please download blender version 2.83.9 or "
+            "set ``download_blender=True`` to download it automatically!")
+    elif not found_blender and download_blender:
+        _download_blender(blender_dir)
+    else:  # found blender
+        pass
+
+
+def _load_images_from_param_file(
+    param_filename: str,
+    delete: bool,
+) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
+    """Yields tuples of image and scene parameters.
+
+    Args:
+        param_filename: read images from this jsonl parameter file.
+        delete: delete images after reading them
+    """
+    with open(param_filename) as f:
+        for line in f.readlines():
+            params = scene_parameters.SceneParameters(
+                **json.loads(line))
+            img_fname = os.path.join(os.path.dirname(param_filename),
+                                     params.filename)
+            yield imageio.imread(img_fname), params
+            if delete:
+                os.remove(img_fname)
+
+
+def _split_param_file(parameter_file: str, chunk_size: int) -> Sequence[str]:
+    """Splits ``parameter_file`` into files with atmost ``chunk_size`` lines.
+
+    Returns:
+        List of chunked parameter files.
+    """
+    with open(parameter_file) as f:
+        lines = f.readlines()
+
+    num_chunks = len(lines) // chunk_size
+    if len(lines) % chunk_size != 0:
+        num_chunks += 1
+
+    chunk_parameter_files = []
+    name, ext = os.path.splitext(parameter_file)
+    for idx in range(num_chunks):
+        filename = f'{name}_chunk_{idx + 1}{ext}'
+        chunk_parameter_files.append(filename)
+        with open(filename, 'x') as f:
+            f.writelines(lines[idx * chunk_size:(idx + 1) * chunk_size])
+    return chunk_parameter_files
+
+
+def _get_finished_processes(
+    processes: Dict[str, subprocess.Popen]
+) -> Sequence[str]:
+    """Returns the keys of any finished processes."""
+    finised_processes = []
+    for chunk, process in processes.items():
+        try:
+            process.wait(timeout=.2)
+        except subprocess.TimeoutExpired:
+            if process.returncode is None:
+                continue
+        if process.returncode != 0:
+            raise subprocess.CalledProcessError(
+                process.returncode,
+                process.args,
+            )
+        else:  # zero return code
+            finised_processes.append(chunk)
+    return finised_processes
 
 
 def render(
@@ -16,115 +111,86 @@ def render(
     n_processes: int = 0,
     chunk_size: int = 100,
     output_dir: Optional[str] = None,
-) -> Iterator[Tuple[np.array, scene_parameters.SceneParameters]]:
-    """
-    Renders the given parameters to images using Blender.
+    blender_dir: Optional[str] = None,
+    download_blender: bool = False,
+) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
+    """Renders the given parameters to images using Blender.
 
     Args:
         params: List of scence parameters.
         n_processes: Number of concurrent processes to run. The Default
             ``0`` means as many processes as cpus.
         chunk_size: Number of parameters to render per processes.
-        output_dir: Save rendered images to this directory.
+        output_dir: Save rendered images to this directory. If ``None``, the images
+            will not be saves permanently.
+        download_blender: flag to automatically downloads blender.
+        blender_dir: blender directory to use. Default ``~/.cache/two4two``.
+
+    Raises:
+        FileNotFoundError: if no blender installation is found in ``blender_dir``.
 
     Yields:
         tuples of (image, scene parameters).
     """
 
     def process_chunk():
-        """ Start a new subprocess if there is work to do """
+        """Start a new subprocess if there is work to do."""
         nonlocal next_chunk
-        if next_chunk < num_of_chunks:
-            parameter_file = parameter_chunks[next_chunk]
-            args = [
-                blender_path,
-                '--background',
-                '-noaudio',
-                '--python',
-                render_script,
-                '--',
-                parameter_chunks[next_chunk],
-                output_dir,
-            ]
-            proc = subprocess.Popen(args, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-            processes.append((proc, parameter_file))
-            next_chunk += 1
-
-    def read_from_param_file(
-        param_filename: str
-    ) -> Iterator[Tuple[np.array, scene_parameters.SceneParameters]]:
-        with open(param_filename) as f:
-            for line in f.readlines():
-                params = scene_parameters.SceneParameters(
-                    **json.loads(line))
-                img_fname = os.path.join(os.path.dirname(param_filename),
-                                         params.filename)
-                yield imageio.imread(img_fname), params
-
-    def maybe_start_new_process() -> Iterator[Tuple[np.array, scene_parameters.SceneParameters]]:
-        """ Check any running processes and start new ones if there are spare slots."""
-        # Check the processes in reverse order
-
-        for p in range(len(processes), 0, -1):
-            p -= 1
-            # If the process hasn't finished will return None
-            process, param_file = processes[p]
-            if process.poll() is not None:
-                # Remove from list - this is why we needed reverse order
-                del processes[p]
-                for img, params in read_from_param_file(param_file):
-                    yield img, params
-
-        # More to do and some spare slots
-        while (len(processes) < n_processes) and (next_chunk < num_of_chunks):
-            process_chunk()
-
-    def split_param_file(parameter_file: str, chunk_size: int) -> Sequence[str]:
-        with open(parameter_file) as f:
-            lines = f.readlines()
-
-        num_chunks = len(lines) // chunk_size
-        if len(lines) % chunk_size != 0:
-            num_chunks += 1
-
-        splits = []
-        name, ext = os.path.splitext(parameter_file)
-        for idx in range(num_chunks):
-            filename = f'{name}_chunk_{idx + 1}{ext}'
-            splits.append(filename)
-            with open(filename, 'x') as f:
-                f.writelines(lines[idx * chunk_size:(idx + 1) * chunk_size])
-        return splits
+        parameter_file = parameter_chunks[next_chunk]
+        args = [
+            blender_binary,
+            '--background',
+            '-noaudio',
+            '--python',
+            render_script,
+            '--',
+            parameter_file,
+            output_dir,
+        ]
+        proc = subprocess.Popen(args,
+                                stdin=subprocess.PIPE,
+                                stdout=subprocess.PIPE)
+        processes[parameter_file] = proc
+        next_chunk += 1
 
     if n_processes == 0:
         n_processes = os.cpu_count() or 1
 
-    package_directory = "REPLACE-WITH-PWD"
-    blender_path = os.path.join(package_directory, 'blender/blender')
-    render_script = os.path.join(package_directory, 'two4two/render_samples.py')
-    chunk_size = chunk_size
+    blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
+
+    blender_binary = os.path.join(blender_dir, "blender/blender")
+    _ensure_blender_available(blender_dir, download_blender)
+
+    package_directory = os.path.dirname(__file__)
+    render_script = os.path.join(package_directory, 'render_samples.py')
 
     # process and the processes chunk file
-    processes: Tuple[subprocess.Popen, str] = []
+    processes: Dict[str, subprocess.Popen] = {}
 
     use_tmp_dir = output_dir is None
     if use_tmp_dir:
-        output_dir = tempfile.TemporaryDirectory()
+        output_dir = tempfile.mkdtemp()
 
     parameter_file = os.path.join(output_dir, 'parameters.json')
 
     # dump parameters
     with open(parameter_file, 'x') as f:
         for param in params:
-            f.writelines([json.dumps(param.state_dict())])
+            f.write(json.dumps(param.state_dict()) + '\n')
 
-    parameter_chunks = split_param_file(parameter_file, chunk_size)
+    parameter_chunks = _split_param_file(parameter_file, chunk_size)
     num_of_chunks = len(parameter_chunks)
     next_chunk = 0
 
-    while True:
-        for img, param in maybe_start_new_process():
-            yield img, param
-        time.sleep(0.1)
-        if next_chunk == num_of_chunks and not processes:
-            break
+    while next_chunk < num_of_chunks or processes:
+        finished_chunks = _get_finished_processes(processes)
+        for chunk in finished_chunks:
+            for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
+                yield img, params
+            del processes[chunk]
+
+        if len(processes) < n_processes and next_chunk < num_of_chunks:
+            process_chunk()
+
+    if use_tmp_dir:
+        shutil.rmtree(output_dir)

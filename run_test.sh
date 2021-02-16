@@ -3,5 +3,9 @@
 # this script should pass before committing
 
 set -e
-# TODO(leon): also add two4two to checked directory (see #3)
-python -m pytest -v --flake8 -s test/  -m "not slow"
+# TODO(leon): add clean files of two4two/ to be flake checked for tests (see #3)
+
+CLEAN_FILES=two4two/blender.py
+python -m pytest -v --flake8 -s test/ \
+    "$CLEAN_FILES" \
+    -m "not slow"
