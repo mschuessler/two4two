@@ -5,7 +5,7 @@ import copy
 import pprint
 import json
 import uuid
-from two4two.color_generator import ColorGenerator
+from two4two import utils
 from scipy.stats import truncnorm
 
 RGBAColor = Tuple[float, float, float, float]
@@ -143,15 +143,15 @@ class SampleSceneParameters:
         else:
             raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
 
-    def object_cmap(self, params: SceneParameters) -> ColorGenerator:
-        return ColorGenerator('seismic')
+    def object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
+        return utils.ColorGenerator('seismic')
 
     def sample_obj_color(self, params: SceneParameters):
         params.obj_scalar = float(np.random.uniform(*self.obj_color))
         params.obj_color = tuple(self.object_cmap(params).get_color(params.obj_scalar))
 
-    def bg_cmap(self, params: SceneParameters) -> ColorGenerator:
-        return ColorGenerator('binary')
+    def bg_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
+        return utils.ColorGenerator('binary')
 
     def sample_bg_color(self, params: SceneParameters):
         params.bg_scalar = float(np.random.uniform(*self.bg_color))
