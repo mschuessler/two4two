@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Sequence, Tuple, Optional, TextIO
+from typing import Sequence, Tuple, Optional, TextIO, List
 import numpy as np
 import copy
 import pprint
@@ -8,6 +8,7 @@ import uuid
 from two4two.color_generator import ColorGenerator
 from scipy.stats import truncnorm
 
+RGBAColor = Tuple[float, float, float, float]
 
 @dataclasses.dataclass()
 class SceneParameters:
@@ -21,12 +22,21 @@ class SceneParameters:
     flip: bool = None
     position: float = None
     arm_position: float = None
-    obj_color: float = None
-    obj_scalar: Sequence[float] = None
+    obj_color: RGBAColor = None
+    obj_scalar: float = None
     bg_scalar: float = None
-    bg_color: Sequence[float] = None
+    bg_color: RGBAColor  = None
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
+
+    def __post_init__(self):
+        # convert possible lists to tuples
+        if type(self.bg_color) == list:
+            self.bg_color = tuple(self.bg_color)
+        if type(self.obj_color) == list:
+            self.obj_color = tuple(self.obj_color)
+        if type(self.resolution) == list:
+            self.resolution = tuple(self.resolution)
 
     def state_dict(self):
         if self.filename is None:
@@ -45,7 +55,7 @@ class SceneParameters:
 
     @property
     def real_obj_name(self):
-        if not self.wrong_obj_name:
+        if not self.wrong_obj_name_label:
             return self.obj_name
 
         if self.obj_name == 'sticky':
@@ -138,11 +148,11 @@ class SampleSceneParameters:
 
     def sample_obj_color(self, params: SceneParameters):
         params.obj_scalar = float(np.random.uniform(*self.obj_color))
-        params.obj_color = self.object_cmap(params).get_color(params.obj_scalar)
+        params.obj_color = tuple(self.object_cmap(params).get_color(params.obj_scalar))
 
     def bg_cmap(self, params: SceneParameters) -> ColorGenerator:
         return ColorGenerator('binary')
 
     def sample_bg_color(self, params: SceneParameters):
         params.bg_scalar = float(np.random.uniform(*self.bg_color))
-        params.bg_color = self.bg_cmap(params).get_color(params.bg_scalar)
+        params.bg_color = tuple(self.bg_cmap(params).get_color(params.bg_scalar))
