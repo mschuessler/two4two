@@ -13,7 +13,7 @@ RGBAColor = Tuple[float, float, float, float]
 @dataclasses.dataclass()
 class SceneParameters:
     obj_name: str = None
-    wrong_obj_name_label: bool = False
+    labeling_error: bool = False
     spherical: float = None
     bone_bend: Sequence[float] = None
     bone_rotation: Sequence[float] = None
@@ -54,17 +54,16 @@ class SceneParameters:
         return clone
 
     @property
-    def real_obj_name(self):
-        if not self.wrong_obj_name_label:
-            return self.obj_name
-
-        if self.obj_name == 'sticky':
-            return 'stretchy'
-
-        if self.obj_name == 'stretchy':
-            return 'sticky'
-
-        raise ValueError(f"Unknown `real_obj_name` because obj_name is: {self.obj_name}")
+    def obj_name_with_label_error(self) -> str:
+        """Returns the object name taking into account the label error."""
+        flip_obj_name = {
+            'sticky': 'stretchy',
+            'stretchy': 'sticky',
+        }
+        return {
+            False: self.obj_name,
+            True: flip_obj_name[self.obj_name]
+        }[self.labeling_error]
 
 
 @dataclasses.dataclass()
