@@ -11,3 +11,11 @@ def test_scene_parameters_loading():
     json_buf = json.dumps(sampled_param.state_dict())
     loaded_param = scene_parameters.SceneParameters(**json.loads(json_buf))
     assert sampled_param == loaded_param
+
+
+def test_sample_scene_parameters():
+    """Test sampling of SceneParameters."""
+    sampler = scene_parameters.SampleSceneParameters()
+    for i in range(1000):
+        param = sampler.sample()
+        param.check_values()
