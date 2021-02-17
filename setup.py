@@ -16,6 +16,9 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/laserschwelle/two4two",
     packages=setuptools.find_packages(),
+    package_data={
+        "": "*.sh",
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
