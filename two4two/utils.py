@@ -60,6 +60,23 @@ class discrete():
         return self.values[self.rv_discrete.rvs(*args, **kwargs)]
 
 
+def truncated_normal(mean: float = 0,
+                     std: float = 1,
+                     lower: float = -3,
+                     upper: float = 3
+                     ) -> scipy.stats.truncnorm:
+    """Wrapper around ``scipy.stats.truncnorm``.
+
+    Args:
+        mean: the mean of the normal distribution.
+        std: the standard derivation of the normal distribution.
+        lower: lower truncation.
+        upper: upper truncation.
+    """
+    return scipy.stats.truncnorm((lower - mean) / std, (upper - mean) / std,
+                                 loc=mean, scale=std)
+
+
 class ColorGenerator():
 
     def __init__(self, palette=None):
