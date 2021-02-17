@@ -3,13 +3,16 @@ import json
 import uuid
 import numpy as np
 import os, sys
+from pathlib import Path
 
 blend_dir = os.path.dirname(bpy.data.filepath)
-if blend_dir not in sys.path:
-   sys.path.append(blend_dir)
+package_base_dir = str(Path(__file__).parents[2])
+
+if package_base_dir not in sys.path:
+   sys.path.append(package_base_dir)
 
 from two4two.scene_parameters import SceneParameters
-from two4two.data_generator import DataGenerator
+from two4two._blender.data_generator import DataGenerator
 
 def render(param_file, save_location):
     with open(param_file) as fparam:

@@ -147,6 +147,7 @@ def render(
             parameter_file,
             output_dir,
         ]
+
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
@@ -162,7 +163,9 @@ def render(
     _ensure_blender_available(blender_dir, download_blender)
 
     package_directory = os.path.dirname(__file__)
-    render_script = os.path.join(package_directory, 'render_samples.py')
+    render_script = os.path.join(package_directory,
+                                 '_blender',
+                                 'render_samples.py')
 
     # process and the processes chunk file
     processes: Dict[str, subprocess.Popen] = {}

@@ -1,6 +1,6 @@
 import bpy
 import numpy as np
-import two4two.butils
+from two4two._blender import butils
 from mathutils import Vector
 
 class BlenderObject():
@@ -43,7 +43,7 @@ class BlenderObject():
                                         enter_editmode=False,
                                         location=(0,-1.5,-1))
 
-        two4two.butils.object_mode()
+        butils.object_mode()
 
     def create_armature(self):
         bpy.ops.object.armature_add(enter_editmode=True,
@@ -83,12 +83,12 @@ class BlenderObject():
                                       TRANSFORM_OT_translate={"value":(0, 0.5 + arm_shift, -1)})
 
     def make_parent(self):
-        two4two.butils.select('object', add_to_selection=False)
-        two4two.butils.select('skeleton')
+        butils.select('object', add_to_selection=False)
+        butils.select('skeleton')
         bpy.ops.object.parent_set(type='ARMATURE_AUTO')
 
     def set_pose(self, bend_angles, rotation_angles):
-        two4two.butils.set_active('skeleton')
+        butils.set_active('skeleton')
         bpy.ops.object.posemode_toggle()
 
         for i,bone in enumerate(bpy.data.objects['skeleton'].data.bones):
@@ -110,17 +110,17 @@ class BlenderObject():
 
             bone.select = False
 
-        two4two.butils.object_mode()
+        butils.object_mode()
 
-        two4two.butils.set_active('object')
+        butils.set_active('object')
         bpy.ops.object.modifier_apply(apply_as='DATA',
                                       modifier='Armature')
-        two4two.butils.set_active('skeleton')
+        butils.set_active('skeleton')
         bpy.ops.object.modifier_apply(apply_as='DATA',
                                       modifier='Armature')
 
     def create_bounding_box(self):
-        ((min_x, max_x), (min_y, max_y), (min_z, max_z)) = two4two.butils.get_boundaries('object')
+        ((min_x, max_x), (min_y, max_y), (min_z, max_z)) = butils.get_boundaries('object')
 
         bpy.ops.mesh.primitive_cube_add(size=1,
                                         location=(min_x+0.5, min_y+0.5, min_z+0.5),
@@ -131,36 +131,36 @@ class BlenderObject():
         bpy.ops.transform.resize(value=(max_x-min_x, max_y-min_y, max_z-min_z),
                                  center_override=(min_x, min_y, min_z))
 
-        two4two.butils.select('bounding_box')
-        two4two.butils.select('skeleton', add_to_selection=True)
+        butils.select('bounding_box')
+        butils.select('skeleton', add_to_selection=True)
 
         bpy.ops.object.parent_set(type='OBJECT',
                                   keep_transform=True)
 
     def remove_bounding_box(self):
-        two4two.butils.select('bounding_box')
-        two4two.butils.select('skeleton', add_to_selection=True)
+        butils.select('bounding_box')
+        butils.select('skeleton', add_to_selection=True)
         bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
         bpy.ops.object.select_all(action='DESELECT')
-        two4two.butils.select('bounding_box')
+        butils.select('bounding_box')
         bpy.ops.object.delete(use_global=False,
                               confirm=False)
 
-        two4two.butils.set_active('object')
+        butils.set_active('object')
         bpy.ops.object.transform_apply()
-        two4two.butils.set_active('skeleton')
+        butils.set_active('skeleton')
         bpy.ops.object.transform_apply()
 
     def move(self, translation_vec):
         self.create_bounding_box()
-        two4two.butils.select('bounding_box')
+        butils.select('bounding_box')
 
         bpy.ops.transform.translate(value=translation_vec)
         self.remove_bounding_box()
 
     def rotate(self, angle, axis):
         self.create_bounding_box()
-        two4two.butils.select('bounding_box')
+        butils.select('bounding_box')
 
         bpy.ops.transform.rotate(value=angle,
                                  orient_axis=axis)
@@ -172,19 +172,19 @@ class BlenderObject():
         o = bpy.data.objects['bounding_box']
         local_bbox_center = 0.125 * sum((Vector(b) for b in o.bound_box), Vector())
         global_bbox_center = o.matrix_world @ local_bbox_center
-        two4two.butils.select('bounding_box')
+        butils.select('bounding_box')
         bpy.ops.transform.translate(value=-0.5*global_bbox_center)
         self.remove_bounding_box()
 
     def add_material(self, color):
-        active_object = two4two.butils.set_active('object')
+        active_object = butils.set_active('object')
         mat = bpy.data.materials.new(name='material')
         active_object.data.materials.append(mat)
         bpy.context.object.active_material.diffuse_color = color
 
     def set_spherical(self, amount, clamp_overlap=True):
         width = 0.05 + self.cube_size * 0.25 * amount
-        obj = two4two.butils.set_active('object')
+        obj = butils.set_active('object')
 
         bpy.ops.object.modifier_add(type='BEVEL')
         obj.modifiers['Bevel'].width = width
@@ -195,7 +195,7 @@ class BlenderObject():
 
     @property
     def boundaries(self):
-        return two4two.butils.get_boundaries('object')
+        return butils.get_boundaries('object')
 
     def __init__(self,
                  right,
