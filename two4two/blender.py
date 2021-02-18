@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from typing import Dict, Iterator, Optional, Sequence, Tuple
 
@@ -86,13 +87,18 @@ def _split_param_file(parameter_file: str, chunk_size: int) -> Sequence[str]:
 
 
 def _get_finished_processes(
-    processes: Dict[str, subprocess.Popen]
+    processes: Dict[str, subprocess.Popen],
+    print_output: bool
 ) -> Sequence[str]:
     """Returns the keys of any finished processes."""
     finised_processes = []
     for chunk, process in processes.items():
         try:
-            process.wait(timeout=.2)
+            stdout, stderr = process.communicate(timeout=.2)
+            if stdout is not None and print_output:
+                print(stdout.decode('utf-8'))
+            if stderr is not None and print_output:
+                print(stderr.decode('utf-8'), file=sys.stderr)
         except subprocess.TimeoutExpired:
             if process.returncode is None:
                 continue
@@ -113,6 +119,7 @@ def render(
     output_dir: Optional[str] = None,
     blender_dir: Optional[str] = None,
     download_blender: bool = False,
+    print_output: bool = False
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -125,6 +132,7 @@ def render(
             will not be saves permanently.
         download_blender: flag to automatically downloads blender.
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
+        print_output: Print the output of blender.
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -186,7 +194,7 @@ def render(
     next_chunk = 0
 
     while next_chunk < num_of_chunks or processes:
-        finished_chunks = _get_finished_processes(processes)
+        finished_chunks = _get_finished_processes(processes, print_output)
         for chunk in finished_chunks:
             for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
                 yield img, params
