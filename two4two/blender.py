@@ -145,17 +145,16 @@ def render(
         """Start a new subprocess if there is work to do."""
         nonlocal next_chunk
         parameter_file = parameter_chunks[next_chunk]
+
+        execute_blender_script = os.path.join(
+            os.path.dirname(__file__), 'execute_blender.sh')
         args = [
-            blender_binary,
-            '--background',
-            '-noaudio',
-            '--python',
+            execute_blender_script,
+            blender_dir,
             render_script,
-            '--',
             parameter_file,
             output_dir,
         ]
-
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
@@ -167,7 +166,6 @@ def render(
 
     blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
 
-    blender_binary = os.path.join(blender_dir, "blender/blender")
     _ensure_blender_available(blender_dir, download_blender)
 
     package_directory = os.path.dirname(__file__)
