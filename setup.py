@@ -7,9 +7,9 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="two4two-laserschwelle",
-    version="0.0.1",
-    author="Philipp Weiss",
-    author_email="philipp@itp.tu-berlin.de",
+    version="0.0.3",
+    author="Philipp Weiss, Leon Sixt, Martin Schuessler",
+    author_email="dev@mschuessler.de",
     description="Generate biased image data to train and test classifiers.",
     license='GPLv2+',
     long_description=long_description,
@@ -33,6 +33,6 @@ setuptools.setup(
             'flake8-annotations',
             'flake8-docstrings',
         ]
-    }
-    python_requires='>=3.7',
+    },
+    python_requires='>=3.7'
 )
