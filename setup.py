@@ -25,6 +25,12 @@ setuptools.setup(
         "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
         "Operating System :: POSIX :: Linux"
     ],
+    install_requires=[
+   'numpy',
+   'imageio',
+   'scipy',
+   'matplotlib'
+   ],
     extras_require={
         'dev': [
             'pytest',
