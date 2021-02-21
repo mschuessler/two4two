@@ -13,8 +13,8 @@ Currently this project is not available through pip but has to installed manuall
 Download this repository.
 
 ```
-git clone https://github.com/mschuessler/242.git
-cd 242
+git clone https://github.com/mschuessler/two4two.git
+cd two4two
 ´´´
 
 *On Mac Os*
