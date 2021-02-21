@@ -178,8 +178,6 @@ class SampleSceneParameters:
     To implement biases, you can inhirent this class and modify how individual
     attributes are sample, e.g introducing addtional dependencies.
 
-    TODO(leon): Add ColorBias as example.
-
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
     Attrs:
@@ -299,4 +297,17 @@ class SampleSceneParameters:
         params.bg_color = tuple(self._bg_cmap(params).get_color(params.bg_scalar))
 
 
-# TODO(leon): Add ColorBias as example.
+class ColorBiasedSceneParameterSampler(SampleSceneParameters):
+    """An example implementation of a color-biased SceneParameterSample.
+
+    The color is sampled from a conditional distribution that is dependend on the object type.
+    """
+
+    def sample_obj_color(self, params: SceneParameters):
+        """Samples the ``obj_color`` and ``obj_scalar`` with custom distributions."""
+        if params.obj_name == "penis":
+            color = utils.truncated_normal(1, 0.5, 0, 1).rvs()
+        else:
+            color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
+        params.obj_scalar = float(color)
+        params.obj_color = tuple(self._object_cmap(params).get_color(color))
