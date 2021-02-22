@@ -210,7 +210,7 @@ class SampleSceneParameters:
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_map: str = 'gray'
+    bg_color_map: str = 'binary'
 
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -289,7 +289,7 @@ class SampleSceneParameters:
         params.obj_color = tuple(self._object_cmap(params).get_color(params.obj_scalar))
 
     def _bg_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return utils.ColorGenerator('binary')
+        return utils.ColorGenerator(self.bg_color_map)
 
     def sample_bg_color(self, params: SceneParameters):
         """Samples the ``bg_color`` and ``bg_scalar``."""
