@@ -14,44 +14,30 @@ Download this repository.
 
 ```
 git clone https://github.com/mschuessler/two4two.git
-cd two4two
 ´´´
-
-*On Mac Os*
-```
-`sed -i '' 's?REPLACE-WITH-PWD?'`pwd`'?' two4two/blender.py`
-´´´
-On all other *UNIX systems*:
-```
-`sed -i 's?REPLACE-WITH-PWD?'`pwd`'?' two4two/blender.py`
-´´´
-We suggest to create a python3 or conda environment instead of using your system python and install the requirements.
+We suggest to create a python3 or conda environment instead of using your system python.
 ```
 python3 -m venv ~/242_enviroment
 source ~/242_enviroment/bin/activate
 ´´´
 
+To install the **minimal installation** two4two package change into the cloned directory and run setuptools.
+
 ```
-pip install --upgrade pip
-pip install -r requirements.txt
+cd two4two
+pip install .
 ```
 
-Since we are using Blender to generate the images, it needs to know its absolute path we it will be run from. Unfortunately we have not implemented a more elegant way to address this. For now  
-
-`make`
-
-If this worked, you should be good.
-If not, here are some more details for the installation.
-
-The programm can only run, if Blender 2.83 is installed in `two4two/blender`.
-The programm was tested with version 2.83.9.
-The Makefile should download blender, install pip for its bundled python and install the two4two module.
-The download link within the Makefile is a mirror for Germany.
-If any problems occur please see the script and reproduce the steps.
-You need to put blender in the module folder and install pip for blender.
-Then use pip to install numpy, scipy, matplotlib and a ipykernel.
-After installing blender, use `setuptools` to install the `two4two` module for both the systems python as well as blender's python.
-`python setup.py install && ./blender/2.83/python/bin/python3.7m setup.py install`
+To install the **installation including all requirements for generating your own training data** run:
+```
+pip install .[example_notebooks_data_generation]
+´´´
+For training your own models you have two choices:
+1) *No GPU required and installation free*: Run our example notebook inside of Colab (this will download pregenerated datasets)
+2) Install the **installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available:
+```
+pip install .[example_notebooks_data_generation,example_notebooks_model_training]
+´´´
 
 ## Classes
 The two classes for classifcation are *sticky* and *stretchy*.
