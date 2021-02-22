@@ -26,11 +26,11 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux"
     ],
     install_requires=[
-   'numpy',
-   'imageio',
-   'scipy',
-   'matplotlib'
-   ],
+        'numpy',
+        'imageio',
+        'scipy',
+        'matplotlib'
+    ],
     extras_require={
         'dev': [
             'pytest',
@@ -38,6 +38,11 @@ setuptools.setup(
             'flake8-import-order',
             'flake8-annotations',
             'flake8-docstrings',
+        ],
+        'examples': [
+            'numpy',
+            'pandas',
+            'notebook'
         ]
     },
     python_requires='>=3.7'
