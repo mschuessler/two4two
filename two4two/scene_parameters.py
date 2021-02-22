@@ -305,7 +305,7 @@ class ColorBiasedSceneParameterSampler(SampleSceneParameters):
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar`` with custom distributions."""
-        if params.obj_name == "penis":
+        if params.obj_name == 'sticky':
             color = utils.truncated_normal(1, 0.5, 0, 1).rvs()
         else:
             color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
