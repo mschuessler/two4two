@@ -39,10 +39,16 @@ setuptools.setup(
             'flake8-annotations',
             'flake8-docstrings',
         ],
-        'examples': [
+        'example_notebooks_data_generation': [
             'numpy',
             'pandas',
             'notebook'
+        ],
+        'example_notebooks_model_training': [
+            'tensorflow',
+            'pandas',
+            'notebook',
+            'livelossplot'
         ]
     },
     python_requires='>=3.7'
