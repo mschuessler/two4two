@@ -26,6 +26,9 @@ mkdir -p "$OUTDIR"
     mv blender-2.83.9-linux64 blender
     $PYTHON get-pip.py
     $PIP3 install -U pip
-    $PIP3 install numpy scipy matplotlib ipykernel
+    $PYTHON -m venv "$OUTDIR/venv"
+    source "$OUTDIR/venv/bin/activate"
+    # print installation to stdout
+    >&2 python -m pip install numpy==1.17.0 scipy==1.6.1 matplotlib==3.3.4 scikit-image==0.18.0
 )
 

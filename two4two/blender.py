@@ -3,6 +3,7 @@ import json
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 from typing import Dict, Iterator, Optional, Sequence, Tuple
 
@@ -86,13 +87,18 @@ def _split_param_file(parameter_file: str, chunk_size: int) -> Sequence[str]:
 
 
 def _get_finished_processes(
-    processes: Dict[str, subprocess.Popen]
+    processes: Dict[str, subprocess.Popen],
+    print_output: bool
 ) -> Sequence[str]:
     """Returns the keys of any finished processes."""
     finised_processes = []
     for chunk, process in processes.items():
         try:
-            process.wait(timeout=.2)
+            stdout, stderr = process.communicate(timeout=.2)
+            if stdout is not None and print_output:
+                print(stdout.decode('utf-8'))
+            if stderr is not None and print_output:
+                print(stderr.decode('utf-8'), file=sys.stderr)
         except subprocess.TimeoutExpired:
             if process.returncode is None:
                 continue
@@ -113,6 +119,7 @@ def render(
     output_dir: Optional[str] = None,
     blender_dir: Optional[str] = None,
     download_blender: bool = False,
+    print_output: bool = False
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -125,6 +132,7 @@ def render(
             will not be saves permanently.
         download_blender: flag to automatically downloads blender.
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
+        print_output: Print the output of blender.
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -137,17 +145,16 @@ def render(
         """Start a new subprocess if there is work to do."""
         nonlocal next_chunk
         parameter_file = parameter_chunks[next_chunk]
+
+        execute_blender_script = os.path.join(
+            os.path.dirname(__file__), 'execute_blender.sh')
         args = [
-            blender_binary,
-            '--background',
-            '-noaudio',
-            '--python',
+            execute_blender_script,
+            blender_dir,
             render_script,
-            '--',
             parameter_file,
             output_dir,
         ]
-
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
@@ -159,7 +166,6 @@ def render(
 
     blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
 
-    blender_binary = os.path.join(blender_dir, "blender/blender")
     _ensure_blender_available(blender_dir, download_blender)
 
     package_directory = os.path.dirname(__file__)
@@ -186,7 +192,7 @@ def render(
     next_chunk = 0
 
     while next_chunk < num_of_chunks or processes:
-        finished_chunks = _get_finished_processes(processes)
+        finished_chunks = _get_finished_processes(processes, print_output)
         for chunk in finished_chunks:
             for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
                 yield img, params
