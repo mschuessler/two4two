@@ -177,29 +177,30 @@ def render(
     processes: Dict[str, subprocess.Popen] = {}
 
     use_tmp_dir = output_dir is None
-    if use_tmp_dir:
-        output_dir = tempfile.mkdtemp()
+    try:
+        if use_tmp_dir:
+            output_dir = tempfile.mkdtemp()
 
-    parameter_file = os.path.join(output_dir, 'parameters.json')
+        parameter_file = os.path.join(output_dir, 'parameters.json')
 
-    # dump parameters
-    with open(parameter_file, 'x') as f:
-        for param in params:
-            f.write(json.dumps(param.state_dict()) + '\n')
+        # dump parameters
+        with open(parameter_file, 'x') as f:
+            for param in params:
+                f.write(json.dumps(param.state_dict()) + '\n')
 
-    parameter_chunks = _split_param_file(parameter_file, chunk_size)
-    num_of_chunks = len(parameter_chunks)
-    next_chunk = 0
+        parameter_chunks = _split_param_file(parameter_file, chunk_size)
+        num_of_chunks = len(parameter_chunks)
+        next_chunk = 0
 
-    while next_chunk < num_of_chunks or processes:
-        finished_chunks = _get_finished_processes(processes, print_output)
-        for chunk in finished_chunks:
-            for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
-                yield img, params
-            del processes[chunk]
+        while next_chunk < num_of_chunks or processes:
+            finished_chunks = _get_finished_processes(processes, print_output)
+            for chunk in finished_chunks:
+                for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
+                    yield img, params
+                del processes[chunk]
 
-        if len(processes) < n_processes and next_chunk < num_of_chunks:
-            process_chunk()
-
-    if use_tmp_dir:
-        shutil.rmtree(output_dir)
+            if len(processes) < n_processes and next_chunk < num_of_chunks:
+                process_chunk()
+    finally:
+        if use_tmp_dir:
+            shutil.rmtree(output_dir)
