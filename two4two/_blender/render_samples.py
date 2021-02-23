@@ -17,14 +17,16 @@ from two4two._blender.scene import Scene  # noqa: E402
 from two4two.scene_parameters import SceneParameters  # noqa: E402
 
 
-def _render(param_file: str, save_location: str):
+def _render_files(param_file: str, save_location: str):
     with open(param_file) as fparam:
         for line in fparam.readlines():
             params = SceneParameters(**json.loads(line))
             scene = Scene(params)
-            render_name = os.path.join(save_location, params.filename)
-            scene.render(render_name)
+            image_fname = os.path.join(save_location, params.filename)
+            base, ext = os.path.splitext(image_fname)
+            mask_fname = f"{base}_mask{ext}"
+            scene.render(image_fname, mask_fname)
 
 
 if __name__ == '__main__':
-    _render(sys.argv[-2], sys.argv[-1])
+    _render_files(sys.argv[-2], sys.argv[-1])

@@ -58,7 +58,12 @@ def _load_images_from_param_file(
                 **json.loads(line))
             img_fname = os.path.join(os.path.dirname(param_filename),
                                      params.filename)
-            yield imageio.imread(img_fname), params
+
+            base, ext = os.path.splitext(img_fname)
+            mask_fname = f"{base}_mask{ext}"
+            img = imageio.imread(img_fname)
+            mask = imageio.imread(mask_fname)
+            yield img, mask, params
             if delete:
                 os.remove(img_fname)
 
@@ -119,7 +124,8 @@ def render(
     output_dir: Optional[str] = None,
     blender_dir: Optional[str] = None,
     download_blender: bool = False,
-    print_output: bool = False
+    print_output: bool = False,
+    print_cmd: bool = False,
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -133,6 +139,7 @@ def render(
         download_blender: flag to automatically downloads blender.
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
         print_output: Print the output of blender.
+        print_cmd: Print executed subcommand (useful for debugging).
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -155,14 +162,16 @@ def render(
             parameter_file,
             output_dir,
         ]
+        if print_cmd:
+            print("Command to execute Blender:")
+            print(" ".join(args))
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
         processes[parameter_file] = proc
         next_chunk += 1
 
-    if n_processes == 0:
-        n_processes = os.cpu_count() or 1
+    n_processes = n_processes or (os.cpu_count() or 1)
 
     blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
 
@@ -195,8 +204,8 @@ def render(
         while next_chunk < num_of_chunks or processes:
             finished_chunks = _get_finished_processes(processes, print_output)
             for chunk in finished_chunks:
-                for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
-                    yield img, params
+                for img, mask, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
+                    yield img, mask, params
                 del processes[chunk]
 
             if len(processes) < n_processes and next_chunk < num_of_chunks:
