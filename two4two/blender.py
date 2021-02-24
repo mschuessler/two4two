@@ -155,6 +155,7 @@ def render(
             parameter_file,
             output_dir,
         ]
+        print(" ".join(args))
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
                                 stdout=subprocess.PIPE)
@@ -202,4 +203,5 @@ def render(
             process_chunk()
 
     if use_tmp_dir:
+        # Debug - disable this
         shutil.rmtree(output_dir)
