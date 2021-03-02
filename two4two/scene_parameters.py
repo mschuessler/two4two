@@ -8,6 +8,8 @@ import pprint
 from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
 import uuid
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats
 
@@ -212,7 +214,7 @@ class SampleSceneParameters:
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_map: str = 'gray'
+    bg_color_map: str = 'binary'
 
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -283,20 +285,20 @@ class SampleSceneParameters:
             raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return utils.ColorGenerator('seismic')
+        return plt.get_cmap(self.bg_color_map)
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
         params.obj_scalar = float(self.obj_color.rvs())
-        params.obj_color = tuple(self._object_cmap(params).get_color(params.obj_scalar))
+        params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
 
-    def _bg_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return utils.ColorGenerator('binary')
+    def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
+        return plt.get_cmap(self.bg_color_map)
 
     def sample_bg_color(self, params: SceneParameters):
         """Samples the ``bg_color`` and ``bg_scalar``."""
         params.bg_scalar = float(self.bg_color.rvs())
-        params.bg_color = tuple(self._bg_cmap(params).get_color(params.bg_scalar))
+        params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
 
 
 # TODO(leon): Add ColorBias as example.
