@@ -2,8 +2,10 @@ import bpy
 
 
 def clear_all():
-
     bpy.ops.wm.read_factory_settings(use_empty=True)
+    object_mode()
+    bpy.ops.object.select_all(action='SELECT')
+    bpy.ops.object.delete(use_global=False)
 
 
 def edit_mode():

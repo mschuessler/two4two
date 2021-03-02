@@ -125,6 +125,7 @@ def render(
     download_blender: bool = False,
     print_output: bool = False,
     print_cmd: bool = False,
+    print_env: bool = False,
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -139,6 +140,7 @@ def render(
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
         print_output: Print the output of blender.
         print_cmd: Print executed subcommand (useful for debugging).
+        print_env: Print enviroment of blender (useful for debugging).
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -160,13 +162,18 @@ def render(
             render_script,
             parameter_file,
             output_dir,
+            'debug' if print_env else '',
         ]
         if print_cmd:
             print("Command to execute Blender:")
             print(" ".join(args))
+        env = os.environ.copy()
+        # ensure no matplotlib backend is set for subprocess.
+        env.pop('MPLBACKEND', None)
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE)
+                                stdout=subprocess.PIPE,
+                                env=env)
         processes[parameter_file] = proc
         next_chunk += 1
 
