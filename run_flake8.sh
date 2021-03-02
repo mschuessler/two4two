@@ -12,6 +12,7 @@ flake8 \
     ./test/test_scene_parameters.py \
     ./setup.py \
     ./two4two/scene_parameters.py \
+     ./two4two/utils.py \
     ./two4two/_blender/scene.py \
     ./two4two/_blender/render_samples.py \
     ./two4two/_blender/__init__.py \
@@ -25,6 +26,5 @@ Green='\033[0;32m'        # Green
 echo -e "${Green}PASSED$Color_Off"
 
 # TODO: clean following files
-# ./two4two/utils.py
 # ./two4two/_blender/butils.py
 # ./two4two/_blender/blender_object.py
