@@ -54,8 +54,7 @@ def _load_images_from_param_file(
     """
     with open(param_filename) as f:
         for line in f.readlines():
-            params = scene_parameters.SceneParameters(
-                **json.loads(line))
+            params = scene_parameters.SceneParameters.load(json.loads(line))
             img_fname = os.path.join(os.path.dirname(param_filename),
                                      params.filename)
 
