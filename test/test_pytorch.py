@@ -1,0 +1,74 @@
+"""Tests for ``two4two/pytorch.py``."""
+
+from pathlib import Path
+
+import numpy as np
+import torch
+from torch.utils.data import DataLoader
+
+import two4two
+import two4two.pytorch
+
+
+def test_pytorch_dataloader(tmp_path: Path):
+    """Tests if dataset can load the rendered images."""
+    print("test temp dir: ", tmp_path)
+    np.random.seed(242)
+
+    sampler = two4two.Sampler()
+    sampled_params = [sampler.sample() for _ in range(2)]
+
+    (tmp_path / 'train').mkdir()
+
+    for _ in two4two.render(
+        sampled_params,
+        n_processes=1,
+        output_dir=str(tmp_path / 'train'),
+    ):
+        pass
+
+    dataset = two4two.pytorch.Two4Two(str(tmp_path), split='train')
+
+    # check dataset shapes
+    assert len(dataset) == 2
+    img, mask, labels = dataset[0]
+    assert img.shape == (3, 128, 128)
+    assert mask.shape == (1, 128, 128)
+    assert labels.shape == (1,)
+
+    assert type(img) == torch.Tensor
+    assert type(mask) == torch.Tensor
+    assert type(labels) == torch.Tensor
+
+    # check dataset loader
+    dataloader = DataLoader(dataset, batch_size=2)
+    imgs, masks, labels = next(iter(dataloader))
+
+    assert type(imgs) == torch.Tensor
+    assert type(masks) == torch.Tensor
+    assert type(labels) == torch.Tensor
+
+    assert imgs.shape == (2, 3, 128, 128)
+    assert masks.shape == (2, 1, 128, 128)
+    assert labels.shape == (2, 1,)
+
+    dataset.set_return_attributes([
+        'obj_name', 'bone_rotation', 'bg_color_scalar', 'spherical'])
+
+    label_names = dataset.get_label_names()
+    expected_label_names = [
+        'obj_name',
+        'bone_rotation_0',
+        'bone_rotation_1',
+        'bone_rotation_2',
+        'bone_rotation_3',
+        'bone_rotation_4',
+        'bone_rotation_5',
+        'bone_rotation_6',
+        'bg_color_scalar',
+        'spherical',
+    ]
+    assert label_names == expected_label_names
+
+    img, mask, labels = dataset[0]
+    assert labels.shape == (len(expected_label_names),)
