@@ -7,21 +7,20 @@ blender_dir=$1
 render_script=$2
 parameter_file=$3
 output_dir=$4
-debug=$5
 
 source "$blender_dir/venv/bin/activate"
 
-if [ "$debug" != "debug" ]; then
-    echo "render_script: $render_script"
-    echo "parameter_file: $parameter_file"
-    echo "output_dir: $output_dir"
-    echo "debug: $debug"
 
-    echo "Enviroment:"
-    printenv
-fi
+echo "# Script Arguments:"
+echo "render_script: $render_script"
+echo "parameter_file: $parameter_file"
+echo "output_dir: $output_dir"
+echo ""
+echo "# Enviroment:"
+printenv
 
-source "$blender_dir/venv/bin/activate"
+echo ""
+
 
 # PYTHONPATH enables venv packages for blender python
 PYTHONPATH="$blender_dir/venv/lib/python3.7/site-packages" \
