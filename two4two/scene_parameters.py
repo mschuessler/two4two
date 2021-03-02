@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import importlib
 import pprint
 from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
 import uuid
@@ -25,6 +26,12 @@ class SceneParameters:
     See the ``SceneParameters.VALID_VALUES`` for valid value ranges for the
     invididual attributes. Intervals are encoded as tuples and categoricals
     as sets.
+
+    Subclasses should also be a ``dataclasses.dataclass``. Any added attributes
+    will be save and exposed through the dataloaders. When saving the
+    parameters with ``state_dict``, your subclasses will also be saved. The
+    ``SceneParameters.load`` method will also load and instanciate your
+    subclass.
 
     Attrs:
         obj_name: Object name (either ``"sticky"`` or ``"stretchy"``).
@@ -128,6 +135,21 @@ class SceneParameters:
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
 
+    @staticmethod
+    def load(state: Dict[str, Any]) -> SceneParameters:
+        """Load parameter class from saved state.
+
+        If the ``state`` was saved from a subclass, it will load and initialize
+        the correct subclass.
+        """
+        state = copy.copy(state)
+        module = state.pop('__module__')
+        cls_name = state.pop('__name__')
+
+        module = importlib.import_module(module)
+        cls = getattr(module, cls_name)
+        return cls(**state)
+
     def state_dict(self) -> Dict[str, Any]:
         """Returns the object as python dict.
 
@@ -136,7 +158,10 @@ class SceneParameters:
         """
         if self.filename is None:
             self.filename = str(uuid.uuid4()) + ".png"
-        return dataclasses.asdict(self)
+        state = dataclasses.asdict(self)
+        state['__module__'] = type(self).__module__
+        state['__name__'] = type(self).__qualname__
+        return state
 
     def __str__(self) -> str:
         """Returns the object as a string."""

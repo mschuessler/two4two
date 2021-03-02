@@ -20,7 +20,7 @@ from two4two.scene_parameters import SceneParameters  # noqa: E402
 def _render_files(param_file: str, save_location: str):
     with open(param_file) as fparam:
         for line in fparam.readlines():
-            params = SceneParameters(**json.loads(line))
+            params = SceneParameters.load(json.loads(line))
             scene = Scene(params)
             image_fname = os.path.join(save_location, params.filename)
             base, ext = os.path.splitext(image_fname)
