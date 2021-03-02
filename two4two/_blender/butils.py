@@ -35,12 +35,11 @@ def set_active(object_name):
     return active_object
 
 
-def get_boundaries(object_name):
-    obj = bpy.data.objects[object_name]
-
-    matrix_world = obj.matrix_world
-
-    glob_vertex_coordinates = [matrix_world @ v.co for v in obj.data.vertices]
+def get_boundaries(objects):
+    """Returns the bounding box of the objects."""
+    glob_vertex_coordinates = [obj.matrix_world @ v.co
+                               for obj in objects
+                               for v in obj.data.vertices]
 
     min_x = min([co.x for co in glob_vertex_coordinates])
     max_x = max([co.x for co in glob_vertex_coordinates])
