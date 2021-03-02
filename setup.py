@@ -1,4 +1,4 @@
-# coding=utf-8
+"""setup module of two4two."""
 
 import setuptools
 
@@ -26,11 +26,11 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux"
     ],
     install_requires=[
-   'numpy',
-   'imageio',
-   'scipy',
-   'matplotlib'
-   ],
+        'numpy',
+        'imageio',
+        'scipy',
+        'matplotlib',
+    ],
     extras_require={
         'dev': [
             'pytest',

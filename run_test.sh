@@ -5,7 +5,8 @@
 set -e
 # TODO(leon): add clean files of two4two/ to be flake checked for tests (see #3)
 
-python -m pytest -v --flake8 -s test/ \
-    two4two/blender.py \
-    two4two/scene_parameters.py \
+python -m pytest -v -s test/  \
     -m "not slow"
+
+./run_flake8.sh
+
