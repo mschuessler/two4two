@@ -21,7 +21,7 @@ def render_grid(
 
     Attrs:
         params: List of SceneParameters
-        num_cols_per_class: Number of coloums of the grid reserved for a single class
+        num_cols_per_class: Number of colums of the grid reserved for a single class
         equal_class_distribution: Enforce equal class distribution in visulization.
         download_blender: flag to automatically downloads blender if not installed.
 
