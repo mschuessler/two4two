@@ -2,12 +2,8 @@
 
 from typing import Any, Dict, Sequence, TypeVar, Union
 
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats
-
-
-from two4two import blender
 
 
 T = TypeVar('T')
@@ -84,36 +80,3 @@ def truncated_normal(mean: float = 0,
 def split_sticky_stretchy(params, num_samples_per_class=None):
     return [p for p in params if p.obj_name == 'sticky'][:num_samples_per_class], \
         [p for p in params if p.obj_name == 'stretchy'][:num_samples_per_class]
-
-
-def render_grid(params, num_cols_per_class=3, enforce_equal_class_distribution=True):
-    sticky_params, stretchy_params = split_sticky_stretchy(params)
-
-    if enforce_equal_class_distribution:
-        num_rows = np.floor(min(len(sticky_params), len(stretchy_params)) / num_cols_per_class)
-        num_samples_per_class = int(num_rows * num_cols_per_class)
-        sticky_params, stretchy_params = split_sticky_stretchy(params, num_samples_per_class)
-    else:
-        num_rows = np.ceil(max(len(sticky_params), len(stretchy_params)) / num_cols_per_class)
-
-    num_rows = num_rows.astype('int')
-
-    fig, ax = plt.subplots(nrows=num_rows,
-                           ncols=num_cols_per_class * 2,
-                           figsize=(20., 20. * num_rows / (num_cols_per_class * 2)))
-
-    sticky_ax = ax[:, :num_cols_per_class].flatten().tolist()[::-1]
-    stretchy_ax = ax[:, num_cols_per_class:].flatten().tolist()[::-1]
-
-    for (img, param) in blender.render(
-            params=sticky_params + stretchy_params,
-            chunk_size=num_cols_per_class,
-            download_blender=True):
-        ax1 = sticky_ax.pop() if param.obj_name == 'sticky' else stretchy_ax.pop()
-        ax1.axis('off')
-        ax1.set_aspect('equal')
-        ax1.imshow(img)
-
-    [ax.axis('off') for ax in stretchy_ax + sticky_ax]
-    fig.subplots_adjust(wspace=0, hspace=0)
-    return fig, ax
