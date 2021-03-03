@@ -1,6 +1,6 @@
 """utility functions."""
 
-from typing import Any, Dict, Sequence, TypeVar, Union, Tuple
+from typing import Any, Dict, Sequence, TypeVar, Union
 
 import numpy as np
 import scipy.stats
@@ -26,6 +26,7 @@ class discrete():
         Args:
             value_to_probs: A mapping of the distribution's values to probabilities.
             **stats_kwargs: Passed on to ``scipy.stats.rv_discrete``.
+
         """
         self.values = list(value_to_probs.keys())
         value_indicies = list(range(len(self.values)))
@@ -72,6 +73,7 @@ def truncated_normal(mean: float = 0,
         std: the standard derivation of the normal distribution.
         lower: lower truncation.
         upper: upper truncation.
+
     """
     return scipy.stats.truncnorm((lower - mean) / std, (upper - mean) / std,
                                  loc=mean, scale=std)
