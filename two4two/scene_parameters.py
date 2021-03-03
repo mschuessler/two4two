@@ -337,4 +337,4 @@ class ColorBiasedSceneParameterSampler(SampleSceneParameters):
         else:
             color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
         params.obj_scalar = float(color)
-        params.obj_color = tuple(self._object_cmap(params).get_color(color))
+        params.obj_color = tuple(self._object_cmap(params)(color))
