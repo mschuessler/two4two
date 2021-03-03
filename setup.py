@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="two4two-laserschwelle",
-    version="0.0.3",
+    version="0.0.4",
     author="Philipp Weiss, Leon Sixt, Martin Schuessler",
     author_email="dev@mschuessler.de",
     description="Generate biased image data to train and test classifiers.",
@@ -29,7 +29,7 @@ setuptools.setup(
         'numpy',
         'imageio',
         'scipy',
-        'matplotlib',
+        'matplotlib'
     ],
     extras_require={
         'dev': [
@@ -38,6 +38,17 @@ setuptools.setup(
             'flake8-import-order',
             'flake8-annotations',
             'flake8-docstrings',
+        ],
+        'example_notebooks_data_generation': [
+            'numpy',
+            'pandas',
+            'notebook'
+        ],
+        'example_notebooks_model_training': [
+            'tensorflow',
+            'pandas',
+            'notebook',
+            'livelossplot'
         ]
     },
     python_requires='>=3.7'

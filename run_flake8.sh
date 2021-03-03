@@ -18,6 +18,7 @@ flake8 \
     ./two4two/_blender/__init__.py \
     ./two4two/__init__.py \
     ./two4two/blender.py \
+    ./two4two/plotvis.py \
 
 # Reset
 Color_Off='\033[0m'       # Text Reset

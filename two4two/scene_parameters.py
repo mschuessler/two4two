@@ -6,7 +6,7 @@ import copy
 import dataclasses
 import importlib
 import pprint
-from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 import uuid
 
 import matplotlib as mpl
@@ -205,12 +205,11 @@ class SampleSceneParameters:
     To implement biases, you can inhirent this class and modify how individual
     attributes are sample, e.g introducing addtional dependencies.
 
-    TODO(leon): Add ColorBias as example.
-
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
     Attrs:
         bg_color_map: used color map for the background.
+        obj_color_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
         bone_bend: distribution of ``SceneParameters.bone_bend``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
@@ -240,6 +239,7 @@ class SampleSceneParameters:
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_map: str = 'binary'
+    obj_color_map: str = 'seismic'
 
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -310,7 +310,7 @@ class SampleSceneParameters:
             raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return plt.get_cmap(self.bg_color_map)
+        return plt.get_cmap(self.obj_color_map)
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
@@ -326,4 +326,32 @@ class SampleSceneParameters:
         params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
 
 
-# TODO(leon): Add ColorBias as example.
+class ColorBiasedSceneParameterSampler(SampleSceneParameters):
+    """An example implementation of a color-biased SceneParameterSample.
+
+    The color is sampled from a conditional distribution that is dependend on the object type.
+    """
+
+    def sample_obj_color(self, params: SceneParameters):
+        """Samples the ``obj_color`` and ``obj_scalar`` with custom distributions."""
+        if params.obj_name == 'sticky':
+            color = utils.truncated_normal(1, 0.5, 0, 1).rvs()
+        else:
+            color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
+        params.obj_scalar = float(color)
+        params.obj_color = tuple(self._object_cmap(params)(color))
+
+
+def split_sticky_stretchy(params: List[SceneParameters],
+                          num_samples: int = None
+                          ) -> Tuple[Sequence[SceneParameters], Sequence[SceneParameters]]:
+    """Returns a tuple of SceneParameters split by their type (sticky or stretchy).
+
+    Attrs:
+        params: List of SceneParfameters to split by ``sticky`` and ``stretchy``
+        num_samples: exact number of SceneParameters to select per class. None means all availabel.
+
+
+    """
+    return [p for p in params if p.obj_name == 'sticky'][:num_samples], \
+        [p for p in params if p.obj_name == 'stretchy'][:num_samples]
