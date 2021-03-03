@@ -209,6 +209,7 @@ class SampleSceneParameters:
 
     Attrs:
         bg_color_map: used color map for the background.
+        obj_color_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
         bone_bend: distribution of ``SceneParameters.bone_bend``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
@@ -238,6 +239,7 @@ class SampleSceneParameters:
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_map: str = 'binary'
+    obj_color_map: str = 'seismic'
 
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -308,7 +310,7 @@ class SampleSceneParameters:
             raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return plt.get_cmap(self.bg_color_map)
+        return plt.get_cmap(self.obj_color_map)
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
