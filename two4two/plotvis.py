@@ -1,9 +1,11 @@
 """visulization function for rendered scenes"""
 
 import math
-from typing import Sequence
+from typing import Sequence, Tuple
 
+import matplotlib as mlp
 import matplotlib.pyplot as plt
+
 
 from two4two import blender
 from two4two import scene_parameters
@@ -11,9 +13,10 @@ from two4two import utils
 
 
 def render_grid(
-        params: Sequence[scene_parameters.SceneParameters],
-        num_cols_per_class: int = 3,
-        equal_class_distribution: bool = True):
+    params: Sequence[scene_parameters.SceneParameters],
+    num_cols_per_class: int = 3,
+    equal_class_distribution: bool = True
+) -> Tuple[mlp.figure.Figure, Sequence[Sequence[mlp.axes.Axes]]]:
     """Renders scene from param file and displays the in an image grid
 
     Attrs:
@@ -25,13 +28,13 @@ def render_grid(
     sticky_params, stretchy_params = utils.split_sticky_stretchy(params)
 
     if equal_class_distribution:
-        num_rows = math.floor(min(len(sticky_params), len(stretchy_params)) / num_cols_per_class)
+        number_equal_samples = min(len(sticky_params), len(stretchy_params))
+        num_rows = int(math.floor(number_equal_samples / num_cols_per_class))
         num_samples_per_class = int(num_rows * num_cols_per_class)
         sticky_params, stretchy_params = utils.split_sticky_stretchy(params, num_samples_per_class)
     else:
-        num_rows = math.ceil(max(len(sticky_params), len(stretchy_params)) / num_cols_per_class)
-
-    num_rows = int(num_rows)
+        max_number_samples = max(len(sticky_params), len(stretchy_params))
+        num_rows = int(math.ceil(max_number_samples / num_cols_per_class))
 
     fig, ax = plt.subplots(nrows=num_rows,
                            ncols=num_cols_per_class * 2,
