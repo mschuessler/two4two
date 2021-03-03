@@ -55,11 +55,9 @@ def _load_images_from_param_file(
     with open(param_filename) as f:
         for line in f.readlines():
             params = scene_parameters.SceneParameters.load(json.loads(line))
-            img_fname = os.path.join(os.path.dirname(param_filename),
-                                     params.filename)
-
-            base, ext = os.path.splitext(img_fname)
-            mask_fname = f"{base}_mask{ext}"
+            dirname = os.path.dirname(param_filename)
+            img_fname = os.path.join(dirname, params.filename)
+            mask_fname = os.path.join(dirname, params.mask_filename)
             img = imageio.imread(img_fname)
             mask = imageio.imread(mask_fname)
             yield img, mask, params

@@ -23,8 +23,8 @@ def _render_files(param_file: str, save_location: str):
             params = SceneParameters.load(json.loads(line))
             scene = Scene(params)
             image_fname = os.path.join(save_location, params.filename)
-            base, ext = os.path.splitext(image_fname)
-            mask_fname = f"{base}_mask{ext}"
+
+            mask_fname = os.path.join(save_location, params.mask_filename)
             scene.render(image_fname, mask_fname)
 
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import dataclasses
 import importlib
+import os
 import pprint
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 import uuid
@@ -180,6 +181,13 @@ class SceneParameters:
         if discard_filename and hasattr(clone, 'filename'):
             clone.filename = None
         return clone
+
+    @property
+    def mask_filename(self) -> str:
+        """The filename of the segmentation mask."""
+        base, ext = os.path.splitext(self.filename)
+        mask_fname = f"{base}_mask{ext}"
+        return mask_fname
 
     @property
     def obj_name_with_label_error(self) -> str:
