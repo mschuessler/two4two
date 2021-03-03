@@ -106,17 +106,10 @@ class SceneParameters:
 
     def check_values(self):
         """Raises a ValueError if a value is not in its valid range."""
-        def supports_iteration(value: Union[Any, Sequence[Any]]) -> bool:
-            try:
-                for _ in value:
-                    return True
-            except TypeError:
-                return False
-
         for name, valid in self.VALID_VALUES.items():
             value = getattr(self, name)
             # value can be either a single value or multiple
-            if type(value) == str or not supports_iteration(value):
+            if type(value) == str or not utils.supports_iteration(value):
                 # test for a single value
                 if not self._is_allowed_value(value, name):
                     raise ValueError(f"Attribute {name} has value {value} but "
