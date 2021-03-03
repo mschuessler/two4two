@@ -74,3 +74,12 @@ def truncated_normal(mean: float = 0,
     """
     return scipy.stats.truncnorm((lower - mean) / std, (upper - mean) / std,
                                  loc=mean, scale=std)
+
+
+def supports_iteration(value: Union[Any, Sequence[Any]]) -> bool:
+    """Returns ``True`` if the ``value`` supports iterations."""
+    try:
+        for _ in value:
+            return True
+    except TypeError:
+        return False
