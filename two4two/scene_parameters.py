@@ -342,7 +342,6 @@ class ColorBiasedSceneParameterSampler(SampleSceneParameters):
         params.obj_color = tuple(self._object_cmap(params)(color))
 
 
-@staticmethod
 def split_sticky_stretchy(params: List[SceneParameters],
                           num_samples: int = None
                           ) -> Tuple[Sequence[SceneParameters], Sequence[SceneParameters]]:
