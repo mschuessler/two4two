@@ -6,6 +6,10 @@ set -e
 echo "Running flake8..."
 
 
+# Reset
+Color_Off='\033[0m'
+Red='\033[0;31m'
+Green='\033[0;32m'
 
 flake8 \
     ./test/test_blender.py \
@@ -19,10 +23,7 @@ flake8 \
     ./two4two/__init__.py \
     ./two4two/blender.py \
     ./two4two/plotvis.py \
-
-# Reset
-Color_Off='\033[0m'       # Text Reset
-Green='\033[0;32m'        # Green
+    || (echo -e "${Red}FLAKE8 FAILED!!!$Color_Off"  && exit 1)
 
 echo -e "${Green}PASSED$Color_Off"
 
