@@ -10,6 +10,7 @@ import numpy as np
 from skimage import color
 
 from two4two import scene_parameters
+from two4two import utils
 from two4two._blender import butils
 from two4two._blender.blender_object import BlenderObject
 
@@ -45,7 +46,7 @@ class Scene():
 
     def _setup_scene(
         self,
-        background_color: scene_parameters.RGBAColor,
+        background_color: utils.RGBAColor,
     ):
         light_size = 20.
         scene = bpy.context.scene

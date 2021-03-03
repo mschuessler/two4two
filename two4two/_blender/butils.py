@@ -1,7 +1,12 @@
+"""module for blender util functions."""
+
+from typing import Sequence, Tuple
+
 import bpy
 
 
 def clear_all():
+    """Resets blender initial state and removes any objects."""
     bpy.ops.wm.read_factory_settings(use_empty=True)
     object_mode()
     bpy.ops.object.select_all(action='SELECT')
@@ -9,34 +14,47 @@ def clear_all():
 
 
 def edit_mode():
+    """Enter blender edit mode."""
     if not bpy.context.mode == 'EDIT':
         bpy.ops.object.mode_set(mode='EDIT')
 
 
 def object_mode():
+    """Enter blender object mode."""
     if not bpy.context.mode == 'OBJECT':
         bpy.ops.object.mode_set(mode='OBJECT')
 
 
-def select(object_name, add_to_selection=True):
+def select(object_name: str, add_to_selection: bool = True):
+    """Enters blender object mode and select the named object.
+
+    Args:
+        object_name: name of the object to select.
+        add_to_selection: whether to add to the existing selection.
+    """
     object_mode()
     if not add_to_selection:
         bpy.ops.object.select_all(action='DESELECT')
     bpy.data.objects[object_name].select_set(True)
 
 
-def select_object():
-    select('object')
-    select('skeleton', True)
-
-
-def set_active(object_name):
+def set_active(object_name: str) -> bpy.types.Object:
+    """Set object active."""
     active_object = bpy.data.objects[object_name]
     bpy.context.view_layer.objects.active = active_object
     return active_object
 
 
-def get_boundaries(objects):
+BOUNDING_BOX = Tuple[
+    Tuple[float, float],
+    Tuple[float, float],
+    Tuple[float, float],
+]
+
+
+def get_boundaries(
+    objects: Sequence[bpy.types.Object]
+) -> BOUNDING_BOX:
     """Returns the bounding box of the objects."""
     glob_vertex_coordinates = [obj.matrix_world @ v.co
                                for obj in objects

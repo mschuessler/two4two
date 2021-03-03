@@ -1,9 +1,12 @@
 """utility functions."""
 
-from typing import Any, Dict, Sequence, TypeVar, Union
+from typing import Any, Dict, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 import scipy.stats
+
+
+RGBAColor = Tuple[float, float, float, float]
 
 
 T = TypeVar('T')

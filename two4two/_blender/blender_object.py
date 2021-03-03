@@ -1,20 +1,34 @@
+"""module for the blender object of Sticky and Stretechy."""
+from typing import Sequence, Tuple
 
 import bpy
 from mathutils import Vector
 import numpy as np
 
 from two4two._blender import butils
+import two4two.utils
 
 
 class BlenderObject():
+    """Object that represents either a Sticky or Stretchy.
 
-    def create_model(self):
-        # overview how the individual blocks are names
-        #
-        #  arm_left_top                                                 arm_right_top
-        #       spline_left spline_left_center spline_right_center spline_right
-        #  arm_left_bottom                                              arm_right_bottom
-        #
+    Args:
+        obj_name: Object name (either ``"sticky"`` or ``"stretchy"``).
+        spherical: For ``1``,  spherical objects. For ``0``, cubes.
+            Can have values in-between.
+        arm_position: Absolute arm positions.
+    """
+
+    def _create_model(self):
+        """Creates the blocks of the object.
+
+        Overview how the individual blocks are named:
+
+        [arm_left_top]                                                          [arm_right_top]
+               [spline_left]  [spline_left_center]  [spline_right_center]   [spline_right]
+        [arm_left_bottom]                                                       [arm_right_bottom]
+
+        """
         arm_pos = 1.5 + self.arm_position
         object_locations = {
             'arm_left_top': (0, -1.5, 1),
@@ -38,8 +52,9 @@ class BlenderObject():
             animal_blocks.objects.link(obj)
             butils.object_mode()
 
-    def create_armature(self):
-        """Add bones"""
+    def _create_armature(self):
+        """Add bones."""
+        # TODO(philipp): can you document how each bone is connected?
         bpy.ops.object.armature_add(enter_editmode=True,
                                     radius=np.sqrt(1.25),
                                     location=(0, -1.5, -1),
@@ -76,8 +91,8 @@ class BlenderObject():
         bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
                                       TRANSFORM_OT_translate={"value": (0, 0.5 + arm_shift, -1)})
 
-    def make_parent(self):
-        """combines bones with blocks."""
+    def _attach_bones_to_blocks(self):
+        """Combines bones with blocks."""
         butils.object_mode()
         bpy.ops.object.select_all(action='DESELECT')
         for name in self.blocks.keys():
@@ -85,7 +100,9 @@ class BlenderObject():
         butils.select('skeleton')
         bpy.ops.object.parent_set(type='ARMATURE_AUTO')
 
-    def set_pose(self, bone_bend, bone_rotation):
+    def set_pose(self, bone_bend: Sequence[float], bone_rotation: Sequence[float]):
+        """Set bond bending and rotations."""
+        # TODO(philipp): how are the rotations applied. Shouldn't there be 3 degrees of freedom?
         butils.set_active('skeleton')
         bpy.ops.object.posemode_toggle()
 
@@ -120,6 +137,10 @@ class BlenderObject():
                                       modifier='Armature')
 
     def create_bounding_box(self):
+        """Add a bounding box around all blocks.
+
+        The bounding box is saved a new object named ``bounding_box``.
+        """
         ((min_x, max_x), (min_y, max_y), (min_z, max_z)) = self.boundaries
 
         bpy.ops.mesh.primitive_cube_add(size=1,
@@ -138,6 +159,7 @@ class BlenderObject():
                                   keep_transform=True)
 
     def remove_bounding_box(self):
+        """Remove bounding box."""
         butils.select('bounding_box')
         butils.select('skeleton', add_to_selection=True)
         bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
@@ -151,14 +173,16 @@ class BlenderObject():
         butils.set_active('skeleton')
         bpy.ops.object.transform_apply()
 
-    def move(self, translation_vec):
+    def move(self, translation_vec: Tuple[float, float, float]):
+        """Translate the object."""
         self.create_bounding_box()
         butils.select('bounding_box')
 
         bpy.ops.transform.translate(value=translation_vec)
         self.remove_bounding_box()
 
-    def rotate(self, angle, axis):
+    def rotate(self, angle: float, axis: str):
+        """Rotate the object along the given axis."""
         self.create_bounding_box()
         butils.select('bounding_box')
 
@@ -168,6 +192,8 @@ class BlenderObject():
         self.remove_bounding_box()
 
     def center(self):
+        """Center the bounding box."""
+        # TODO(philpp): where is the center? what is the 0.125 constant?
         self.create_bounding_box()
         o = bpy.data.objects['bounding_box']
         local_bbox_center = 0.125 * sum((Vector(b) for b in o.bound_box), Vector())
@@ -176,14 +202,19 @@ class BlenderObject():
         bpy.ops.transform.translate(value=-0.5 * global_bbox_center)
         self.remove_bounding_box()
 
-    def add_material(self, color):
+    def add_material(self, color: two4two.utils.RGBAColor):
+        """Sets the color to all blocks."""
         for name in self.blocks:
             active_object = butils.set_active(name)
             mat = bpy.data.materials.new(name='material')
             active_object.data.materials.append(mat)
             bpy.context.object.active_material.diffuse_color = color
 
-    def set_spherical(self, amount, clamp_overlap=True):
+    def _set_spherical(self,
+                       amount: float,
+                       clamp_overlap: bool = True):
+        """Make the squares more round."""
+        # TODO(philpp): do you know where this equation comes from?
         width = 0.05 + self.cube_size * 0.25 * amount
         for name in self.blocks:
             block = butils.set_active(name)
@@ -195,7 +226,8 @@ class BlenderObject():
             bpy.ops.object.modifier_apply()
 
     @property
-    def boundaries(self):
+    def boundaries(self) -> butils.BOUNDING_BOX:
+        """The object boundaries."""
         return butils.get_boundaries(self.blocks.values())
 
     def __init__(self,
@@ -212,8 +244,8 @@ class BlenderObject():
         base_width = 0.8
         self.cube_size = base_width + spherical * 0.1
 
-        self.create_model()
-        self.create_armature()
-        self.make_parent()
+        self._create_model()
+        self._create_armature()
+        self._attach_bones_to_blocks()
         self.center()
-        self.set_spherical(spherical)
+        self._set_spherical(spherical)

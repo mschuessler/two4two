@@ -17,8 +17,6 @@ import scipy.stats
 
 from two4two import utils
 
-RGBAColor = Tuple[float, float, float, float]
-
 HALF_CIRCLE = (-np.pi / 4, np.pi / 4)
 
 
@@ -45,8 +43,8 @@ class SceneParameters:
             Can have values in-between.
         bone_bend: Bending of the individual bone segments.
         bone_rotation: Rotation of the individual bone segments.
-        obj_incline: Incline of the object.
-        obj_rotation: Rotation of the whole object.
+        obj_incline: Rotation of the object around the Y axis.
+        obj_rotation: Rotation of the object around the Z axis.
         flip: Wheter the image should be flipped left to right.
         position: Position of the object.
         arm_position: Absolute arm positions.
@@ -59,7 +57,7 @@ class SceneParameters:
         resolution: Resolution of the final image.
         filename: When rendering, save the image as this file.
     """
-
+    # TODO: once #38 is done. describe the coordinate system in full detail.
     obj_name: str = None
     labeling_error: bool = False
     spherical: float = None
@@ -70,10 +68,10 @@ class SceneParameters:
     flip: bool = None
     position: float = None
     arm_position: float = None
-    obj_color: RGBAColor = None
+    obj_color: utils.RGBAColor = None
     obj_scalar: float = None
     bg_scalar: float = None
-    bg_color: RGBAColor = None
+    bg_color: utils.RGBAColor = None
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
 
