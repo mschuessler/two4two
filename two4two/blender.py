@@ -54,11 +54,15 @@ def _load_images_from_param_file(
     """
     with open(param_filename) as f:
         for line in f.readlines():
-            params = scene_parameters.SceneParameters(
-                **json.loads(line))
+            params = scene_parameters.SceneParameters.load(json.loads(line))
             img_fname = os.path.join(os.path.dirname(param_filename),
                                      params.filename)
-            yield imageio.imread(img_fname), params
+
+            base, ext = os.path.splitext(img_fname)
+            mask_fname = f"{base}_mask{ext}"
+            img = imageio.imread(img_fname)
+            mask = imageio.imread(mask_fname)
+            yield img, mask, params
             if delete:
                 os.remove(img_fname)
 
@@ -119,7 +123,8 @@ def render(
     output_dir: Optional[str] = None,
     blender_dir: Optional[str] = None,
     download_blender: bool = False,
-    print_output: bool = False
+    print_output: bool = False,
+    print_cmd: bool = False,
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -133,6 +138,7 @@ def render(
         download_blender: flag to automatically downloads blender.
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
         print_output: Print the output of blender.
+        print_cmd: Print executed subcommand (useful for debugging).
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -155,15 +161,20 @@ def render(
             parameter_file,
             output_dir,
         ]
-        print(" ".join(args))
+        if print_cmd:
+            print("Command to execute Blender:")
+            print(" ".join(args))
+        env = os.environ.copy()
+        # ensure no matplotlib backend is set for subprocess.
+        env.pop('MPLBACKEND', None)
         proc = subprocess.Popen(args,
                                 stdin=subprocess.PIPE,
-                                stdout=subprocess.PIPE)
+                                stdout=subprocess.PIPE,
+                                env=env)
         processes[parameter_file] = proc
         next_chunk += 1
 
-    if n_processes == 0:
-        n_processes = os.cpu_count() or 1
+    n_processes = n_processes or (os.cpu_count() or 1)
 
     blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
 
@@ -178,30 +189,30 @@ def render(
     processes: Dict[str, subprocess.Popen] = {}
 
     use_tmp_dir = output_dir is None
-    if use_tmp_dir:
-        output_dir = tempfile.mkdtemp()
+    try:
+        if use_tmp_dir:
+            output_dir = tempfile.mkdtemp()
 
-    parameter_file = os.path.join(output_dir, 'parameters.json')
+        parameter_file = os.path.join(output_dir, 'parameters.json')
 
-    # dump parameters
-    with open(parameter_file, 'x') as f:
-        for param in params:
-            f.write(json.dumps(param.state_dict()) + '\n')
+        # dump parameters
+        with open(parameter_file, 'x') as f:
+            for param in params:
+                f.write(json.dumps(param.state_dict()) + '\n')
 
-    parameter_chunks = _split_param_file(parameter_file, chunk_size)
-    num_of_chunks = len(parameter_chunks)
-    next_chunk = 0
+        parameter_chunks = _split_param_file(parameter_file, chunk_size)
+        num_of_chunks = len(parameter_chunks)
+        next_chunk = 0
 
-    while next_chunk < num_of_chunks or processes:
-        finished_chunks = _get_finished_processes(processes, print_output)
-        for chunk in finished_chunks:
-            for img, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
-                yield img, params
-            del processes[chunk]
+        while next_chunk < num_of_chunks or processes:
+            finished_chunks = _get_finished_processes(processes, print_output)
+            for chunk in finished_chunks:
+                for img, mask, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
+                    yield img, mask, params
+                del processes[chunk]
 
-        if len(processes) < n_processes and next_chunk < num_of_chunks:
-            process_chunk()
-
-    if use_tmp_dir:
-        # Debug - disable this
-        shutil.rmtree(output_dir)
+            if len(processes) < n_processes and next_chunk < num_of_chunks:
+                process_chunk()
+    finally:
+        if use_tmp_dir:
+            shutil.rmtree(output_dir)

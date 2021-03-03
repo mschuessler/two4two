@@ -10,6 +10,18 @@ output_dir=$4
 
 source "$blender_dir/venv/bin/activate"
 
+
+echo "# Script Arguments:"
+echo "render_script: $render_script"
+echo "parameter_file: $parameter_file"
+echo "output_dir: $output_dir"
+echo ""
+echo "# Enviroment:"
+printenv
+
+echo ""
+
+
 # PYTHONPATH enables venv packages for blender python
 PYTHONPATH="$blender_dir/venv/lib/python3.7/site-packages" \
     $blender_dir/blender/blender \

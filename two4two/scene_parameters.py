@@ -4,10 +4,13 @@ from __future__ import annotations
 
 import copy
 import dataclasses
+import importlib
 import pprint
 from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
 import uuid
 
+import matplotlib as mpl
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats
 
@@ -25,6 +28,12 @@ class SceneParameters:
     See the ``SceneParameters.VALID_VALUES`` for valid value ranges for the
     invididual attributes. Intervals are encoded as tuples and categoricals
     as sets.
+
+    Subclasses should also be a ``dataclasses.dataclass``. Any added attributes
+    will be save and exposed through the dataloaders. When saving the
+    parameters with ``state_dict``, your subclasses will also be saved. The
+    ``SceneParameters.load`` method will also load and instanciate your
+    subclass.
 
     Attrs:
         obj_name: Object name (either ``"sticky"`` or ``"stretchy"``).
@@ -128,6 +137,21 @@ class SceneParameters:
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
 
+    @staticmethod
+    def load(state: Dict[str, Any]) -> SceneParameters:
+        """Load parameter class from saved state.
+
+        If the ``state`` was saved from a subclass, it will load and initialize
+        the correct subclass.
+        """
+        state = copy.copy(state)
+        module = state.pop('__module__')
+        cls_name = state.pop('__name__')
+
+        module = importlib.import_module(module)
+        cls = getattr(module, cls_name)
+        return cls(**state)
+
     def state_dict(self) -> Dict[str, Any]:
         """Returns the object as python dict.
 
@@ -136,7 +160,10 @@ class SceneParameters:
         """
         if self.filename is None:
             self.filename = str(uuid.uuid4()) + ".png"
-        return dataclasses.asdict(self)
+        state = dataclasses.asdict(self)
+        state['__module__'] = type(self).__module__
+        state['__name__'] = type(self).__qualname__
+        return state
 
     def __str__(self) -> str:
         """Returns the object as a string."""
@@ -281,20 +308,20 @@ class SampleSceneParameters:
             raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return utils.ColorGenerator('seismic')
+        return plt.get_cmap(self.bg_color_map)
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
         params.obj_scalar = float(self.obj_color.rvs())
-        params.obj_color = tuple(self._object_cmap(params).get_color(params.obj_scalar))
+        params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
 
-    def _bg_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return utils.ColorGenerator(self.bg_color_map)
+    def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
+        return plt.get_cmap(self.bg_color_map)
 
     def sample_bg_color(self, params: SceneParameters):
         """Samples the ``bg_color`` and ``bg_scalar``."""
         params.bg_scalar = float(self.bg_color.rvs())
-        params.bg_color = tuple(self._bg_cmap(params).get_color(params.bg_scalar))
+        params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
 
 
 class ColorBiasedSceneParameterSampler(SampleSceneParameters):

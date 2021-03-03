@@ -1,4 +1,4 @@
-# coding=utf-8
+"""setup module of two4two."""
 
 import setuptools
 

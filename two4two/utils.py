@@ -2,7 +2,6 @@
 
 from typing import Any, Dict, Sequence, TypeVar, Union
 
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats
 
@@ -78,25 +77,6 @@ def truncated_normal(mean: float = 0,
     """
     return scipy.stats.truncnorm((lower - mean) / std, (upper - mean) / std,
                                  loc=mean, scale=std)
-
-
-class ColorGenerator():
-
-    def __init__(self, palette=None):
-        self.cmap = plt.get_cmap(palette)
-
-    def get_color(self, val=None):
-        if val is not None:
-            return self.cmap(val)
-        elif type(self.cmap) == list:
-            cm = np.random.choice(self.cmap)
-            return cm(np.random.uniform())
-        else:
-            return self.cmap(np.random.uniform())
-
-    def get_random_color(self):
-        color = np.random.uniform(size=3)
-        return tuple(color) + (1,)
 
 
 def split_sticky_stretchy(params, num_samples_per_class=None):
