@@ -195,8 +195,14 @@ class SceneParameters:
         }[self.labeling_error]
 
 
-Continouos = Union[scipy.stats.rv_continuous, Callable[[], float]]
-Discrete = Union[scipy.stats.rv_discrete, Callable[[], float]]
+ContinouosDist = Union[scipy.stats.rv_continuous, Callable[[], float]]
+ContinouosDict = Dict[str, ContinouosDist]
+Continouos = Union[ContinouosDist, ContinouosDict]
+
+DiscreteDist = Union[scipy.stats.rv_discrete, Callable[[], float]]
+DiscreteDict = Dict[str, DiscreteDist]
+Discrete = Union[DiscreteDist, DiscreteDict]
+Distribution = Union[Discrete, Continouos]
 
 
 @dataclasses.dataclass()
@@ -249,6 +255,7 @@ class SampleSceneParameters:
         class you might want to change the order the attributes are set.
         For example, if you want that ``obj_rotation`` should depends on the
         ``arm_position`` than you should also sample the ``arm_position`` first.
+        However, it is highly recommended to sample the object name first.
         """
         params = SceneParameters()
         self.sample_obj_name(params)
@@ -263,6 +270,20 @@ class SampleSceneParameters:
         self.sample_obj_color(params)
         self.sample_bg_color(params)
         return params
+
+    @staticmethod
+    def _sample(obj_name: str, dist: Distribution):
+        """Samples a value from the distributon according to its type."""
+        if not isinstance(dist, Distribution):
+            raise TypeError("Recieved an object that was not a Distribution")
+
+        if isinstance(dist, dict):
+            dist = dist[obj_name]
+
+        if isinstance(dist, (scipy.stats.rv_continuous, scipy.stats.rv_discrete)):
+            return dist.rvs()
+        else:
+            return dist()
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
