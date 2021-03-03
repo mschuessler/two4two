@@ -1,6 +1,6 @@
 """utility functions."""
 
-from typing import Any, Dict, Sequence, TypeVar, Union
+from typing import Any, Dict, Sequence, TypeVar, Union, Tuple
 
 import numpy as np
 import scipy.stats
@@ -75,8 +75,3 @@ def truncated_normal(mean: float = 0,
     """
     return scipy.stats.truncnorm((lower - mean) / std, (upper - mean) / std,
                                  loc=mean, scale=std)
-
-
-def split_sticky_stretchy(params, num_samples_per_class=None):
-    return [p for p in params if p.obj_name == 'sticky'][:num_samples_per_class], \
-        [p for p in params if p.obj_name == 'stretchy'][:num_samples_per_class]

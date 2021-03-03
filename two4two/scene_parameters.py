@@ -6,7 +6,7 @@ import copy
 import dataclasses
 import importlib
 import pprint
-from typing import Any, Callable, Dict, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 import uuid
 
 import matplotlib as mpl
@@ -340,3 +340,18 @@ class ColorBiasedSceneParameterSampler(SampleSceneParameters):
             color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
         params.obj_scalar = float(color)
         params.obj_color = tuple(self._object_cmap(params)(color))
+
+
+def split_sticky_stretchy(params: List[SceneParameters],
+                          num_samples: int = None
+                          ) -> Tuple[Sequence[SceneParameters], Sequence[SceneParameters]]:
+    """Returns a tuple of SceneParameters split by their type (sticky or stretchy).
+
+    Attrs:
+        params: List of SceneParfameters to split by ``sticky`` and ``stretchy``
+        num_samples: exact number of SceneParameters to select per class. None means all availabel.
+
+
+    """
+    return [p for p in params if p.obj_name == 'sticky'][:num_samples], \
+        [p for p in params if p.obj_name == 'stretchy'][:num_samples]
