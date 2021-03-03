@@ -2,8 +2,10 @@
 
 from typing import Any, Dict, Sequence, TypeVar, Union
 
+import matplotlib.pyplot as plt
 import numpy as np
 import scipy.stats
+
 
 from two4two import blender
 
