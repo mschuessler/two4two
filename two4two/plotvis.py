@@ -17,7 +17,7 @@ def render_grid(
     equal_class_distribution: bool = True,
     download_blender: bool = False
 ) -> Tuple[mlp.figure.Figure, Sequence[Sequence[mlp.axes.Axes]]]:
-    """Renders scene from param file and displays the in an image grid.
+    """Renders scene from a list of SceneParameters and displays the in an image grid.
 
     Attrs:
         params: List of SceneParameters
