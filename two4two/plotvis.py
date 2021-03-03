@@ -14,7 +14,8 @@ from two4two import scene_parameters
 def render_grid(
     params: Sequence[scene_parameters.SceneParameters],
     num_cols_per_class: int = 3,
-    equal_class_distribution: bool = True
+    equal_class_distribution: bool = True,
+    download_blender: bool = False
 ) -> Tuple[mlp.figure.Figure, Sequence[Sequence[mlp.axes.Axes]]]:
     """Renders scene from param file and displays the in an image grid.
 
@@ -22,6 +23,7 @@ def render_grid(
         params: List of parameters files describing SceneParameterSample
         num_cols_per_class: Number of coloums of the grid reserved for a single class
         equal_class_distribution: Enforce equal class distribution in visulization.
+        download_blender: flag to automatically downloads blender if not installed.
 
     """
     sticky_params, stretchy_params = scene_parameters.split_sticky_stretchy(params)
@@ -46,7 +48,7 @@ def render_grid(
     for (img, mask, param) in blender.render(
             params=sticky_params + stretchy_params,
             chunk_size=num_cols_per_class,
-            download_blender=True):
+            download_blender=download_blender):
         ax1 = sticky_ax.pop() if param.obj_name == 'sticky' else stretchy_ax.pop()
         ax1.axis('off')
         ax1.set_aspect('equal')
