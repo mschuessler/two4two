@@ -31,7 +31,7 @@ def render_grid(
     else:
         num_rows = math.ceil(max(len(sticky_params), len(stretchy_params)) / num_cols_per_class)
 
-    num_rows = num_rows.astype('int')
+    num_rows = int(num_rows)
 
     fig, ax = plt.subplots(nrows=num_rows,
                            ncols=num_cols_per_class * 2,
