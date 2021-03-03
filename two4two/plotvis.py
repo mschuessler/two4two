@@ -40,7 +40,7 @@ def render_grid(
     sticky_ax = ax[:, :num_cols_per_class].flatten().tolist()[::-1]
     stretchy_ax = ax[:, num_cols_per_class:].flatten().tolist()[::-1]
 
-    for (img, param) in blender.render(
+    for (img, mask, param) in blender.render(
             params=sticky_params + stretchy_params,
             chunk_size=num_cols_per_class,
             download_blender=True):
