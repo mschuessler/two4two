@@ -5,7 +5,6 @@ from __future__ import annotations
 import copy
 import dataclasses
 import importlib
-import numbers
 import os
 import pprint
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
@@ -196,13 +195,13 @@ class SceneParameters:
         }[self.labeling_error]
 
 
-ContinouosDist = Union[scipy.stats.rv_continuous, Callable[[], float]]
-ContinouosDict = Dict[str, ContinouosDist]
-Continouos = Union[ContinouosDist, ContinouosDict]
+_ContinouosDist = Union[scipy.stats.rv_continuous, Callable[[]], float]
+_ContinouosDict = Dict[str, _ContinouosDist]
+Continouos = Union[_ContinouosDist, _ContinouosDict]
 
-DiscreteDist = Union[scipy.stats.rv_discrete, Callable[[], float]]
-DiscreteDict = Dict[str, DiscreteDist]
-Discrete = Union[DiscreteDist, DiscreteDict]
+_DiscreteDist = Union[scipy.stats.rv_discrete, Callable[[]], float, str]
+_DiscreteDict = Dict[str, _DiscreteDist]
+Discrete = Union[_DiscreteDist, _DiscreteDict]
 Distribution = Union[Discrete, Continouos]
 
 
@@ -210,7 +209,18 @@ Distribution = Union[Discrete, Continouos]
 class SampleSceneParameters:
     """Samples the parameters of the ``SceneParameters`` objects.
 
-    To implement biases, you can inhirent this class and modify how individual
+    Attributes describe how the sampeling is done.
+    Concretly they provides the color maps for the object and the background and
+    the distributons from which the value for the scene paramters are drawn.
+
+    Distribution can be scipy-distribution, callable functions
+    or just a single (default) value.
+    Distirbutions can also be dictionaries of all beforementioned types.
+    Such dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+    These dictionaries are the easiest way to implement a bias.
+    See ``ColorBiasedSceneParameterSampler`` as an example.
+
+    To implement more comples biases, you can inhirent this class and modify how individual
     attributes are sample, e.g introducing addtional dependencies.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
@@ -256,7 +266,9 @@ class SampleSceneParameters:
         class you might want to change the order the attributes are set.
         For example, if you want that ``obj_rotation`` should depends on the
         ``arm_position`` than you should also sample the ``arm_position`` first.
-        However, it is highly recommended to sample the object name first.
+        However, it is highly recommended to sample the object name first, as
+        the sampleing of the attribute might be dependent of the label
+        (see explantion of distributions in class description)
         """
         params = SceneParameters()
         self.sample_obj_name(params)
@@ -274,7 +286,7 @@ class SampleSceneParameters:
         return params
 
     @staticmethod
-    def _sample(obj_name: str, dist: Distribution, size: int = 1):
+    def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
         """Samples values from the distributon according to its type.
 
         Default number of values sampled is one, can be changed with flag size.
@@ -283,8 +295,6 @@ class SampleSceneParameters:
         or just a float value and dictionaries of all beforementioned.
         Dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
 
-        If you want to use function, vlaue or distributon that returns not a numner
-        set flag enforce_number to False.
         """
 
         if size > 1:
