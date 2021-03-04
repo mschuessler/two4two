@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import dataclasses
 import importlib
+import numbers
 import os
 import pprint
 from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
@@ -272,58 +273,91 @@ class SampleSceneParameters:
         return params
 
     @staticmethod
-    def _sample(obj_name: str, dist: Distribution):
-        """Samples a value from the distributon according to its type."""
-        if not isinstance(dist, Distribution):
-            raise TypeError("Recieved an object that was not a Distribution")
+    def _sample(obj_name: str, dist: Distribution, size: Optional[int] = 1,
+                enforce_number=True):
+        """Samples values from the distributon according to its type.
 
+        Default number of values sampled is one, can be changed with flag size.
+
+        Supported types are scipy-distribution, callable functions
+        or just a float value and dictionaries of all beforementioned.
+        Dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+
+        If you want to use function, vlaue or distributon that returns not a numner
+        set flag enforce_number to False.
+        """
+
+        if size > 1:
+            return [SampleSceneParameters._sample(obj_name, dist) for i in range(0, size)]
+
+        recognized = ""
         if isinstance(dist, dict):
             dist = dist[obj_name]
+            recognized = "dictionary of "
 
-        if isinstance(dist, (scipy.stats.rv_continuous, scipy.stats.rv_discrete)):
-            return dist.rvs()
+        if hasattr(dist, 'rvs'):
+            value = dist.rvs()
+            recognized = recognized + "scipy_dist"
+        elif callable(dist):
+            value = dist()
+            recognized = recognized + "calleabel"
         else:
-            return dist()
+            value = dist
+            recognized = recognized + "value"
+
+        if not enforce_number:
+            return value
+
+        if not isinstance(value, numbers.Number):
+            distType = type(value)
+            raise(TypeError(f"Recognized a {recognized} and ot a {distType}. \
+                            Expected a distirbution, dictioanry of \
+                            distributions, callable function which returns a number \
+                            or at least a number as dist."))
+
+        return float(value)
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
-        params.obj_name = self.obj_name.rvs()
+        print(self.obj_name)
+        params.obj_name = self._sample(None, self.obj_name, enforce_number=False)
 
     def sample_labeling_error(self, params: SceneParameters):
         """Samples the ``labeling_error``."""
-        params.labeling_error = float(self.labeling_error.rvs())
+        params.labeling_error = self._sample(params.obj_name, self.labeling_error)
 
     def sample_spherical(self, params: SceneParameters):
         """Samples the ``spherical``."""
-        params.spherical = float(self.spherical.rvs())
+        params.spherical = self._sample(params.obj_name, self.spherical)
 
     def sample_bone_bend(self, params: SceneParameters):
         """Samples the ``bone_bend``."""
-        params.bone_bend = self.bone_bend.rvs(size=7).tolist()
+        params.bone_bend = self._sample(params.obj_name, self.bone_bend, size=7)
 
     def sample_bone_rotation(self, params: SceneParameters):
         """Samples the ``bone_rotation``."""
-        params.bone_rotation = self.bone_rotation.rvs(size=7).tolist()
+        params.bone_rotation = self._sample(params.obj_name, self.bone_rotation, size=7)
 
     def sample_obj_incline(self, params: SceneParameters):
         """Samples the ``obj_incline``."""
-        params.obj_incline = self.obj_incline.rvs()
+        params.obj_incline = self._sample(params.obj_name, self.obj_incline, size=7)
 
     def sample_obj_rotation(self, params: SceneParameters):
         """Samples the ``obj_rotation``."""
-        params.obj_rotation = float(self.obj_rotation.rvs())
+        params.obj_rotation = self._sample(params.obj_name, self.obj_rotation)
 
     def sample_flip(self, params: SceneParameters):
         """Samples the ``flip``."""
-        params.flip = float(self.flip.rvs())
+        params.flip = self._sample(params.obj_name, self.flip)
 
     def sample_position(self, params: SceneParameters):
         """Samples the ``position``."""
-        params.position = self.position.rvs(2).tolist()
+        # params.position = self.position.rvs(2).tolist()
+        params.position = self._sample(params.obj_name, self.position, size=2)
 
     def sample_arm_position(self, params: SceneParameters):
         """Samples the ``arm_position``."""
-        arm_shift = float(self.arm_position.rvs())
+        arm_shift = float(self._sample(params.obj_name, self.arm_position))
         if params.obj_name == 'sticky':
             params.arm_position = arm_shift
         elif params.obj_name == 'stretchy':
@@ -336,7 +370,7 @@ class SampleSceneParameters:
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
-        params.obj_scalar = float(self.obj_color.rvs())
+        params.obj_scalar = float(self._sample(params.obj_name, self.obj_color))
         params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
@@ -344,7 +378,7 @@ class SampleSceneParameters:
 
     def sample_bg_color(self, params: SceneParameters):
         """Samples the ``bg_color`` and ``bg_scalar``."""
-        params.bg_scalar = float(self.bg_color.rvs())
+        params.bg_scalar = float(self._sample(params.obj_name, self.bg_color))
         params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
 
 
@@ -354,14 +388,9 @@ class ColorBiasedSceneParameterSampler(SampleSceneParameters):
     The color is sampled from a conditional distribution that is dependend on the object type.
     """
 
-    def sample_obj_color(self, params: SceneParameters):
-        """Samples the ``obj_color`` and ``obj_scalar`` with custom distributions."""
-        if params.obj_name == 'sticky':
-            color = utils.truncated_normal(1, 0.5, 0, 1).rvs()
-        else:
-            color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
-        params.obj_scalar = float(color)
-        params.obj_color = tuple(self._object_cmap(params)(color))
+    def __post_init__(self):
+        self.obj_scalar = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+                           'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
 
 
 def split_sticky_stretchy(params: List[SceneParameters],
