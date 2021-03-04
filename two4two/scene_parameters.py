@@ -286,7 +286,7 @@ class SampleSceneParameters:
         If you want to use function, vlaue or distributon that returns not a numner
         set flag enforce_number to False.
         """
-        
+
         if size > 1:
             return [SampleSceneParameters._sample(obj_name, dist) for i in range(0, size)]
 
@@ -324,7 +324,7 @@ class SampleSceneParameters:
 
     def sample_obj_incline(self, params: SceneParameters):
         """Samples the ``obj_incline``."""
-        params.obj_incline = self._sample(params.obj_name, self.obj_incline, size=7)
+        params.obj_incline = self._sample(params.obj_name, self.obj_incline)
 
     def sample_obj_rotation(self, params: SceneParameters):
         """Samples the ``obj_rotation``."""
