@@ -3,13 +3,17 @@
 # this script runs flake8 on all clean files.
 
 set -e
-echo "Running flake8..."
+echo "Executing flake8..."
 
 
-# Reset
 Color_Off='\033[0m'
 Red='\033[0;31m'
 Green='\033[0;32m'
+
+function fail {
+    echo -e "${Red}FLAKE8 FAILED!!!$Color_Off"
+    exit 1
+}
 
 flake8 \
     --count \
@@ -18,6 +22,6 @@ flake8 \
     ./test/ \
     ./setup.py \
     ./two4two/ \
-    || (echo -e "${Red}FLAKE8 FAILED!!!$Color_Off"  && exit 1)
+    || fail
 
 echo -e "${Green}PASSED$Color_Off"
