@@ -2,14 +2,13 @@
 
 import dataclasses
 import json
-import random
 import numbers
+import random
 
 import pytest
 
 from two4two import scene_parameters
 from two4two import utils
-
 
 
 @dataclasses.dataclass

@@ -195,11 +195,11 @@ class SceneParameters:
         }[self.labeling_error]
 
 
-_ContinouosDist = Union[scipy.stats.rv_continuous, Callable[[]], float]
+_ContinouosDist = Union[scipy.stats.rv_continuous, Callable[[], float], float]
 _ContinouosDict = Dict[str, _ContinouosDist]
 Continouos = Union[_ContinouosDist, _ContinouosDict]
 
-_DiscreteDist = Union[scipy.stats.rv_discrete, Callable[[]], float, str]
+_DiscreteDist = Union[scipy.stats.rv_discrete, Callable[[], float], Callable[[], str], float, str]
 _DiscreteDict = Dict[str, _DiscreteDist]
 Discrete = Union[_DiscreteDist, _DiscreteDict]
 Distribution = Union[Discrete, Continouos]
