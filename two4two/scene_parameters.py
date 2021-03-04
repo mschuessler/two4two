@@ -270,11 +270,11 @@ class SampleSceneParameters:
         self.sample_arm_position(params)
         self.sample_obj_color(params)
         self.sample_bg_color(params)
+        params.check_values()
         return params
 
     @staticmethod
-    def _sample(obj_name: str, dist: Distribution, size: Optional[int] = 1,
-                enforce_number=True):
+    def _sample(obj_name: str, dist: Distribution, size: int = 1):
         """Samples values from the distributon according to its type.
 
         Default number of values sampled is one, can be changed with flag size.
@@ -286,41 +286,25 @@ class SampleSceneParameters:
         If you want to use function, vlaue or distributon that returns not a numner
         set flag enforce_number to False.
         """
-
+        
         if size > 1:
             return [SampleSceneParameters._sample(obj_name, dist) for i in range(0, size)]
 
-        recognized = ""
         if isinstance(dist, dict):
             dist = dist[obj_name]
-            recognized = "dictionary of "
 
         if hasattr(dist, 'rvs'):
             value = dist.rvs()
-            recognized = recognized + "scipy_dist"
         elif callable(dist):
             value = dist()
-            recognized = recognized + "calleabel"
         else:
             value = dist
-            recognized = recognized + "value"
 
-        if not enforce_number:
-            return value
-
-        if not isinstance(value, numbers.Number):
-            distType = type(value)
-            raise(TypeError(f"Recognized a {recognized} and ot a {distType}. \
-                            Expected a distirbution, dictioanry of \
-                            distributions, callable function which returns a number \
-                            or at least a number as dist."))
-
-        return float(value)
+        return value
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
-        print(self.obj_name)
-        params.obj_name = self._sample(None, self.obj_name, enforce_number=False)
+        params.obj_name = self._sample(None, self.obj_name)
 
     def sample_labeling_error(self, params: SceneParameters):
         """Samples the ``labeling_error``."""

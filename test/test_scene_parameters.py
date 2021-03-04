@@ -52,9 +52,6 @@ def test_generic_sampler():
     with pytest.raises(KeyError):
         scene_parameters.SampleSceneParameters._sample('ronny', dict)
 
-    with pytest.raises(TypeError):
-        scene_parameters.SampleSceneParameters._sample('unused', 'notAnumberOrDisitrbution')
-
     colorBiasedSample = scene_parameters.ColorBiasedSceneParameterSampler()
     colorBiasedSample.sample()
 
