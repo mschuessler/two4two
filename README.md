@@ -14,12 +14,14 @@ Download this repository.
 
 ```
 git clone https://github.com/mschuessler/two4two.git
-´´´
+```
+
 We suggest to create a python3 or conda environment instead of using your system python.
+
 ```
 python3 -m venv ~/242_enviroment
 source ~/242_enviroment/bin/activate
-´´´
+```
 
 To install the **minimal installation** two4two package change into the cloned directory and run setuptools.
 
@@ -31,13 +33,13 @@ pip install .
 To install the **installation including all requirements for generating your own training data** run:
 ```
 pip install .[example_notebooks_data_generation]
-´´´
+```
 For training your own models you have two choices:
 1) *No GPU required and installation free*: Run our example notebook inside of Colab (this will download pregenerated datasets)
 2) Install the **installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available:
 ```
 pip install .[example_notebooks_data_generation,example_notebooks_model_training]
-´´´
+```
 
 ## Classes
 The two classes for classifcation are *sticky* and *stretchy*.
