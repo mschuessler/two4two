@@ -1,4 +1,3 @@
-%matplotlib inline
 import tensorflow as tf
 import tensorflow.keras as keras
 from keras_preprocessing.image import ImageDataGenerator
