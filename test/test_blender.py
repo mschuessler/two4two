@@ -6,16 +6,15 @@ from typing import Any, Dict
 import numpy as np
 import pytest
 
-from two4two import bias
-from two4two import blender
+import two4two
 
 
 def render(tmp_path: Path, **kwargs: Dict[str, Any]):
     """Renders 3 images and checks #objects, shapes, and if parameters are returned correctly."""
-    sampler = bias.Sampler()
+    sampler = two4two.Sampler()
     sampled_params = [sampler.sample() for _ in range(3)]
     i = 0
-    for (img, mask, param) in blender.render(
+    for (img, mask, param) in two4two.render(
         sampled_params,
         **kwargs
     ):
