@@ -212,12 +212,12 @@ class SampleSceneParameters:
     Concretely they provide the color maps for the object and the background and
     the distributors from which the value for the scene parameters are drawn.
 
-    Distribution can be
-    * scipy-distribution
-    * callable functions
+    Distribution can be:
+    * scipy-distribution from ``scipy.stats``
+    * callable functions returning a single value
     * a single (default) value.
-    Distributions can also be dictionaries of all before-mentioned types.
-    Such dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+    * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+
     These dictionaries are the easiest way to implement a bias.
     See ``ColorBiasedSceneParameterSampler`` as an example.
 
@@ -292,14 +292,13 @@ class SampleSceneParameters:
 
         The default number of values sampled is one, which can be changed with flag size.
 
-        Supported types are
-        * scipy-distribution
-        * callable functions
-        * a single value
-        and dictionaries of all before-mentioned.
-        Dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+        Distribution can be:
+        * scipy-distribution from ``scipy.stats``
+        * callable functions returning a single value
+        * a single (default) value.
+        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
 
-        Will unpack ndarray, list, or tuple with a single element returned by distribution.
+        Will unpack np.ndarray, list, or tuple with a single element returned by distribution.
 
         """
 
