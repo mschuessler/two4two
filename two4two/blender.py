@@ -191,7 +191,7 @@ def render(
         if use_tmp_dir:
             output_dir = tempfile.mkdtemp()
 
-        parameter_file = os.path.join(output_dir, 'parameters.json')
+        parameter_file = os.path.join(output_dir, 'parameters.jsonl')
 
         # dump parameters
         with open(parameter_file, 'x') as f:
