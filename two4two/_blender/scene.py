@@ -12,7 +12,7 @@ from skimage import color
 from two4two import scene_parameters
 from two4two import utils
 from two4two._blender import butils
-from two4two._blender.blender_object import BlenderObject
+from two4two._blender.blender_object import Two4TwoBlenderObject
 
 
 class Scene():
@@ -197,9 +197,10 @@ class Scene():
                  parameters: scene_parameters.SceneParameters,
                  ):
         butils.clear_all()
-        self.obj = BlenderObject(parameters.obj_name,
-                                 parameters.spherical,
-                                 parameters.arm_position)
+        self.obj = Two4TwoBlenderObject(
+            parameters.obj_name,
+            parameters.spherical,
+            parameters.arm_position)
         self.obj.add_material(parameters.obj_color)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
