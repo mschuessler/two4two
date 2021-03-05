@@ -49,7 +49,7 @@ def test_generic_sampler():
     assert isinstance(sampler._sample('stretchy', test_dict, size=5), list)
 
     with pytest.raises(KeyError):
-        scene_parameters.SampleSceneParameters._sample('ronny', dict)
+        scene_parameters.SampleSceneParameters._sample('ronny', test_dict)
 
     colorBiasedSample = scene_parameters.ColorBiasedSceneParameterSampler()
     colorBiasedSample.sample()
