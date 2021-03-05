@@ -290,11 +290,16 @@ class SampleSceneParameters:
     def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
         """Samples values from the distributon according to its type.
 
-        Default number of values sampled is one, can be changed with flag size.
+        The default number of values sampled is one, which can be changed with flag size.
 
-        Supported types are scipy-distribution, callable functions
-        or just a float value and dictionaries of all beforementioned.
+        Supported types are
+        * scipy-distribution
+        * callable functions
+        * a single value
+        and dictionaries of all before-mentioned.
         Dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+
+        Will unpack ndarray, list, or tuple with a single element returned by distribution.
 
         """
 
@@ -310,6 +315,14 @@ class SampleSceneParameters:
             value = dist()
         else:
             value = dist
+
+        # Unpacking float values contained in numpyarrays and list
+        if type(value) in (list, tuple):
+            value = value[0]
+        else:
+            raise ValueError(f"Expected a single element. Got {type(value)}!")
+        if isinstance(value, np.ndarray):
+            value = utils.to_python_scalar(value)
 
         return value
 
@@ -380,12 +393,11 @@ class SampleSceneParameters:
 class ColorBiasedSceneParameterSampler(SampleSceneParameters):
     """An example implementation of a color-biased SceneParameterSample.
 
-    The color is sampled from a conditional distribution that is dependend on the object type.
+    The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
-    def __post_init__(self):
-        self.obj_scalar = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
-                           'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
+    obj_scalar: Continouos = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+                              'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
 
 
 def split_sticky_stretchy(params: List[SceneParameters],
