@@ -246,8 +246,10 @@ class SampleSceneParameters:
     bone_bend: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *HALF_CIRCLE)
     bone_rotation: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *HALF_CIRCLE)
 
-    arm_position: Continouos = utils.truncated_normal(
-        mean=0, std=0.40, lower=0, upper=0.65)
+    arm_position: Continouos = {'sticky':
+                                utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
+                                'stretchy':
+                                utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65))
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
     obj_incline: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *HALF_CIRCLE)
     obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *HALF_CIRCLE)
@@ -366,20 +368,15 @@ class SampleSceneParameters:
     def sample_arm_position(self, params: SceneParameters):
         """Samples the ``arm_position``."""
         arm_shift = float(self._sample(params.obj_name, self.arm_position))
-        if params.obj_name == 'sticky':
-            params.arm_position = arm_shift
-        elif params.obj_name == 'stretchy':
-            params.arm_position = 1 - arm_shift
-        else:
-            raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
 
-    def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
+    @property
+    def _object_cmap(self) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
         params.obj_scalar = float(self._sample(params.obj_name, self.obj_color))
-        params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
+        params.obj_color = tuple(self._object_cmap(params.obj_scalar))
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_map)
@@ -387,7 +384,7 @@ class SampleSceneParameters:
     def sample_bg_color(self, params: SceneParameters):
         """Samples the ``bg_color`` and ``bg_scalar``."""
         params.bg_scalar = float(self._sample(params.obj_name, self.bg_color))
-        params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
+        params.bg_color = tuple(self._bg_cmap(params.bg_scalar))
 
 
 class ColorBiasedSceneParameterSampler(SampleSceneParameters):
