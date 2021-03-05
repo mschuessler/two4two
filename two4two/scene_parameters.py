@@ -31,9 +31,9 @@ class SceneParameters:
     as sets.
 
     Subclasses should also be a ``dataclasses.dataclass``. Any added attributes
-    will be save and exposed through the dataloaders. When saving the
+    will be saved and exposed through the dataloaders. When saving the
     parameters with ``state_dict``, your subclasses will also be saved. The
-    ``SceneParameters.load`` method will also load and instanciate your
+    ``SceneParameters.load`` method will also load and instantiate your
     subclass.
 
     Attrs:
@@ -208,19 +208,21 @@ Distribution = Union[Discrete, Continouos]
 class SampleSceneParameters:
     """Samples the parameters of the ``SceneParameters`` objects.
 
-    Attributes describe how the sampeling is done.
-    Concretly they provides the color maps for the object and the background and
-    the distributons from which the value for the scene paramters are drawn.
+    Attributes describe how the sampling is done.
+    Concretely they provide the color maps for the object and the background and
+    the distributors from which the value for the scene parameters are drawn.
 
-    Distribution can be scipy-distribution, callable functions
-    or just a single (default) value.
-    Distirbutions can also be dictionaries of all beforementioned types.
+    Distribution can be
+    * scipy-distribution
+    * callable functions
+    * a single (default) value.
+    Distributions can also be dictionaries of all before-mentioned types.
     Such dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
     These dictionaries are the easiest way to implement a bias.
     See ``ColorBiasedSceneParameterSampler`` as an example.
 
-    To implement more comples biases, you can inhirent this class and modify how individual
-    attributes are sample, e.g introducing addtional dependencies.
+    To implement more complex biases, you can inherit this class and modify how individual
+    attributes are sample, e.g., by introducing additional dependencies.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -261,13 +263,13 @@ class SampleSceneParameters:
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
 
-        If create your own biased sampled dataset by inhirenting, from this
-        class you might want to change the order the attributes are set.
-        For example, if you want that ``obj_rotation`` should depends on the
-        ``arm_position`` than you should also sample the ``arm_position`` first.
+        If you create your own biased sampled dataset by inheriting from this class,
+        you might want to change the order of how attributes are set.
+        For example, if you want that ``obj_rotation`` should depend on the
+        ``arm_position``then you should also sample the ``arm_position`` first.
         However, it is highly recommended to sample the object name first, as
-        the sampleing of the attribute might be dependent of the label
-        (see explantion of distributions in class description)
+        the sampling of the attribute might be dependent on the label
+        (see the explanation of distributions in class description)
         """
         params = SceneParameters()
         self.sample_obj_name(params)
