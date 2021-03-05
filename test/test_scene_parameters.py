@@ -39,14 +39,14 @@ def test_scene_parameters_loading():
 def test_generic_sampler():
     """Tests if generic sample can handle all its intended types."""
     sampler = scene_parameters.SampleSceneParameters()
-    dist1 = utils.truncated_normal(0, 0.5, 0, 1)
-    dist2 = random.random
-    dict = {'sticky': dist1, 'stretchy': dist2, 'ignore': None}
+    scipy_trunc_normal = utils.truncated_normal(0, 0.5, 0, 1)
+    py_uniform = random.random
+    test_dict = {'sticky': scipy_trunc_normal, 'stretchy': py_uniform, 'ignore': None}
 
-    assert isinstance(sampler._sample('sticky', dist1), numbers.Number)
-    assert isinstance(sampler._sample('sticky', dict), numbers.Number)
-    assert isinstance(sampler._sample('stretchy', dict), numbers.Number)
-    assert isinstance(sampler._sample('stretchy', dict, size=5), list)
+    assert isinstance(sampler._sample('sticky', scipy_trunc_normal), numbers.Number)
+    assert isinstance(sampler._sample('sticky', test_dict), numbers.Number)
+    assert isinstance(sampler._sample('stretchy', test_dict), numbers.Number)
+    assert isinstance(sampler._sample('stretchy', test_dict, size=5), list)
 
     with pytest.raises(KeyError):
         scene_parameters.SampleSceneParameters._sample('ronny', dict)
