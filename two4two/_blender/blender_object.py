@@ -9,7 +9,7 @@ from two4two._blender import butils
 import two4two.utils
 
 
-class BlenderObject():
+class Two4TwoBlenderObject():
     """Object that represents either a Sticky or Stretchy.
 
     Args:
