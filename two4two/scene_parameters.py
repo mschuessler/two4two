@@ -318,9 +318,12 @@ class SampleSceneParameters:
 
         # Unpacking float values contained in numpyarrays and list
         if type(value) in (list, tuple):
-            value = value[0]
-        else:
-            raise ValueError(f"Expected a single element. Got {type(value)}!")
+            if len(value) != 1:
+                raise ValueError(f"Expected a single element. \
+                 Got {type(value)} of size {len(value)}!")
+            else:
+                value = value[0]
+
         if isinstance(value, np.ndarray):
             value = utils.to_python_scalar(value)
 
