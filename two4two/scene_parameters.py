@@ -367,7 +367,7 @@ class SampleSceneParameters:
 
     def sample_arm_position(self, params: SceneParameters):
         """Samples the ``arm_position``."""
-        arm_shift = float(self._sample(params.obj_name, self.arm_position))
+        params.arm_position = float(self._sample(params.obj_name, self.arm_position))
 
     @property
     def _object_cmap(self) -> utils.ColorGenerator:
