@@ -249,7 +249,7 @@ class SampleSceneParameters:
     arm_position: Continouos = {'sticky':
                                 utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
                                 'stretchy':
-                                utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65))
+                                utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)}
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
     obj_incline: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *HALF_CIRCLE)
     obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *HALF_CIRCLE)
