@@ -17,8 +17,6 @@ import scipy.stats
 
 from two4two import utils
 
-RGBAColor = Tuple[float, float, float, float]
-
 HALF_CIRCLE = (-np.pi / 4, np.pi / 4)
 
 
@@ -31,9 +29,9 @@ class SceneParameters:
     as sets.
 
     Subclasses should also be a ``dataclasses.dataclass``. Any added attributes
-    will be save and exposed through the dataloaders. When saving the
+    will be saved and exposed through the dataloaders. When saving the
     parameters with ``state_dict``, your subclasses will also be saved. The
-    ``SceneParameters.load`` method will also load and instanciate your
+    ``SceneParameters.load`` method will also load and instantiate your
     subclass.
 
     Attrs:
@@ -45,8 +43,8 @@ class SceneParameters:
             Can have values in-between.
         bone_bend: Bending of the individual bone segments.
         bone_rotation: Rotation of the individual bone segments.
-        obj_incline: Incline of the object.
-        obj_rotation: Rotation of the whole object.
+        obj_incline: Rotation of the object around the Y axis.
+        obj_rotation: Rotation of the object around the Z axis.
         flip: Wheter the image should be flipped left to right.
         position: Position of the object.
         arm_position: Absolute arm positions.
@@ -59,7 +57,7 @@ class SceneParameters:
         resolution: Resolution of the final image.
         filename: When rendering, save the image as this file.
     """
-
+    # TODO: once #38 is done. describe the coordinate system in full detail.
     obj_name: str = None
     labeling_error: bool = False
     spherical: float = None
@@ -70,10 +68,10 @@ class SceneParameters:
     flip: bool = None
     position: float = None
     arm_position: float = None
-    obj_color: RGBAColor = None
+    obj_color: utils.RGBAColor = None
     obj_scalar: float = None
     bg_scalar: float = None
-    bg_color: RGBAColor = None
+    bg_color: utils.RGBAColor = None
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
 
@@ -195,13 +193,12 @@ class SceneParameters:
         }[self.labeling_error]
 
 
-_ContinouosDist = Union[scipy.stats.rv_continuous, Callable[[], float], float]
-_ContinouosDict = Dict[str, _ContinouosDist]
-Continouos = Union[_ContinouosDist, _ContinouosDict]
+_Continouos = Union[scipy.stats.rv_continuous, Callable[[], float], float]
+Continouos = Union[_Continouos, Dict[str, _Continouos]]
 
-_DiscreteDist = Union[scipy.stats.rv_discrete, Callable[[], float], Callable[[], str], float, str]
-_DiscreteDict = Dict[str, _DiscreteDist]
-Discrete = Union[_DiscreteDist, _DiscreteDict]
+_Discrete = Union[scipy.stats.rv_discrete, Callable[[], float], Callable[[], str], float, str]
+Discrete = Union[_Discrete, Dict[str, _Discrete]]
+
 Distribution = Union[Discrete, Continouos]
 
 
@@ -209,19 +206,21 @@ Distribution = Union[Discrete, Continouos]
 class SampleSceneParameters:
     """Samples the parameters of the ``SceneParameters`` objects.
 
-    Attributes describe how the sampeling is done.
-    Concretly they provides the color maps for the object and the background and
-    the distributons from which the value for the scene paramters are drawn.
+    Attributes describe how the sampling is done.
+    Concretely they provide the color maps for the object and the background and
+    the distributors from which the value for the scene parameters are drawn.
 
-    Distribution can be scipy-distribution, callable functions
-    or just a single (default) value.
-    Distirbutions can also be dictionaries of all beforementioned types.
-    Such dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+    Distribution can be:
+    * scipy-distribution from ``scipy.stats``
+    * callable functions returning a single value
+    * a single (default) value.
+    * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+
     These dictionaries are the easiest way to implement a bias.
     See ``ColorBiasedSceneParameterSampler`` as an example.
 
-    To implement more comples biases, you can inhirent this class and modify how individual
-    attributes are sample, e.g introducing addtional dependencies.
+    To implement more complex biases, you can inherit this class and modify how individual
+    attributes are sample, e.g., by introducing additional dependencies.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -262,13 +261,13 @@ class SampleSceneParameters:
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
 
-        If create your own biased sampled dataset by inhirenting, from this
-        class you might want to change the order the attributes are set.
-        For example, if you want that ``obj_rotation`` should depends on the
-        ``arm_position`` than you should also sample the ``arm_position`` first.
+        If you create your own biased sampled dataset by inheriting from this class,
+        you might want to change the order of how attributes are set.
+        For example, if you want that ``obj_rotation`` should depend on the
+        ``arm_position``then you should also sample the ``arm_position`` first.
         However, it is highly recommended to sample the object name first, as
-        the sampleing of the attribute might be dependent of the label
-        (see explantion of distributions in class description)
+        the sampling of the attribute might be dependent on the label
+        (see the explanation of distributions in class description)
         """
         params = SceneParameters()
         self.sample_obj_name(params)
@@ -289,11 +288,15 @@ class SampleSceneParameters:
     def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
         """Samples values from the distributon according to its type.
 
-        Default number of values sampled is one, can be changed with flag size.
+        The default number of values sampled is one, which can be changed with flag size.
 
-        Supported types are scipy-distribution, callable functions
-        or just a float value and dictionaries of all beforementioned.
-        Dictionaries are expected to contain the keys ``sticky``and ``stretchy``.
+        Distribution can be:
+        * scipy-distribution from ``scipy.stats``
+        * callable functions returning a single value
+        * a single (default) value.
+        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+
+        Will unpack np.ndarray, list, or tuple with a single element returned by distribution.
 
         """
 
@@ -309,6 +312,17 @@ class SampleSceneParameters:
             value = dist()
         else:
             value = dist
+
+        # Unpacking float values contained in numpyarrays and list
+        if type(value) in (list, tuple):
+            if len(value) != 1:
+                raise ValueError(f"Expected a single element. \
+                 Got {type(value)} of size {len(value)}!")
+            else:
+                value = value[0]
+
+        if isinstance(value, np.ndarray):
+            value = utils.to_python_scalar(value)
 
         return value
 
@@ -379,12 +393,11 @@ class SampleSceneParameters:
 class ColorBiasedSceneParameterSampler(SampleSceneParameters):
     """An example implementation of a color-biased SceneParameterSample.
 
-    The color is sampled from a conditional distribution that is dependend on the object type.
+    The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
-    def __post_init__(self):
-        self.obj_scalar = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
-                           'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
+    obj_scalar: Continouos = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+                              'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
 
 
 def split_sticky_stretchy(params: List[SceneParameters],

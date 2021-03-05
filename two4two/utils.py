@@ -1,9 +1,12 @@
 """utility functions."""
 
-from typing import Any, Dict, Sequence, TypeVar, Union
+from typing import Any, Dict, Sequence, Tuple, TypeVar, Union
 
 import numpy as np
 import scipy.stats
+
+
+RGBAColor = Tuple[float, float, float, float]
 
 
 T = TypeVar('T')
@@ -59,6 +62,16 @@ class discrete():
             ) -> T:
         """Samples from distribution."""
         return self.values[self.rv_discrete.rvs(*args, **kwargs)]
+
+
+def numpy_to_python_scalar(x: np.ndarray) -> Union[int, float]:
+    """Returns ``x`` as python scalar."""
+    if isinstance(x, np.floating):
+        return float(x)
+    elif issubclass(x.dtype.type, np.integer):
+        return int(x)
+    else:
+        raise ValueError(f"Cannot convert {x} to int or float.")
 
 
 def truncated_normal(mean: float = 0,
