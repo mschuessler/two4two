@@ -29,9 +29,9 @@ class SceneParameters:
     as sets.
 
     Subclasses should also be a ``dataclasses.dataclass``. Any added attributes
-    will be save and exposed through the dataloaders. When saving the
+    will be saved and exposed through the dataloaders. When saving the
     parameters with ``state_dict``, your subclasses will also be saved. The
-    ``SceneParameters.load`` method will also load and instanciate your
+    ``SceneParameters.load`` method will also load and instantiate your
     subclass.
 
     Attrs:
@@ -193,16 +193,34 @@ class SceneParameters:
         }[self.labeling_error]
 
 
-Continouos = Union[scipy.stats.rv_continuous, Callable[[], float]]
-Discrete = Union[scipy.stats.rv_discrete, Callable[[], float]]
+_Continouos = Union[scipy.stats.rv_continuous, Callable[[], float], float]
+Continouos = Union[_Continouos, Dict[str, _Continouos]]
+
+_Discrete = Union[scipy.stats.rv_discrete, Callable[[], float], Callable[[], str], float, str]
+Discrete = Union[_Discrete, Dict[str, _Discrete]]
+
+Distribution = Union[Discrete, Continouos]
 
 
 @dataclasses.dataclass()
 class SampleSceneParameters:
     """Samples the parameters of the ``SceneParameters`` objects.
 
-    To implement biases, you can inhirent this class and modify how individual
-    attributes are sample, e.g introducing addtional dependencies.
+    Attributes describe how the sampling is done.
+    Concretely they provide the color maps for the object and the background and
+    the distributors from which the value for the scene parameters are drawn.
+
+    Distribution can be:
+    * scipy-distribution from ``scipy.stats``
+    * callable functions returning a single value
+    * a single (default) value.
+    * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+
+    These dictionaries are the easiest way to implement a bias.
+    See ``ColorBiasedSceneParameterSampler`` as an example.
+
+    To implement more complex biases, you can inherit this class and modify how individual
+    attributes are sample, e.g., by introducing additional dependencies.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -243,10 +261,13 @@ class SampleSceneParameters:
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
 
-        If create your own biased sampled dataset by inhirenting, from this
-        class you might want to change the order the attributes are set.
-        For example, if you want that ``obj_rotation`` should depends on the
-        ``arm_position`` than you should also sample the ``arm_position`` first.
+        If you create your own biased sampled dataset by inheriting from this class,
+        you might want to change the order of how attributes are set.
+        For example, if you want that ``obj_rotation`` should depend on the
+        ``arm_position``then you should also sample the ``arm_position`` first.
+        However, it is highly recommended to sample the object name first, as
+        the sampling of the attribute might be dependent on the label
+        (see the explanation of distributions in class description)
         """
         params = SceneParameters()
         self.sample_obj_name(params)
@@ -260,47 +281,91 @@ class SampleSceneParameters:
         self.sample_arm_position(params)
         self.sample_obj_color(params)
         self.sample_bg_color(params)
+        params.check_values()
         return params
+
+    @staticmethod
+    def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
+        """Samples values from the distributon according to its type.
+
+        The default number of values sampled is one, which can be changed with flag size.
+
+        Distribution can be:
+        * scipy-distribution from ``scipy.stats``
+        * callable functions returning a single value
+        * a single (default) value.
+        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+
+        Will unpack np.ndarray, list, or tuple with a single element returned by distribution.
+
+        """
+
+        if size > 1:
+            return [SampleSceneParameters._sample(obj_name, dist) for i in range(0, size)]
+
+        if isinstance(dist, dict):
+            dist = dist[obj_name]
+
+        if hasattr(dist, 'rvs'):
+            value = dist.rvs()
+        elif callable(dist):
+            value = dist()
+        else:
+            value = dist
+
+        # Unpacking float values contained in numpyarrays and list
+        if type(value) in (list, tuple):
+            if len(value) != 1:
+                raise ValueError(f"Expected a single element. \
+                 Got {type(value)} of size {len(value)}!")
+            else:
+                value = value[0]
+
+        if isinstance(value, np.ndarray):
+            value = utils.to_python_scalar(value)
+
+        return value
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
-        params.obj_name = self.obj_name.rvs()
+        params.obj_name = self._sample(None, self.obj_name)
 
     def sample_labeling_error(self, params: SceneParameters):
         """Samples the ``labeling_error``."""
-        params.labeling_error = float(self.labeling_error.rvs())
+        params.labeling_error = self._sample(params.obj_name, self.labeling_error)
 
     def sample_spherical(self, params: SceneParameters):
         """Samples the ``spherical``."""
-        params.spherical = float(self.spherical.rvs())
+        params.spherical = self._sample(params.obj_name, self.spherical)
 
     def sample_bone_bend(self, params: SceneParameters):
         """Samples the ``bone_bend``."""
-        params.bone_bend = self.bone_bend.rvs(size=7).tolist()
+        params.bone_bend = self._sample(params.obj_name, self.bone_bend, size=7)
 
     def sample_bone_rotation(self, params: SceneParameters):
         """Samples the ``bone_rotation``."""
-        params.bone_rotation = self.bone_rotation.rvs(size=7).tolist()
+        params.bone_rotation = self._sample(params.obj_name, self.bone_rotation, size=7)
 
     def sample_obj_incline(self, params: SceneParameters):
         """Samples the ``obj_incline``."""
-        params.obj_incline = self.obj_incline.rvs()
+        params.obj_incline = self._sample(params.obj_name, self.obj_incline)
 
     def sample_obj_rotation(self, params: SceneParameters):
         """Samples the ``obj_rotation``."""
-        params.obj_rotation = float(self.obj_rotation.rvs())
+        params.obj_rotation = self._sample(params.obj_name, self.obj_rotation)
 
     def sample_flip(self, params: SceneParameters):
         """Samples the ``flip``."""
-        params.flip = float(self.flip.rvs())
+        params.flip = self._sample(params.obj_name, self.flip)
 
     def sample_position(self, params: SceneParameters):
         """Samples the ``position``."""
-        params.position = self.position.rvs(2).tolist()
+        # params.position = self.position.rvs(2).tolist()
+        params.position = self._sample(params.obj_name, self.position, size=2)
 
     def sample_arm_position(self, params: SceneParameters):
         """Samples the ``arm_position``."""
-        arm_shift = float(self.arm_position.rvs())
+        arm_shift = float(self._sample(params.obj_name, self.arm_position))
         if params.obj_name == 'sticky':
             params.arm_position = arm_shift
         elif params.obj_name == 'stretchy':
@@ -313,7 +378,7 @@ class SampleSceneParameters:
 
     def sample_obj_color(self, params: SceneParameters):
         """Samples the ``obj_color`` and ``obj_scalar``."""
-        params.obj_scalar = float(self.obj_color.rvs())
+        params.obj_scalar = float(self._sample(params.obj_name, self.obj_color))
         params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
@@ -321,24 +386,18 @@ class SampleSceneParameters:
 
     def sample_bg_color(self, params: SceneParameters):
         """Samples the ``bg_color`` and ``bg_scalar``."""
-        params.bg_scalar = float(self.bg_color.rvs())
+        params.bg_scalar = float(self._sample(params.obj_name, self.bg_color))
         params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
 
 
 class ColorBiasedSceneParameterSampler(SampleSceneParameters):
     """An example implementation of a color-biased SceneParameterSample.
 
-    The color is sampled from a conditional distribution that is dependend on the object type.
+    The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
-    def sample_obj_color(self, params: SceneParameters):
-        """Samples the ``obj_color`` and ``obj_scalar`` with custom distributions."""
-        if params.obj_name == 'sticky':
-            color = utils.truncated_normal(1, 0.5, 0, 1).rvs()
-        else:
-            color = utils.truncated_normal(0, 0.5, 0, 1).rvs()
-        params.obj_scalar = float(color)
-        params.obj_color = tuple(self._object_cmap(params)(color))
+    obj_scalar: Continouos = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+                              'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
 
 
 def split_sticky_stretchy(params: List[SceneParameters],
