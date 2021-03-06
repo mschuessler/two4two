@@ -58,7 +58,7 @@ class Sampler:
         obj_rotation:distribution of ``SceneParameters.obj_rotation``.
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
-        obj_color: distribution of ``SceneParameters.obj_color``.
+        obj_color_scalar: distribution of ``SceneParameters.obj_color_scalar``.
         bg_color: distribution of ``SceneParameters.bg_color``.
     """
 
@@ -74,7 +74,7 @@ class Sampler:
     obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
-    obj_color: Continouos = scipy.stats.uniform(0., 1.)
+    obj_color_scalar: Continouos = scipy.stats.uniform(0., 1.)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_map: str = 'binary'
     obj_color_map: str = 'seismic'
@@ -198,17 +198,17 @@ class Sampler:
         return plt.get_cmap(self.obj_color_map)
 
     def sample_obj_color(self, params: SceneParameters):
-        """Samples the ``obj_color`` and ``obj_scalar``."""
-        params.obj_scalar = float(self._sample(params.obj_name, self.obj_color))
-        params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
+        """Samples the ``obj_color_scalar`` and ``obj_color_scalar``."""
+        params.obj_color_scalar = float(self._sample(params.obj_name, self.obj_color_scalar))
+        params.obj_color = tuple(self._object_cmap(params)(params.obj_color_scalar))
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_map)
 
     def sample_bg_color(self, params: SceneParameters):
-        """Samples the ``bg_color`` and ``bg_scalar``."""
-        params.bg_scalar = float(self._sample(params.obj_name, self.bg_color))
-        params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
+        """Samples the ``bg_color`` and ``bg_color_scalar``."""
+        params.bg_color_scalar = float(self._sample(params.obj_name, self.bg_color))
+        params.bg_color = tuple(self._bg_cmap(params)(params.bg_color_scalar))
 
 
 class ColorBiasedSampler(Sampler):
@@ -217,5 +217,7 @@ class ColorBiasedSampler(Sampler):
     The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
-    obj_scalar: Continouos = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
-                              'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
+    obj_color_scalar: Continouos = {
+        'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+        'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+    }

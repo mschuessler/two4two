@@ -42,9 +42,9 @@ class SceneParameters:
         position: Position of the object.
         arm_position: Absolute arm positions.
         obj_color: Object color as RGBA
-        obj_scalar: Object color in [0, 1]. This is before converting
+        obj_color_scalar: Object color in [0, 1]. This is before converting
             the scalar to a color map.
-        bg_scalar: Background color in [0, 1]. This is before converting
+        bg_color_scalar: Background color in [0, 1]. This is before converting
             the scalar to a color map.
         bg_color: Background color as RGBA
         resolution: Resolution of the final image.
@@ -62,8 +62,8 @@ class SceneParameters:
     position: float = None
     arm_position: float = None
     obj_color: utils.RGBAColor = None
-    obj_scalar: float = None
-    bg_scalar: float = None
+    obj_color_scalar: float = None
+    bg_color_scalar: float = None
     bg_color: utils.RGBAColor = None
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
@@ -78,8 +78,8 @@ class SceneParameters:
         'obj_rotation': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
         'position': (-0.5, 0.5),
-        'obj_scalar': (0, 1),
-        'bg_scalar': (0, 1),
+        'obj_color_scalar': (0, 1),
+        'bg_color_scalar': (0, 1),
     }
 
     @classmethod
