@@ -38,7 +38,7 @@ class SceneParameters:
         bone_rotation: Rotation of the individual bone segments.
         obj_incline: Rotation of the object around the Y axis.
         obj_rotation: Rotation of the object around the Z axis.
-        flip: Wheter the image should be flipped left to right.
+        fliplr: Wheter the image should be flipped left to right.
         position: Position of the object.
         arm_position: Absolute arm positions.
         obj_color: Object color as RGBA
@@ -58,7 +58,7 @@ class SceneParameters:
     bone_rotation: Sequence[float] = None
     obj_incline: int = None
     obj_rotation: float = None
-    flip: bool = None
+    fliplr: bool = None
     position: float = None
     arm_position: float = None
     obj_color: utils.RGBAColor = None
@@ -76,7 +76,7 @@ class SceneParameters:
         'labeling_error': set([False, True]),
         'obj_incline': utils.HALF_CIRCLE,
         'obj_rotation': utils.HALF_CIRCLE,
-        'flip': set([True, False]),
+        'fliplr': set([True, False]),
         'position': (-0.5, 0.5),
         'obj_scalar': (0, 1),
         'bg_scalar': (0, 1),

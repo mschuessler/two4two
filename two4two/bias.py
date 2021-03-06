@@ -56,7 +56,7 @@ class Sampler:
         labeling_error: distribution of ``SceneParameters.labeling_error``.
         obj_incline: distribution of ``SceneParameters.obj_incline``.
         obj_rotation:distribution of ``SceneParameters.obj_rotation``.
-        flip: distribution of ``SceneParameters.flip``.
+        fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
         obj_color: distribution of ``SceneParameters.obj_color``.
         bg_color: distribution of ``SceneParameters.bg_color``.
@@ -72,7 +72,7 @@ class Sampler:
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
     obj_incline: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
     obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
-    flip: Discrete = utils.discrete({True: 0., False: 1.})
+    fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
@@ -97,7 +97,7 @@ class Sampler:
         self.sample_bone_rotation(params)
         self.sample_obj_incline(params)
         self.sample_obj_rotation(params)
-        self.sample_flip(params)
+        self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
         self.sample_obj_color(params)
@@ -175,9 +175,9 @@ class Sampler:
         """Samples the ``obj_rotation``."""
         params.obj_rotation = self._sample(params.obj_name, self.obj_rotation)
 
-    def sample_flip(self, params: SceneParameters):
-        """Samples the ``flip``."""
-        params.flip = self._sample(params.obj_name, self.flip)
+    def sample_fliplr(self, params: SceneParameters):
+        """Samples the ``fliplr``."""
+        params.fliplr = self._sample(params.obj_name, self.fliplr)
 
     def sample_position(self, params: SceneParameters):
         """Samples the ``position``."""
