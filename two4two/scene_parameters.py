@@ -5,9 +5,8 @@ from __future__ import annotations
 import copy
 import dataclasses
 import importlib
-import os
 import pprint
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Sequence, Tuple
 import uuid
 
 from two4two import utils
