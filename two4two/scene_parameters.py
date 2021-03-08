@@ -5,9 +5,8 @@ from __future__ import annotations
 import copy
 import dataclasses
 import importlib
-import os
 import pprint
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Sequence, Tuple
 import uuid
 
 from two4two import utils
@@ -48,7 +47,7 @@ class SceneParameters:
             the scalar to a color map.
         bg_color: Background color as RGBA
         resolution: Resolution of the final image.
-        filename: When rendering, save the image as this file.
+        id: UUID used for saving rendered image and mask as image file.
     """
     # TODO: once #38 is done. describe the coordinate system in full detail.
     obj_name: str = None
@@ -68,7 +67,7 @@ class SceneParameters:
     # When passing 0.45 to the cmap 'binary' the following color is obtained
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
-    filename: Optional[str] = None
+    id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
 
     VALID_VALUES = {
         'spherical': (0, 1),
@@ -146,13 +145,7 @@ class SceneParameters:
         return cls(**state)
 
     def state_dict(self) -> Dict[str, Any]:
-        """Returns the object as python dict.
-
-        If ``self.filename`` is not set, a unique filename will be
-        selected (using uuid4).
-        """
-        if self.filename is None:
-            self.filename = str(uuid.uuid4()) + ".png"
+        """Returns the object as python dict."""
         state = dataclasses.asdict(self)
         state['__module__'] = type(self).__module__
         state['__name__'] = type(self).__qualname__
@@ -163,23 +156,26 @@ class SceneParameters:
         pp = pprint.PrettyPrinter(indent=2)
         return self.__class__.__name__ + pp.pformat(self.__dict__)
 
-    def clone(self, discard_filename: bool = True) -> SceneParameters:
+    def clone(self, new_id: bool = True) -> SceneParameters:
         """Returns a deep copy.
 
         Args:
-            discard_filename: Resets the filename of the copy.
+            new_id: Creates new UUID.
+
         """
         clone = copy.deepcopy(self)
-        if discard_filename and hasattr(clone, 'filename'):
-            clone.filename = None
+        clone.id = str(uuid.uuid4())
         return clone
+
+    @property
+    def filename(self) -> str:
+        """The filename of the generated image."""
+        return self.id + ".png"
 
     @property
     def mask_filename(self) -> str:
         """The filename of the segmentation mask."""
-        base, ext = os.path.splitext(self.filename)
-        mask_fname = f"{base}_mask{ext}"
-        return mask_fname
+        return self.id + "_mask.png"
 
     @property
     def obj_name_with_label_error(self) -> str:
