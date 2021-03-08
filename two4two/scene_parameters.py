@@ -68,7 +68,7 @@ class SceneParameters:
     # When passing 0.45 to the cmap 'binary' the following color is obtained
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
-    id: uuid.UUID = dataclasses.field(default_factory=lambda: {uuid.uuid4()})
+    id: str = dataclasses.field(default_factory=lambda: {str(uuid.uuid4())})
 
     VALID_VALUES = {
         'spherical': (0, 1),
@@ -165,18 +165,18 @@ class SceneParameters:
 
         """
         clone = copy.deepcopy(self)
-        clone.id = uuid.uuid4()
+        clone.id = str(uuid.uuid4())
         return clone
 
     @property
     def filename(self) -> str:
         """The filename of the generated image."""
-        return str(self.id) + ".png"
+        return self.id + ".png"
 
     @property
     def mask_filename(self) -> str:
         """The filename of the segmentation mask."""
-        return str(self.id) + "_mask.png"
+        return self.id + "_mask.png"
 
     @property
     def obj_name_with_label_error(self) -> str:
