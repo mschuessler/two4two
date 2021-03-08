@@ -58,16 +58,18 @@ class SceneParameters:
     bone_rotation: Sequence[float] = 0.0
     obj_incline: int = 0.0
     obj_rotation: float = 0.0
-    flip: bool = False
+    fliplr: bool = False
     position: float = (0, 0)
     arm_position: float = 0
+    obj_color_scalar: float = 0.5
+    # When passing 0.5 to the cmap 'seismic' the following color is obtained
     obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
-    obj_scalar: float = 0.5
-    bg_scalar: float = 0.45
+    bg_color_scalar: float = 0.45
+    # When passing 0.45 to the cmap 'binary' the following color is obtained
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
-    
+
     VALID_VALUES = {
         'spherical': (0, 1),
         'bone_bend': utils.HALF_CIRCLE,
