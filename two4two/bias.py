@@ -126,7 +126,7 @@ class Sampler:
         """
 
         if size > 1:
-            return [Sampler._sample(obj_name, dist) for i in range(0, size)]
+            return tuple([Sampler._sample(obj_name, dist) for i in range(0, size)])
 
         if isinstance(dist, dict):
             dist = dist[obj_name]

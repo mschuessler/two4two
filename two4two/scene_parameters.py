@@ -54,8 +54,8 @@ class SceneParameters:
     obj_name: str = None
     labeling_error: bool = False
     spherical: float = 0.5
-    bone_bend: Sequence[float] = 0.0
-    bone_rotation: Sequence[float] = 0.0
+    bone_bend: Tuple[float, ...] = tuple([0] * 7)
+    bone_rotation: Tuple[float, ...] = tuple([0] * 7)
     obj_incline: int = 0.0
     obj_rotation: float = 0.0
     fliplr: bool = False
@@ -125,6 +125,10 @@ class SceneParameters:
             self.resolution = tuple(self.resolution)
         if type(self.position) == list:
             self.position = tuple(self.position)
+        if type(self.bone_bend) == list:
+            self.bone_bend = tuple(self.bone_bend)
+        if type(self.bone_rotation) == list:
+            self.bone_rotation = tuple(self.bone_rotation)
 
     @staticmethod
     def load(state: Dict[str, Any]) -> SceneParameters:
