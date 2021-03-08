@@ -19,7 +19,7 @@ def test_generic_sampler():
     assert isinstance(sampler._sample('sticky', scipy_trunc_normal), numbers.Number)
     assert isinstance(sampler._sample('sticky', test_dict), numbers.Number)
     assert isinstance(sampler._sample('stretchy', test_dict), numbers.Number)
-    assert isinstance(sampler._sample('stretchy', test_dict, size=5), list)
+    assert isinstance(sampler._sample('stretchy', test_dict, size=5), tuple)
 
     with pytest.raises(KeyError):
         two4two.Sampler._sample('ronny', test_dict)
