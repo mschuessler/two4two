@@ -123,6 +123,8 @@ class SceneParameters:
             self.obj_color = tuple(self.obj_color)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
+        if type(self.position) == list:
+            self.position = tuple(self.position)
 
     @staticmethod
     def load(state: Dict[str, Any]) -> SceneParameters:
