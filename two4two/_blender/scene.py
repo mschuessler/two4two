@@ -12,7 +12,7 @@ from skimage import color
 from two4two import scene_parameters
 from two4two import utils
 from two4two._blender import butils
-from two4two._blender.blender_object import BlenderObject
+from two4two._blender.blender_object import Two4TwoBlenderObject
 
 
 class Scene():
@@ -31,15 +31,10 @@ class Scene():
     def _set_rotation(self,
                       incline: float,
                       rotation: float,
-                      flipped: bool):
+                      ):
         self.obj.rotate(incline, 'Y')
         self.obj.rotate(rotation, 'Z')
-        if flipped:
-            self._flip_orientation()
         self.obj.center()
-
-    def _flip_orientation(self):
-        self.obj.rotate(np.pi, 'Z')
 
     def _set_position(self, x: float, y: float):
         self.obj.move((0, x, y))
@@ -182,6 +177,12 @@ class Scene():
             cycles.samples = old_cycles_samples
         return hues
 
+    def _fliplr_image(self, image_filename: str):
+        """Overwrites the image with itself flipped left to right."""
+        img = imageio.imread(image_filename)
+        img_flip_lr = img[:, ::-1]
+        imageio.imwrite(image_filename, img_flip_lr)
+
     def render(self,
                image_filename: str,
                mask_filename: str = None
@@ -190,16 +191,24 @@ class Scene():
         bpy.data.scenes['Scene'].render.filepath = image_filename
         bpy.ops.render.render(write_still=True)
 
+        if self.parameters.fliplr:
+            self._fliplr_image(image_filename)
+
         if mask_filename is not None:
             self.render_segmentation_mask(mask_filename)
+            if self.parameters.fliplr:
+                self._fliplr_image(mask_filename)
 
     def __init__(self,
                  parameters: scene_parameters.SceneParameters,
                  ):
         butils.clear_all()
-        self.obj = BlenderObject(parameters.obj_name,
-                                 parameters.spherical,
-                                 parameters.arm_position)
+        self.parameters = parameters
+
+        self.obj = Two4TwoBlenderObject(
+            parameters.obj_name,
+            parameters.spherical,
+            parameters.arm_position)
         self.obj.add_material(parameters.obj_color)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
@@ -208,9 +217,10 @@ class Scene():
 
         self._set_pose(parameters.bone_bend,
                        parameters.bone_rotation)
-        self._set_rotation(parameters.obj_incline,
-                           parameters.obj_rotation,
-                           parameters.flip)
+        self._set_rotation(
+            parameters.obj_incline,
+            parameters.obj_rotation,
+        )
         x, y = parameters.position
         self._set_position(x, y)
 

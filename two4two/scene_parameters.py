@@ -7,17 +7,10 @@ import dataclasses
 import importlib
 import os
 import pprint
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 import uuid
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import numpy as np
-import scipy.stats
-
 from two4two import utils
-
-HALF_CIRCLE = (-np.pi / 4, np.pi / 4)
 
 
 @dataclasses.dataclass()
@@ -45,13 +38,13 @@ class SceneParameters:
         bone_rotation: Rotation of the individual bone segments.
         obj_incline: Rotation of the object around the Y axis.
         obj_rotation: Rotation of the object around the Z axis.
-        flip: Wheter the image should be flipped left to right.
+        fliplr: Wheter the image should be flipped left to right.
         position: Position of the object.
         arm_position: Absolute arm positions.
         obj_color: Object color as RGBA
-        obj_scalar: Object color in [0, 1]. This is before converting
+        obj_color_scalar: Object color in [0, 1]. This is before converting
             the scalar to a color map.
-        bg_scalar: Background color in [0, 1]. This is before converting
+        bg_color_scalar: Background color in [0, 1]. This is before converting
             the scalar to a color map.
         bg_color: Background color as RGBA
         resolution: Resolution of the final image.
@@ -65,28 +58,28 @@ class SceneParameters:
     bone_rotation: Sequence[float] = None
     obj_incline: int = None
     obj_rotation: float = None
-    flip: bool = None
+    fliplr: bool = None
     position: float = None
     arm_position: float = None
     obj_color: utils.RGBAColor = None
-    obj_scalar: float = None
-    bg_scalar: float = None
+    obj_color_scalar: float = None
+    bg_color_scalar: float = None
     bg_color: utils.RGBAColor = None
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
 
     VALID_VALUES = {
         'spherical': (0, 1),
-        'bone_bend': HALF_CIRCLE,
-        'bone_rotation': HALF_CIRCLE,
+        'bone_bend': utils.HALF_CIRCLE,
+        'bone_rotation': utils.HALF_CIRCLE,
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
-        'obj_incline': HALF_CIRCLE,
-        'obj_rotation': HALF_CIRCLE,
-        'flip': set([True, False]),
+        'obj_incline': utils.HALF_CIRCLE,
+        'obj_rotation': utils.HALF_CIRCLE,
+        'fliplr': set([True, False]),
         'position': (-0.5, 0.5),
-        'obj_scalar': (0, 1),
-        'bg_scalar': (0, 1),
+        'obj_color_scalar': (0, 1),
+        'bg_color_scalar': (0, 1),
     }
 
     @classmethod
@@ -191,213 +184,6 @@ class SceneParameters:
             False: self.obj_name,
             True: flip_obj_name[self.obj_name]
         }[self.labeling_error]
-
-
-_Continouos = Union[scipy.stats.rv_continuous, Callable[[], float], float]
-Continouos = Union[_Continouos, Dict[str, _Continouos]]
-
-_Discrete = Union[scipy.stats.rv_discrete, Callable[[], float], Callable[[], str], float, str]
-Discrete = Union[_Discrete, Dict[str, _Discrete]]
-
-Distribution = Union[Discrete, Continouos]
-
-
-@dataclasses.dataclass()
-class SampleSceneParameters:
-    """Samples the parameters of the ``SceneParameters`` objects.
-
-    Attributes describe how the sampling is done.
-    Concretely they provide the color maps for the object and the background and
-    the distributors from which the value for the scene parameters are drawn.
-
-    Distribution can be:
-    * scipy-distribution from ``scipy.stats``
-    * callable functions returning a single value
-    * a single (default) value.
-    * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
-
-    These dictionaries are the easiest way to implement a bias.
-    See ``ColorBiasedSceneParameterSampler`` as an example.
-
-    To implement more complex biases, you can inherit this class and modify how individual
-    attributes are sample, e.g., by introducing additional dependencies.
-
-    For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
-
-    Attrs:
-        bg_color_map: used color map for the background.
-        obj_color_map: used color map for the object.
-        spherical: distribution of ``SceneParameters.spherical``.
-        bone_bend: distribution of ``SceneParameters.bone_bend``.
-        bone_rotation: distribution of ``SceneParameters.bone_rotation``.
-        obj_name: distribution of ``SceneParameters.obj_name``.
-        arm_position: distribution of ``SceneParameters.arm_position``.
-        labeling_error: distribution of ``SceneParameters.labeling_error``.
-        obj_incline: distribution of ``SceneParameters.obj_incline``.
-        obj_rotation:distribution of ``SceneParameters.obj_rotation``.
-        flip: distribution of ``SceneParameters.flip``.
-        position: distribution of ``SceneParameters.position``.
-        obj_color: distribution of ``SceneParameters.obj_color``.
-        bg_color: distribution of ``SceneParameters.bg_color``.
-    """
-
-    obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
-    spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bone_bend: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *HALF_CIRCLE)
-    bone_rotation: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *HALF_CIRCLE)
-
-    arm_position: Continouos = utils.truncated_normal(
-        mean=0, std=0.40, lower=0, upper=0.65)
-    labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
-    obj_incline: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *HALF_CIRCLE)
-    obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *HALF_CIRCLE)
-    flip: Discrete = utils.discrete({True: 0., False: 1.})
-    position: Continouos = scipy.stats.uniform(-0.5, 0.5)
-    obj_color: Continouos = scipy.stats.uniform(0., 1.)
-    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_map: str = 'binary'
-    obj_color_map: str = 'seismic'
-
-    def sample(self) -> SceneParameters:
-        """Returns a new SceneParameters with random values.
-
-        If you create your own biased sampled dataset by inheriting from this class,
-        you might want to change the order of how attributes are set.
-        For example, if you want that ``obj_rotation`` should depend on the
-        ``arm_position``then you should also sample the ``arm_position`` first.
-        However, it is highly recommended to sample the object name first, as
-        the sampling of the attribute might be dependent on the label
-        (see the explanation of distributions in class description)
-        """
-        params = SceneParameters()
-        self.sample_obj_name(params)
-        self.sample_spherical(params)
-        self.sample_bone_bend(params)
-        self.sample_bone_rotation(params)
-        self.sample_obj_incline(params)
-        self.sample_obj_rotation(params)
-        self.sample_flip(params)
-        self.sample_position(params)
-        self.sample_arm_position(params)
-        self.sample_obj_color(params)
-        self.sample_bg_color(params)
-        params.check_values()
-        return params
-
-    @staticmethod
-    def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
-        """Samples values from the distributon according to its type.
-
-        The default number of values sampled is one, which can be changed with flag size.
-
-        Distribution can be:
-        * scipy-distribution from ``scipy.stats``
-        * callable functions returning a single value
-        * a single (default) value.
-        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
-
-        Will unpack np.ndarray, list, or tuple with a single element returned by distribution.
-
-        """
-
-        if size > 1:
-            return [SampleSceneParameters._sample(obj_name, dist) for i in range(0, size)]
-
-        if isinstance(dist, dict):
-            dist = dist[obj_name]
-
-        if hasattr(dist, 'rvs'):
-            value = dist.rvs()
-        elif callable(dist):
-            value = dist()
-        else:
-            value = dist
-
-        # Unpacking float values contained in numpyarrays and list
-        if type(value) in (list, tuple):
-            if len(value) != 1:
-                raise ValueError(f"Expected a single element. \
-                 Got {type(value)} of size {len(value)}!")
-            else:
-                value = value[0]
-
-        if isinstance(value, np.ndarray):
-            value = utils.to_python_scalar(value)
-
-        return value
-
-    def sample_obj_name(self, params: SceneParameters):
-        """Samples the ``obj_name``."""
-        params.obj_name = self._sample(None, self.obj_name)
-
-    def sample_labeling_error(self, params: SceneParameters):
-        """Samples the ``labeling_error``."""
-        params.labeling_error = self._sample(params.obj_name, self.labeling_error)
-
-    def sample_spherical(self, params: SceneParameters):
-        """Samples the ``spherical``."""
-        params.spherical = self._sample(params.obj_name, self.spherical)
-
-    def sample_bone_bend(self, params: SceneParameters):
-        """Samples the ``bone_bend``."""
-        params.bone_bend = self._sample(params.obj_name, self.bone_bend, size=7)
-
-    def sample_bone_rotation(self, params: SceneParameters):
-        """Samples the ``bone_rotation``."""
-        params.bone_rotation = self._sample(params.obj_name, self.bone_rotation, size=7)
-
-    def sample_obj_incline(self, params: SceneParameters):
-        """Samples the ``obj_incline``."""
-        params.obj_incline = self._sample(params.obj_name, self.obj_incline)
-
-    def sample_obj_rotation(self, params: SceneParameters):
-        """Samples the ``obj_rotation``."""
-        params.obj_rotation = self._sample(params.obj_name, self.obj_rotation)
-
-    def sample_flip(self, params: SceneParameters):
-        """Samples the ``flip``."""
-        params.flip = self._sample(params.obj_name, self.flip)
-
-    def sample_position(self, params: SceneParameters):
-        """Samples the ``position``."""
-        # params.position = self.position.rvs(2).tolist()
-        params.position = self._sample(params.obj_name, self.position, size=2)
-
-    def sample_arm_position(self, params: SceneParameters):
-        """Samples the ``arm_position``."""
-        arm_shift = float(self._sample(params.obj_name, self.arm_position))
-        if params.obj_name == 'sticky':
-            params.arm_position = arm_shift
-        elif params.obj_name == 'stretchy':
-            params.arm_position = 1 - arm_shift
-        else:
-            raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
-
-    def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return plt.get_cmap(self.obj_color_map)
-
-    def sample_obj_color(self, params: SceneParameters):
-        """Samples the ``obj_color`` and ``obj_scalar``."""
-        params.obj_scalar = float(self._sample(params.obj_name, self.obj_color))
-        params.obj_color = tuple(self._object_cmap(params)(params.obj_scalar))
-
-    def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
-        return plt.get_cmap(self.bg_color_map)
-
-    def sample_bg_color(self, params: SceneParameters):
-        """Samples the ``bg_color`` and ``bg_scalar``."""
-        params.bg_scalar = float(self._sample(params.obj_name, self.bg_color))
-        params.bg_color = tuple(self._bg_cmap(params)(params.bg_scalar))
-
-
-class ColorBiasedSceneParameterSampler(SampleSceneParameters):
-    """An example implementation of a color-biased SceneParameterSample.
-
-    The color is sampled from a conditional distribution that is dependent on the object type.
-    """
-
-    obj_scalar: Continouos = {'sticky': utils.truncated_normal(1, 0.5, 0, 1),
-                              'stretchy': utils.truncated_normal(0, 0.5, 0, 1)}
 
 
 def split_sticky_stretchy(params: List[SceneParameters],
