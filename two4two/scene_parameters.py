@@ -60,18 +60,18 @@ class SceneParameters:
     # TODO: once #38 is done. describe the coordinate system in full detail.
     obj_name: str = None
     labeling_error: bool = False
-    spherical: float = None
-    bone_bend: Sequence[float] = None
-    bone_rotation: Sequence[float] = None
-    obj_incline: int = None
-    obj_rotation: float = None
-    flip: bool = None
-    position: float = None
-    arm_position: float = None
-    obj_color: utils.RGBAColor = None
-    obj_scalar: float = None
-    bg_scalar: float = None
-    bg_color: utils.RGBAColor = None
+    spherical: float = 0.5
+    bone_bend: Sequence[float] = 0.0
+    bone_rotation: Sequence[float] = 0.0
+    obj_incline: int = 0.0
+    obj_rotation: float = 0.0
+    flip: bool = False
+    position: float = (0, 0)
+    arm_position: float = 0
+    obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
+    obj_scalar: float = 0.5
+    bg_scalar: float = 0.45
+    bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     filename: Optional[str] = None
 
@@ -101,6 +101,9 @@ class SceneParameters:
             return value in valid
         else:
             raise ValueError(f"Unknown valid value description: {valid}")
+
+    @classmethod
+    def getDefault
 
     def check_values(self):
         """Raises a ValueError if a value is not in its valid range."""
