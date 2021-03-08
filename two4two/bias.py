@@ -67,8 +67,12 @@ class Sampler:
     bone_bend: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
     bone_rotation: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
 
-    arm_position: Continouos = utils.truncated_normal(
-        mean=0, std=0.40, lower=0, upper=0.65)
+    arm_position: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'sticky': utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
+            'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
+        })
+
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
     obj_incline: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
     obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
@@ -186,13 +190,7 @@ class Sampler:
 
     def sample_arm_position(self, params: SceneParameters):
         """Samples the ``arm_position``."""
-        arm_shift = float(self._sample(params.obj_name, self.arm_position))
-        if params.obj_name == 'sticky':
-            params.arm_position = arm_shift
-        elif params.obj_name == 'stretchy':
-            params.arm_position = 1 - arm_shift
-        else:
-            raise ValueError(f"Unknown `obj_name`: {params.obj_name}")
+        params.arm_position = float(self._sample(params.obj_name, self.arm_position))
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
