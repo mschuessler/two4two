@@ -1,0 +1,5 @@
+[run]
+include=two4two/*
+
+# omitted as it is barely covered because of ``coverage.process_startup()``.
+omit=two4two/_blender/render_samples.py

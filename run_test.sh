@@ -32,6 +32,7 @@ flake8 ./two4two \
        --statistics || \
        fail
 
+export COVERAGE_PROCESS_START="`pwd`/.coveragerc"
 echo "Executing pytest..."
 python -m pytest -v -s test/  \
     -m "not slow" \
