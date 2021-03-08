@@ -1,6 +1,9 @@
 """utility functions."""
 
-from typing import Any, Dict, Sequence, Tuple, TypeVar, Union
+from __future__ import annotations
+
+import importlib
+from typing import Any, Dict, Sequence, Tuple, Type, TypeVar, Union
 
 import numpy as np
 import scipy.stats
@@ -100,3 +103,18 @@ def supports_iteration(value: Union[Any, Sequence[Any]]) -> bool:
             return True
     except TypeError:
         return False
+
+
+def split_class(module_dot_class: str) -> Tuple[str, str]:
+    """Splits ``"my.module.MyClass"`` into ``("my.module", "MyClass")``."""
+    parts = module_dot_class.split('.')
+    module = '.'.join(parts[:-1])
+    cls_name = parts[-1]
+    return module, cls_name
+
+
+def import_class(module: str, cls_name: str) -> Type:
+    """Returns the class given as string."""
+    module = importlib.import_module(module)
+    cls = getattr(module, cls_name)
+    return cls

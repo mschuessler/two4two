@@ -36,14 +36,17 @@ echo "Executing pytest..."
 python -m pytest -v -s test/  \
     -m "not slow" \
     "$@"
-
 pytest_ret=$?
+
+echo "Executing test for cli tool..."
+./test/test_cli_tool.sh
+cli_test_ret=$?
 
 ./run_flake8.sh
 flake_ret=$?
 
 # if one is non-zero the sum is non-zero
-exit_code=$((flake_ret + pytest_ret))
+exit_code=$((flake_ret + pytest_ret + cli_test_ret))
 
 Color_Off='\033[0m'
 Red='\033[0;31m'

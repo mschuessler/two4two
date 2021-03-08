@@ -19,6 +19,11 @@ setuptools.setup(
     package_data={
         "": ["*.sh"],
     },
+    entry_points={
+        'console_scripts': [
+            'two4two_create_dataset=two4two.cli_tool:main',
+        ],
+    },
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
@@ -26,10 +31,11 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux"
     ],
     install_requires=[
-        'numpy',
         'imageio',
+        'matplotlib',
+        'numpy',
         'scipy',
-        'matplotlib'
+        'tqdm',
     ],
     extras_require={
         'dev': [
