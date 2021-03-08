@@ -176,7 +176,7 @@ class SceneParameters:
     @property
     def mask_filename(self) -> str:
         """The filename of the segmentation mask."""
-        return f"{self.id}_mask.png"
+        return str(self.id) + "_mask.png"
 
     @property
     def obj_name_with_label_error(self) -> str:
