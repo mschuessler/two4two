@@ -21,10 +21,11 @@ printenv
 
 echo ""
 
+blender_bin=$(cat $blender_dir/blender_bin)
 
 # PYTHONPATH enables venv packages for blender python
 PYTHONPATH="$blender_dir/venv/lib/python3.7/site-packages" \
-    $blender_dir/blender/blender \
+    $blender_bin \
         --background \
         -noaudio \
         --python-use-system-env \
