@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Callable, Dict, Union
+from typing import Any, Callable, Dict, Sequence, Union
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -81,7 +81,8 @@ class Sampler:
     bg_color_map: str = 'binary'
     obj_color_map: str = 'seismic'
 
-    def sample(self) -> SceneParameters:
+    def sample(self, params: SceneParameters = None,
+               attributes: Sequence = []) -> SceneParameters:
         """Returns a new SceneParameters with random values.
 
         If you create your own biased sampled dataset by inheriting from this class,
@@ -92,18 +93,39 @@ class Sampler:
         the sampling of the attribute might be dependent on the label
         (see the explanation of distributions in class description)
         """
-        params = SceneParameters()
-        self.sample_obj_name(params)
-        self.sample_spherical(params)
-        self.sample_bone_bend(params)
-        self.sample_bone_rotation(params)
-        self.sample_obj_incline(params)
-        self.sample_obj_rotation(params)
-        self.sample_fliplr(params)
-        self.sample_position(params)
-        self.sample_arm_position(params)
-        self.sample_obj_color(params)
-        self.sample_bg_color(params)
+
+        if params is None:
+            params = SceneParameters()
+        else:
+            preresampeling_id = params.id()
+            params = params.clone()
+            params.resampled = attributes
+            params.preresampeling_id = preresampeling_id
+
+        if 'obj_name' in attributes or not attributes:
+            self.sample_obj_name(params)
+        if 'labeling_error' in attributes or not attributes:
+            self.sample_labeling_error(params)
+        if 'spherical' in attributes or not attributes:
+            self.sample_spherical(params)
+        if 'bone_bend' in attributes or not attributes:
+            self.sample_bone_bend(params)
+        if 'bone_rotation' in attributes or not attributes:
+            self.sample_bone_rotation(params)
+        if 'obj_incline' in attributes or not attributes:
+            self.sample_obj_incline(params)
+        if 'obj_rotation' in attributes or not attributes:
+            self.sample_obj_rotation(params)
+        if 'fliplr' in attributes or not attributes:
+            self.sample_fliplr(params)
+        if 'position' in attributes or not attributes:
+            self.sample_position(params)
+        if 'arm_position' in attributes or not attributes:
+            self.sample_arm_position(params)
+        if 'obj_color' in attributes or not attributes:
+            self.sample_obj_color(params)
+        if 'bg_color' in attributes or not attributes:
+            self.sample_bg_color(params)
         params.check_values()
         return params
 
@@ -148,6 +170,10 @@ class Sampler:
             value = utils.to_python_scalar(value)
 
         return value
+
+    def resample(self, params: SceneParameters, attributes: Sequence) -> SceneParameters:
+        """For Leon: function only for semantic reasons"""
+        return self.sample(params=params, attributes=attributes)
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""

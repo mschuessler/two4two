@@ -6,7 +6,7 @@ import copy
 import dataclasses
 import importlib
 import pprint
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 import uuid
 
 from two4two import utils
@@ -68,6 +68,10 @@ class SceneParameters:
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
+    # It is possible to record which values have been resampled after their intial creation
+    resampled: Optional[List[str]] = None
+    # The id of the original SceneParameters before resampling
+    preresampeling_id: Optional[str] = None
 
     VALID_VALUES = {
         'spherical': (0, 1),
