@@ -33,6 +33,9 @@ mkdir -p "$OUTDIR"
       cp -r /Volumes/Blender/Blender.app .
       echo "`pwd`/Blender.app/Contents/MacOS/Blender" > blender_bin
       PYTHON="`pwd`/Blender.app/Contents/Resources/2.83/python/bin/python3.7m"
+    else
+      echo "We do not support your OS: ``uname`` - Only supporting Linux and Mac OS"
+      exit 1
     fi
     curl -L "$PIP_DOWNLOAD" -o "get-pip.py"
 
