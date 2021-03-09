@@ -44,6 +44,8 @@ setuptools.setup(
             'flake8-import-order',
             'flake8-annotations',
             'flake8-docstrings',
+            'torch',
+            'torchvision',
         ],
         'example_notebooks_data_generation': [
             'numpy',
