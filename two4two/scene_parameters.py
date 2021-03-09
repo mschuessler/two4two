@@ -6,7 +6,7 @@ import copy
 import dataclasses
 import importlib
 import pprint
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 import uuid
 
 from two4two import utils
@@ -48,9 +48,14 @@ class SceneParameters:
         bg_color: Background color as RGBA
         resolution: Resolution of the final image.
         id: UUID used for saving rendered image and mask as image file.
+        attributes_status: Dictionary for tracking status of all atributes that can be sampled.
+            DEFAULT: attirbute has been initialized to default value.
+            SAMPLED: attribute has been sampled by sampler.
+            RESAMPLED: attribute has been sampled again.
+        parent_id: The id of the original SceneParameters before cloning
     """
     # TODO: once #38 is done. describe the coordinate system in full detail.
-    obj_name: str = None
+    obj_name: str = 'sticky'
     labeling_error: bool = False
     spherical: float = 0.5
     bone_bend: Tuple[float, ...] = tuple([0] * 7)
@@ -59,7 +64,7 @@ class SceneParameters:
     obj_rotation: float = 0.0
     fliplr: bool = False
     position: float = (0, 0)
-    arm_position: float = 0
+    arm_position: float = 0.0
     obj_color_scalar: float = 0.5
     # When passing 0.5 to the cmap 'seismic' the following color is obtained
     obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
@@ -68,6 +73,22 @@ class SceneParameters:
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
+    attributes_status: dict[str, str] = dataclasses.field(
+        default_factory=lambda: {
+            'obj_name': 'DEFAULT',
+            'labeling_error': 'DEFAULT',
+            'spherical': 'DEFAULT',
+            'bone_bend': 'DEFAULT',
+            'bone_rotation': 'DEFAULT',
+            'obj_incline': 'DEFAULT',
+            'obj_rotation': 'DEFAULT',
+            'fliplr': 'DEFAULT',
+            'position': 'DEFAULT',
+            'arm_position': 'DEFAULT',
+            'bg_color_scalar': 'DEFAULT',
+            'obj_color_scalar': 'DEFAULT'
+        })
+    original_id: Optional[str] = None
 
     VALID_VALUES = {
         'spherical': (0, 1),
@@ -159,12 +180,20 @@ class SceneParameters:
     def clone(self, new_id: bool = True) -> SceneParameters:
         """Returns a deep copy.
 
+        Creating a clone of a clone will raise ``TypeError`` unless no new id is assigned.
+
         Args:
             new_id: Creates new UUID.
 
         """
         clone = copy.deepcopy(self)
-        clone.id = str(uuid.uuid4())
+        if new_id:
+            if self.original_id is not None:
+                # We are undecided about this contrain, might be reomved later
+                raise TypeError("Creating a clone of a clone is not allowed")
+            clone.original_id = clone.id
+            clone.id = str(uuid.uuid4())
+
         return clone
 
     @property

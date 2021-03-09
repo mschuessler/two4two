@@ -94,6 +94,7 @@ class Sampler:
         """
         params = SceneParameters()
         self.sample_obj_name(params)
+        self.sample_labeling_error(params)
         self.sample_spherical(params)
         self.sample_bone_bend(params)
         self.sample_bone_rotation(params)
@@ -149,46 +150,68 @@ class Sampler:
 
         return value
 
+    @staticmethod
+    def _update_attribute_status(params: SceneParameters, attribute: str):
+        if params.attributes_status[attribute] == "DEFAULT":
+            params.attributes_status[attribute] = "SAMPLED"
+        elif params.attributes_status[attribute] == "SAMPLED":
+            params.attributes_status[attribute] = "RESAMPLED"
+        elif params.attributes_status[attribute] == "RESAMPLED":
+            pass
+        else:
+            raise ValueError(f"Expected status DEFAUL,SAMPLED \
+            or RESAMPLED, got {params.attributes_status[attribute]}")
+
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
         params.obj_name = self._sample(None, self.obj_name)
+        self._update_attribute_status(params, 'obj_name')
 
     def sample_labeling_error(self, params: SceneParameters):
         """Samples the ``labeling_error``."""
         params.labeling_error = self._sample(params.obj_name, self.labeling_error)
+        self._update_attribute_status(params, 'labeling_error')
 
     def sample_spherical(self, params: SceneParameters):
         """Samples the ``spherical``."""
         params.spherical = self._sample(params.obj_name, self.spherical)
+        self._update_attribute_status(params, 'spherical')
 
     def sample_bone_bend(self, params: SceneParameters):
         """Samples the ``bone_bend``."""
         params.bone_bend = self._sample(params.obj_name, self.bone_bend, size=7)
+        self._update_attribute_status(params, 'bone_bend')
 
     def sample_bone_rotation(self, params: SceneParameters):
         """Samples the ``bone_rotation``."""
         params.bone_rotation = self._sample(params.obj_name, self.bone_rotation, size=7)
+        self._update_attribute_status(params, 'bone_rotation')
 
     def sample_obj_incline(self, params: SceneParameters):
         """Samples the ``obj_incline``."""
         params.obj_incline = self._sample(params.obj_name, self.obj_incline)
+        self._update_attribute_status(params, 'obj_incline')
 
     def sample_obj_rotation(self, params: SceneParameters):
         """Samples the ``obj_rotation``."""
         params.obj_rotation = self._sample(params.obj_name, self.obj_rotation)
+        self._update_attribute_status(params, 'obj_rotation')
 
     def sample_fliplr(self, params: SceneParameters):
         """Samples the ``fliplr``."""
         params.fliplr = self._sample(params.obj_name, self.fliplr)
+        self._update_attribute_status(params, 'fliplr')
 
     def sample_position(self, params: SceneParameters):
         """Samples the ``position``."""
         # params.position = self.position.rvs(2).tolist()
         params.position = self._sample(params.obj_name, self.position, size=2)
+        self._update_attribute_status(params, 'position')
 
     def sample_arm_position(self, params: SceneParameters):
         """Samples the ``arm_position``."""
         params.arm_position = float(self._sample(params.obj_name, self.arm_position))
+        self._update_attribute_status(params, 'arm_position')
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
@@ -197,6 +220,7 @@ class Sampler:
         """Samples the ``obj_color_scalar`` and ``obj_color_scalar``."""
         params.obj_color_scalar = float(self._sample(params.obj_name, self.obj_color_scalar))
         params.obj_color = tuple(self._object_cmap(params)(params.obj_color_scalar))
+        self._update_attribute_status(params, 'obj_color_scalar')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_map)
@@ -205,6 +229,7 @@ class Sampler:
         """Samples the ``bg_color`` and ``bg_color_scalar``."""
         params.bg_color_scalar = float(self._sample(params.obj_name, self.bg_color))
         params.bg_color = tuple(self._bg_cmap(params)(params.bg_color_scalar))
+        self._update_attribute_status(params, 'bg_color_scalar')
 
 
 @dataclasses.dataclass()
