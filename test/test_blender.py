@@ -92,4 +92,6 @@ def test_blender_download(tmp_path: Path):
         output_dir=str(tmp_path),
         download_blender=True,
         blender_dir=str(tmp_path),
+        print_output=True,
+        print_cmd=True
     )

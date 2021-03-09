@@ -29,7 +29,7 @@ def _download_blender(blender_dir: str):
 
 def _ensure_blender_available(blender_dir: str, download_blender: bool):
     """Ensures blender is available in the given directory."""
-    blender_binary = os.path.join(blender_dir, "blender/blender")
+    blender_binary = os.path.join(blender_dir, "blender_bin")
     found_blender = os.path.exists(blender_binary)
 
     if not found_blender and not download_blender:

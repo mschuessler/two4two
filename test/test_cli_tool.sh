@@ -16,16 +16,7 @@ two4two_create_dataset --help
 
 # create temporary output dir
 cwd=`pwd`
-tmp_dir=`mktemp -d -p "$cwd"`
-
-
-function cleanup {
-  rm -rf "$tmp_dir"
-  echo "Deleted temp working directory $tmp_dir"
-}
-
-# register the cleanup function to be called on the EXIT signal
-trap cleanup EXIT
+tmp_dir=`mktemp -d`
 
 echo "Output directory: $tmp_dir"
 
