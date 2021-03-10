@@ -97,7 +97,7 @@ class SceneParameters:
         'obj_incline': utils.HALF_CIRCLE,
         'obj_rotation': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
-        'position': (-0.5, 0.5),
+        'position': (-3.0, 3.0),
         'obj_color_scalar': (0, 1),
         'bg_color_scalar': (0, 1),
     }
