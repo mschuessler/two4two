@@ -6,7 +6,7 @@ import copy
 import dataclasses
 import importlib
 import pprint
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 import uuid
 
 from two4two import utils
@@ -48,9 +48,11 @@ class SceneParameters:
         bg_color: Background color as RGBA
         resolution: Resolution of the final image.
         id: UUID used for saving rendered image and mask as image file.
+        original_id: The id of the original SceneParameters before cloning
+
     """
     # TODO: once #38 is done. describe the coordinate system in full detail.
-    obj_name: str = None
+    obj_name: str = 'sticky'
     labeling_error: bool = False
     spherical: float = 0.5
     bone_bend: Tuple[float, ...] = tuple([0] * 7)
@@ -59,7 +61,7 @@ class SceneParameters:
     obj_rotation: float = 0.0
     fliplr: bool = False
     position: float = (0, 0)
-    arm_position: float = 0
+    arm_position: float = 0.0
     obj_color_scalar: float = 0.5
     # When passing 0.5 to the cmap 'seismic' the following color is obtained
     obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
@@ -68,6 +70,23 @@ class SceneParameters:
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
+    original_id: Optional[str] = None
+    _attributes_status: Dict[str, str] = dataclasses.field(
+        repr=False,
+        default_factory=lambda: {
+            'obj_name': 'default',
+            'labeling_error': 'default',
+            'spherical': 'default',
+            'bone_bend': 'default',
+            'bone_rotation': 'default',
+            'obj_incline': 'default',
+            'obj_rotation': 'default',
+            'fliplr': 'default',
+            'position': 'default',
+            'arm_position': 'default',
+            'bg_color_scalar': 'default',
+            'obj_color_scalar': 'default'
+        })
 
     VALID_VALUES = {
         'spherical': (0, 1),
@@ -154,18 +173,74 @@ class SceneParameters:
     def __str__(self) -> str:
         """Returns the object as a string."""
         pp = pprint.PrettyPrinter(indent=2)
-        return self.__class__.__name__ + pp.pformat(self.__dict__)
 
-    def clone(self, new_id: bool = True) -> SceneParameters:
+        return self.__class__.__name__ + pp.pformat(
+            {k: self.__dict__[k] for k in self.__dict__.keys() if k != "_attributes_status"})
+
+    def clone(self, create_new_id: bool = True) -> SceneParameters:
         """Returns a deep copy.
 
+        Creating a clone of a clone will raise ``TypeError`` unless no new id is assigned.
+
         Args:
-            new_id: Creates new UUID.
+            create_new_id: Creates new UUID.
 
         """
         clone = copy.deepcopy(self)
-        clone.id = str(uuid.uuid4())
+        if create_new_id:
+            if self.original_id is not None:
+                # We are undecided about this contrain, might be reomved later
+                raise ValueError("Creating a clone of a clone is not allowed")
+            clone.original_id = clone.id
+            clone.id = str(uuid.uuid4())
+
         return clone
+
+    def get_status(self, attribute: str) -> str:
+        """Returns the status default, custom ,sampled or resampled for an attribute.
+
+        SceneParameters allows to track the status of attributes thant can be sampled.
+        When setting or sampeling attributes externally the functions use `get_status`,
+        `mark_custom` and `mark_sampled` should be used to make use of the tracking.
+        The possible status are:
+            default: attribute has been initialized to default value.
+            custom: attribute has been set manually.
+            sampled: attribute has been sampled by sampler.
+            resampled: attribute has been sampled again.
+        """
+        if attribute not in self._attributes_status:
+            raise ValueError(f"{attribute} is not a tracked attribute")
+        return self._attributes_status[attribute]
+
+    def mark_custom(self, attribute: str):
+        """Updates the status of the attribute to `custom`.
+
+        SceneParameters allows to track the status of attributes thant can be sampled.
+        The status can be obtained with  `get_status`.
+        """
+        # Get status will throw type error of atribute is untracked
+        self.get_status(attribute)
+        self._attributes_status[attribute] = 'custom'
+
+    def mark_sampled(self, attribute: str):
+        """Updates the status of the attribute to sampled or resampled.
+
+        SceneParameters allows to track the status of attributes than can be sampled.
+        This function marks this attribute as `sampled`
+        If the attribute was set to sampled before if will be set to `resampled`.
+        The status can be obtained with  `get_status`.
+        """
+        # Get status will throw type error of atribute is untracked
+        status = self.get_status(attribute)
+        if status in ('default', 'custom'):
+            self._attributes_status[attribute] = 'sampled'
+        elif status == 'sampled':
+            self._attributes_status[attribute] = 'resampled'
+        elif status == 'resampled':
+            pass
+        else:
+            raise ValueError(f"Expected status default, custom, sampled \
+            or resampled, got {self._attributes_status[attribute]}")
 
     @property
     def filename(self) -> str:
@@ -201,5 +276,5 @@ def split_sticky_stretchy(params: List[SceneParameters],
 
 
     """
-    return [p for p in params if p.obj_name == 'sticky'][:num_samples], \
-        [p for p in params if p.obj_name == 'stretchy'][:num_samples]
+    return ([p for p in params if p.obj_name == 'sticky'][:num_samples],
+            [p for p in params if p.obj_name == 'stretchy'][:num_samples])

@@ -3,6 +3,8 @@
 import dataclasses
 import json
 
+import pytest
+
 import two4two
 
 
@@ -10,6 +12,12 @@ import two4two
 class MyParameters(two4two.SceneParameters):
     """Class to test subclass of SceneParameters."""
     my_field: str = "my very unique value"
+
+
+def test_printing_scene_parameters():
+    """Dummy test of __str__ function."""
+    params = two4two.Sampler().sample()
+    print(str(params))
 
 
 def test_subclass_scene_parameters():
@@ -37,3 +45,15 @@ def test_sample_scene_parameters():
     for i in range(1000):
         param = sampler.sample()
         param.check_values()
+
+
+def test_scene_parameter_clone():
+    """Tests the cloning of SceneParameters."""
+    param = two4two.SceneParameters()
+    param_clone = param.clone()
+    assert param_clone != param
+    assert param.id != param_clone.id
+    assert param_clone.original_id == param.id
+    with pytest.raises(ValueError):
+        param_clone.clone()
+    assert param_clone.clone(create_new_id=False).id == param_clone.id
