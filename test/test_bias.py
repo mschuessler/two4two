@@ -39,8 +39,8 @@ def test_resampeling():
     sampler.sample_spherical(param2)
     param3 = param2.clone()
     sampler.sample_arm_position(param3)
-    assert param1._attributes_status['obj_incline'] == 'sampled'
-    assert param2._attributes_status['spherical'] == 'resampled'
-    assert param3._attributes_status['spherical'] == 'resampled'
-    assert param3._attributes_status['arm_position'] == 'resampled'
+    assert param1.get_status('obj_incline') == 'sampled'
+    assert param2.get_status('spherical') == 'resampled'
+    assert param3.get_status('spherical') == 'resampled'
+    assert param3.get_status('arm_position') == 'resampled'
     assert param3.original_id == param2.id

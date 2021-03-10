@@ -208,6 +208,8 @@ class SceneParameters:
             sampled: attribute has been sampled by sampler.
             resampled: attribute has been sampled again.
         """
+        if attribute not in self._attributes_status:
+            raise ValueError(f"{attribute} is not a tracked attribute")
         return self._attributes_status[attribute]
 
     def mark_custom(self, attribute: str):
@@ -216,6 +218,8 @@ class SceneParameters:
         SceneParameters allows to track the status of attributes thant can be sampled.
         The status can be obtained with  `get_status`.
         """
+        # Get status will throw type error of atribute is untracked
+        self.get_status(attribute)
         self._attributes_status[attribute] = 'custom'
 
     def mark_sampled(self, attribute: str):
@@ -226,11 +230,13 @@ class SceneParameters:
         If the attribute was set to sampled before if will be set to `resampled`.
         The status can be obtained with  `get_status`.
         """
-        if self._attributes_status[attribute] in ('default', 'custom'):
+        # Get status will throw type error of atribute is untracked
+        status = self.get_status(attribute)
+        if status in ('default', 'custom'):
             self._attributes_status[attribute] = 'sampled'
-        elif self._attributes_status[attribute] == 'sampled':
+        elif status == 'sampled':
             self._attributes_status[attribute] = 'resampled'
-        elif self._attributes_status[attribute] == 'resampled':
+        elif status == 'resampled':
             pass
         else:
             raise ValueError(f"Expected status default, custom, sampled \
@@ -270,5 +276,5 @@ def split_sticky_stretchy(params: List[SceneParameters],
 
 
     """
-    return [p for p in params if p.obj_name == 'sticky'][:num_samples],
-    [p for p in params if p.obj_name == 'stretchy'][:num_samples]
+    return ([p for p in params if p.obj_name == 'sticky'][:num_samples],
+            [p for p in params if p.obj_name == 'stretchy'][:num_samples])
