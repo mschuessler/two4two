@@ -14,6 +14,12 @@ class MyParameters(two4two.SceneParameters):
     my_field: str = "my very unique value"
 
 
+def test_printing_scene_parameters():
+    """Dummy test of __str__ function."""
+    params = two4two.Sampler().sample()
+    print(str(params))
+
+
 def test_subclass_scene_parameters():
     """Tests if load selects the right subclass."""
     param = MyParameters()
@@ -48,6 +54,6 @@ def test_scene_parameter_clone():
     assert param_clone != param
     assert param.id != param_clone.id
     assert param_clone.original_id == param.id
-    with pytest.raises(TypeError):
+    with pytest.raises(ValueError):
         param_clone.clone()
-    assert param_clone.clone(new_id=False).id == param_clone.id
+    assert param_clone.clone(create_new_id=False).id == param_clone.id

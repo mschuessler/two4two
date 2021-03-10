@@ -48,11 +48,8 @@ class SceneParameters:
         bg_color: Background color as RGBA
         resolution: Resolution of the final image.
         id: UUID used for saving rendered image and mask as image file.
-        attributes_status: Dictionary for tracking status of all atributes that can be sampled.
-            DEFAULT: attirbute has been initialized to default value.
-            SAMPLED: attribute has been sampled by sampler.
-            RESAMPLED: attribute has been sampled again.
-        parent_id: The id of the original SceneParameters before cloning
+        original_id: The id of the original SceneParameters before cloning
+
     """
     # TODO: once #38 is done. describe the coordinate system in full detail.
     obj_name: str = 'sticky'
@@ -73,22 +70,23 @@ class SceneParameters:
     bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
-    attributes_status: dict[str, str] = dataclasses.field(
-        default_factory=lambda: {
-            'obj_name': 'DEFAULT',
-            'labeling_error': 'DEFAULT',
-            'spherical': 'DEFAULT',
-            'bone_bend': 'DEFAULT',
-            'bone_rotation': 'DEFAULT',
-            'obj_incline': 'DEFAULT',
-            'obj_rotation': 'DEFAULT',
-            'fliplr': 'DEFAULT',
-            'position': 'DEFAULT',
-            'arm_position': 'DEFAULT',
-            'bg_color_scalar': 'DEFAULT',
-            'obj_color_scalar': 'DEFAULT'
-        })
     original_id: Optional[str] = None
+    _attributes_status: Dict[str, str] = dataclasses.field(
+        repr=False,
+        default_factory=lambda: {
+            'obj_name': 'default',
+            'labeling_error': 'default',
+            'spherical': 'default',
+            'bone_bend': 'default',
+            'bone_rotation': 'default',
+            'obj_incline': 'default',
+            'obj_rotation': 'default',
+            'fliplr': 'default',
+            'position': 'default',
+            'arm_position': 'default',
+            'bg_color_scalar': 'default',
+            'obj_color_scalar': 'default'
+        })
 
     VALID_VALUES = {
         'spherical': (0, 1),
@@ -175,26 +173,68 @@ class SceneParameters:
     def __str__(self) -> str:
         """Returns the object as a string."""
         pp = pprint.PrettyPrinter(indent=2)
-        return self.__class__.__name__ + pp.pformat(self.__dict__)
 
-    def clone(self, new_id: bool = True) -> SceneParameters:
+        return self.__class__.__name__ + pp.pformat(
+            {k: self.__dict__[k] for k in self.__dict__.keys() if k != "_attributes_status"})
+
+    def clone(self, create_new_id: bool = True) -> SceneParameters:
         """Returns a deep copy.
 
         Creating a clone of a clone will raise ``TypeError`` unless no new id is assigned.
 
         Args:
-            new_id: Creates new UUID.
+            create_new_id: Creates new UUID.
 
         """
         clone = copy.deepcopy(self)
-        if new_id:
+        if create_new_id:
             if self.original_id is not None:
                 # We are undecided about this contrain, might be reomved later
-                raise TypeError("Creating a clone of a clone is not allowed")
+                raise ValueError("Creating a clone of a clone is not allowed")
             clone.original_id = clone.id
             clone.id = str(uuid.uuid4())
 
         return clone
+
+    def get_status(self, attribute: str) -> str:
+        """Returns the status default, custom ,sampled or resampled for an attribute.
+
+        SceneParameters allows to track the status of attributes thant can be sampled.
+        When setting or sampeling attributes externally the functions use `get_status`,
+        `mark_custom` and `mark_sampled` should be used to make use of the tracking.
+        The possible status are:
+            default: attribute has been initialized to default value.
+            custom: attribute has been set manually.
+            sampled: attribute has been sampled by sampler.
+            resampled: attribute has been sampled again.
+        """
+        return self._attributes_status[attribute]
+
+    def mark_custom(self, attribute: str):
+        """Updates the status of the attribute to `custom`.
+
+        SceneParameters allows to track the status of attributes thant can be sampled.
+        The status can be obtained with  `get_status`.
+        """
+        self._attributes_status[attribute] = 'custom'
+
+    def mark_sampled(self, attribute: str):
+        """Updates the status of the attribute to sampled or resampled.
+
+        SceneParameters allows to track the status of attributes than can be sampled.
+        This function marks this attribute as `sampled`
+        If the attribute was set to sampled before if will be set to `resampled`.
+        The status can be obtained with  `get_status`.
+        """
+        if self._attributes_status[attribute] in ('default', 'custom'):
+            self._attributes_status[attribute] = 'sampled'
+        elif self._attributes_status[attribute] == 'sampled':
+            self._attributes_status[attribute] = 'resampled'
+        elif self._attributes_status[attribute] == 'resampled':
+            pass
+        else:
+            raise ValueError(f"Expected status default, custom, sampled \
+            or resampled, got {self._attributes_status[attribute]}")
 
     @property
     def filename(self) -> str:
@@ -230,5 +270,5 @@ def split_sticky_stretchy(params: List[SceneParameters],
 
 
     """
-    return [p for p in params if p.obj_name == 'sticky'][:num_samples], \
-        [p for p in params if p.obj_name == 'stretchy'][:num_samples]
+    return [p for p in params if p.obj_name == 'sticky'][:num_samples],
+    [p for p in params if p.obj_name == 'stretchy'][:num_samples]

@@ -33,14 +33,14 @@ def test_resampeling():
     sampler = two4two.ColorBiasedSampler()
     param1 = two4two.SceneParameters()
     param2 = sampler.sample()
-    assert all(value == 'DEFAULT' for value in param1.attributes_status.values())
-    assert all(value == 'SAMPLED' for value in param2.attributes_status.values())
+    assert all(value == 'default' for value in param1._attributes_status.values())
+    assert all(value == 'sampled' for value in param2._attributes_status.values())
     sampler.sample_obj_incline(param1)
     sampler.sample_spherical(param2)
     param3 = param2.clone()
     sampler.sample_arm_position(param3)
-    assert param1.attributes_status['obj_incline'] == 'SAMPLED'
-    assert param2.attributes_status['spherical'] == 'RESAMPLED'
-    assert param3.attributes_status['spherical'] == 'RESAMPLED'
-    assert param3.attributes_status['arm_position'] == 'RESAMPLED'
+    assert param1._attributes_status['obj_incline'] == 'sampled'
+    assert param2._attributes_status['spherical'] == 'resampled'
+    assert param3._attributes_status['spherical'] == 'resampled'
+    assert param3._attributes_status['arm_position'] == 'resampled'
     assert param3.original_id == param2.id
