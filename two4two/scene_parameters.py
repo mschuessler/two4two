@@ -103,6 +103,20 @@ class SceneParameters:
     }
 
     @classmethod
+    def default_sticky(cls) -> SceneParameters:
+        """Creates SceneParameters with default values for sticky."""
+        return cls()
+
+    @classmethod
+    def default_stretchy(cls) -> SceneParameters:
+        """Creates SceneParameters with default values for stretchy."""
+        params = cls()
+        params.obj_name = 'stretchy'
+        params.arm_position = 1
+        return params
+
+
+    @classmethod
     def _is_allowed_value(cls, value: Any, name: str) -> bool:
         """Checks if values are in the allowed value ranges."""
         valid = cls.VALID_VALUES[name]
