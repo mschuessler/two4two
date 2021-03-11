@@ -6,7 +6,8 @@ jobs:
   build:
     strategy:
       matrix:
-        # to enable mac: platform: [ubuntu-latest, macos-latest]
+        # comment out to enable mac:
+        # platform: [ubuntu-latest, macos-latest]
         platform: [ubuntu-latest]
         python-version: [3.7]
     runs-on: ${{ matrix.platform }}
