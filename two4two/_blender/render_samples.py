@@ -10,7 +10,6 @@ from pathlib import Path
 import sys
 
 import bpy
-import coverage
 
 # the two4two package is not visible for the blender python.
 # we therfore add the package directory to the path.
@@ -36,7 +35,11 @@ def _render_files(param_file: str, save_location: str):
 
 
 if __name__ == '__main__':
-    # starts coverage if tests are running
-    # otherwise nothing happens
-    coverage.process_startup()
+    try:
+        # starts coverage if tests are running
+        # otherwise nothing happens
+        import coverage
+        coverage.process_startup()
+    except ImportError:
+        pass
     _render_files(sys.argv[-2], sys.argv[-1])
