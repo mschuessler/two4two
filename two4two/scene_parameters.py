@@ -115,6 +115,19 @@ class SceneParameters:
         else:
             raise ValueError(f"Unknown valid value description: {valid}")
 
+    @classmethod
+    def default_sticky(cls) -> SceneParameters:
+        """Creates SceneParameters with default values for sticky."""
+        return cls()
+
+    @classmethod
+    def default_stretchy(cls) -> SceneParameters:
+        """Creates SceneParameters with default values for stretchy."""
+        params = cls()
+        params.obj_name = 'stretchy'
+        params.arm_position = 1
+        return params
+
     def check_values(self):
         """Raises a ValueError if a value is not in its valid range."""
         for name, valid in self.VALID_VALUES.items():
@@ -195,6 +208,20 @@ class SceneParameters:
             clone.id = str(uuid.uuid4())
 
         return clone
+
+    def is_clone(self, original: Optional[SceneParameters] = None) -> bool:
+        """Returns True if this parameters have been cloned.
+
+        Args:
+            original: Returns True is this parameter is a clone of the given original.
+
+        """
+        if original is None:
+            return self.original_id is not None
+        elif original.id == self.original_id:
+            return True
+        else:
+            return False
 
     def get_status(self, attribute: str) -> str:
         """Returns the status default, custom ,sampled or resampled for an attribute.
