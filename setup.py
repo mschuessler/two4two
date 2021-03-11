@@ -27,8 +27,9 @@ setuptools.setup(
     classifiers=[
         "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
-        "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
-        "Operating System :: POSIX :: Linux"
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: POSIX :: Linux",
+        "Operating System :: MacOS :: MacOS X",
     ],
     install_requires=[
         'imageio',
@@ -40,6 +41,7 @@ setuptools.setup(
     extras_require={
         'dev': [
             'pytest',
+            'pytest-cov',
             'flake8',
             'flake8-import-order',
             'flake8-annotations',
