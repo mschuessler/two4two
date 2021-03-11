@@ -57,6 +57,6 @@ def test_scene_parameter_clone():
     with pytest.raises(ValueError):
         param_clone.clone()
     assert param_clone.clone(create_new_id=False).id == param_clone.id
-    assert param_clone.is_clone()
-    assert param_clone.is_clone(param)
-    assert not param.is_clone()
+    assert param_clone.is_cloned()
+    assert param_clone.is_clone_of(param)
+    assert not param.is_cloned()

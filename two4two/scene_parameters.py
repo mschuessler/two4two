@@ -209,19 +209,18 @@ class SceneParameters:
 
         return clone
 
-    def is_clone(self, original: Optional[SceneParameters] = None) -> bool:
-        """Returns True if this parameters have been cloned.
+    def is_clone_of(self, original: Optional[SceneParameters] = None) -> bool:
+        """Returns True if this parameters have been cloned form the given orignal.
 
         Args:
             original: Returns True is this parameter is a clone of the given original.
 
         """
-        if original is None:
-            return self.original_id is not None
-        elif original.id == self.original_id:
-            return True
-        else:
-            return False
+        return original.id == self.original_id
+
+    def is_cloned(self) -> bool:
+        """Returns True if this parameters have been cloned."""
+        return self.original_id is not None
 
     def get_status(self, attribute: str) -> str:
         """Returns the status default, custom ,sampled or resampled for an attribute.
