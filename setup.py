@@ -41,6 +41,7 @@ setuptools.setup(
     extras_require={
         'dev': [
             'pytest',
+            'pytest-cov',
             'flake8',
             'flake8-import-order',
             'flake8-annotations',
