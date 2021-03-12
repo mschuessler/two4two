@@ -21,7 +21,7 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts': [
-            'two4two_create_dataset=two4two.cli_tool:main',
+            'two4two_render_dataset=two4two.cli_tool:render_dataset',
         ],
     },
     classifiers=[
