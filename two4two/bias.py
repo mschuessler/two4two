@@ -38,10 +38,17 @@ class Sampler:
     * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
 
     These dictionaries are the easiest way to implement a bias.
+    If you want an attribute to be sampled diffrently based on wheter it shows a sticky or stretchy,
+    it is usally sufficent to change theses dictionaries.
     See ``ColorBiasedSceneParameterSampler`` as an example.
 
     To implement more complex biases, you can inherit this class and modify how individual
-    attributes are sample, e.g., by introducing additional dependencies.
+    attributes are sampled, e.g., by introducing additional dependencies. Usally the best approach
+    is to overwrite the sampling method (e.g. ``sample_obj_rotation``) and modifiy the sampling to
+    be depentend on other attributes. Please be aware that you will then also need to implement
+    interventional sampleing. This means the sampleing which is undertaken when it would be
+    independent of other attributes. The default sampler implementation in this class are only
+    dependent upon obj_name, which is why its the only attribute cosnidered in the intervention.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -150,72 +157,141 @@ class Sampler:
 
         return value
 
+    def _sample_name(self) -> str:
+        """Convienience fucntion. Returns a sampled obj_name."""
+        return self._sample(None, self.obj_name)
+
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
         params.obj_name = self._sample(None, self.obj_name)
         params.mark_sampled('obj_name')
 
-    def sample_labeling_error(self, params: SceneParameters):
-        """Samples the ``labeling_error``."""
-        params.labeling_error = self._sample(params.obj_name, self.labeling_error)
+    def sample_labeling_error(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``labeling_error``.
+
+        Attrs:
+            params: SceneParameters for which the labeling_error is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.labeling_error = self._sample(obj_name, self.labeling_error)
         params.mark_sampled('labeling_error')
 
-    def sample_spherical(self, params: SceneParameters):
-        """Samples the ``spherical``."""
-        params.spherical = self._sample(params.obj_name, self.spherical)
+    def sample_spherical(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``spherical``..
+
+        Attrs:
+            params: SceneParameters for which the spherical attribute is sampled and updated.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.spherical = self._sample(obj_name, self.spherical)
         params.mark_sampled('spherical')
 
-    def sample_bone_bend(self, params: SceneParameters):
-        """Samples the ``bone_bend``."""
-        params.bone_bend = self._sample(params.obj_name, self.bone_bend, size=7)
+    def sample_bone_bend(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bone_bend``.
+
+        Attrs:
+            params: SceneParameters for which the bone bending is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.bone_bend = self._sample(obj_name, self.bone_bend, size=7)
         params.mark_sampled('bone_bend')
 
-    def sample_bone_rotation(self, params: SceneParameters):
-        """Samples the ``bone_rotation``."""
-        params.bone_rotation = self._sample(params.obj_name, self.bone_rotation, size=7)
+    def sample_bone_rotation(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bone_rotation``.
+
+        Attrs:
+            params: SceneParameters for which the bone roation is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.bone_rotation = self._sample(obj_name, self.bone_rotation, size=7)
         params.mark_sampled('bone_rotation')
 
-    def sample_obj_incline(self, params: SceneParameters):
-        """Samples the ``obj_incline``."""
-        params.obj_incline = self._sample(params.obj_name, self.obj_incline)
+    def sample_obj_incline(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_incline``.
+
+        Attrs:
+            params: SceneParameters for which the object inclination is sampled and updated.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.obj_incline = self._sample(obj_name, self.obj_incline)
         params.mark_sampled('obj_incline')
 
-    def sample_obj_rotation(self, params: SceneParameters):
-        """Samples the ``obj_rotation``."""
-        params.obj_rotation = self._sample(params.obj_name, self.obj_rotation)
+    def sample_obj_rotation(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation``.
+
+        Attrs:
+            params: SceneParameters for which the rotation is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.obj_rotation = self._sample(obj_name, self.obj_rotation)
         params.mark_sampled('obj_rotation')
 
-    def sample_fliplr(self, params: SceneParameters):
-        """Samples the ``fliplr``."""
-        params.fliplr = self._sample(params.obj_name, self.fliplr)
+    def sample_fliplr(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``fliplr``.
+
+        Attrs:
+            params: SceneParameters for which the fliping (left/right) is sampled and updated.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.fliplr = self._sample(obj_name, self.fliplr)
         params.mark_sampled('fliplr')
 
-    def sample_position(self, params: SceneParameters):
-        """Samples the ``position``."""
-        # params.position = self.position.rvs(2).tolist()
-        params.position = self._sample(params.obj_name, self.position, size=2)
+    def sample_position(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``position``.
+
+        Attrs:
+            params: SceneParameters for which the position is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.position = self._sample(obj_name, self.position, size=2)
         params.mark_sampled('position')
 
-    def sample_arm_position(self, params: SceneParameters):
-        """Samples the ``arm_position``."""
-        params.arm_position = float(self._sample(params.obj_name, self.arm_position))
+    def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``arm_position``.
+
+        Attrs:
+            params: SceneParameters for which the arm_position is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.arm_position = float(self._sample(obj_name, self.arm_position))
         params.mark_sampled('arm_position')
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
 
-    def sample_obj_color(self, params: SceneParameters):
-        """Samples the ``obj_color_scalar`` and ``obj_color_scalar``."""
-        params.obj_color_scalar = float(self._sample(params.obj_name, self.obj_color_scalar))
+    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_color_scalar`` and ``obj_color_scalar``.
+
+        Attrs:
+            params: SceneParameters for which the obj_color is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.obj_color_scalar = float(self._sample(obj_name, self.obj_color_scalar))
         params.obj_color = tuple(self._object_cmap(params)(params.obj_color_scalar))
         params.mark_sampled('obj_color_scalar')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_map)
 
-    def sample_bg_color(self, params: SceneParameters):
-        """Samples the ``bg_color`` and ``bg_color_scalar``."""
-        params.bg_color_scalar = float(self._sample(params.obj_name, self.bg_color))
+    def sample_bg_color(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bg_color`` and ``bg_color_scalar``.
+
+        Attrs:
+            params: SceneParameters for which the labeling_error is sampled and updated in place.
+            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.bg_color_scalar = float(self._sample(obj_name, self.bg_color))
         params.bg_color = tuple(self._bg_cmap(params)(params.bg_color_scalar))
         params.mark_sampled('bg_color_scalar')
 
