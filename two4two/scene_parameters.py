@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import dataclasses
 import importlib
+import json
 import pprint
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 import uuid
@@ -289,6 +290,13 @@ class SceneParameters:
             False: self.obj_name,
             True: flip_obj_name[self.obj_name]
         }[self.labeling_error]
+
+
+def load_jsonl(path: str) -> List[SceneParameters]:
+    """Loads SceneParameters from jsonl file."""
+    with open(path) as f:
+        return [SceneParameters.load(json.loads(line))
+                for line in f.readlines()]
 
 
 def split_sticky_stretchy(params: List[SceneParameters],

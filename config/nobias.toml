@@ -1,0 +1,26 @@
+[nobias]
+sampler = 'two4two.Sampler'
+output_dir = 'datasets/nobias'
+n_processes = 6
+download_blender = true
+debug = false
+
+[nobias.train]
+n_samples = 60_000
+
+[nobias.test]
+n_samples = 10_000
+
+[nobias.validation]
+n_samples = 10_000
+
+
+# [nobias.resample]
+# n_samples = 0
+# resample_attributes = [
+#     'obj_color', 'bg_color', 'sphircal', 'bone_bend',
+#     'bone_rotation', 'obj_incline', 'obj_rotation',
+#     'position', 'arm_position', 'bg_color_scalar',
+#     'obj_color_scalar'
+# ]
+# n_resampling = 5
