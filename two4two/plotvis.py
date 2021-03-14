@@ -15,7 +15,7 @@ def render_grid(
     params: Sequence[scene_parameters.SceneParameters],
     num_cols_per_class: int = 3,
     equal_class_distribution: bool = True,
-    download_blender: bool = False
+    # see #75 download_blender: bool = False
 ) -> Tuple[mlp.figure.Figure, Sequence[Sequence[mlp.axes.Axes]]]:
     """Renders scene from a list of SceneParameters and displays the in an image grid.
 
@@ -48,7 +48,7 @@ def render_grid(
     for (img, mask, param) in blender.render(
             params=sticky_params + stretchy_params,
             chunk_size=num_cols_per_class,
-            download_blender=download_blender):
+            download_blender=True):  # download_blender is true until #75 is fixed
         ax1 = sticky_ax.pop() if param.obj_name == 'sticky' else stretchy_ax.pop()
         ax1.axis('off')
         ax1.set_aspect('equal')
