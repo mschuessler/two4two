@@ -18,6 +18,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={
         "": ["*.sh"],
+        "two4two": ["py.typed"],
     },
     entry_points={
         'console_scripts': [
