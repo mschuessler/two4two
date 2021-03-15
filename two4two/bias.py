@@ -39,16 +39,22 @@ class Sampler:
 
     These dictionaries are the easiest way to implement a bias.
     If you want an attribute to be sampled diffrently based on wheter it shows a sticky or stretchy,
-    it is usally sufficent to change theses dictionaries.
-    See ``ColorBiasedSceneParameterSampler`` as an example.
+    it is usually sufficient to change these dictionaries.
+    See ``ColorBiasedSampler`` as an example.
 
     To implement more complex biases, you can inherit this class and modify how individual
-    attributes are sampled, e.g., by introducing additional dependencies. Usally the best approach
-    is to overwrite the sampling method (e.g. ``sample_obj_rotation``) and modifiy the sampling to
-    be depentend on other attributes. Please be aware that you will then also need to implement
-    interventional sampleing. This means the sampleing which is undertaken when it would be
-    independent of other attributes. The default sampler implementation in this class are only
-    dependent upon obj_name, which is why its the only attribute cosnidered in the intervention.
+    attributes are sampled, e.g., by introducing additional dependencies. Usually the best approach
+    is to overwrite the sampling method (e.g. ``sample_obj_rotation``) and modify the sampling to
+    be dependent on other attributes. Please be aware that you will then also need to implement
+    interventional sampling, because in addition to sampling new parameters, we also want to
+    controll an attribute sometimes. That means that we set the attribute to a specific value
+    independent of the usual dependencies. If the intervention flag is true, the parameter should be
+    sampled independent of any other attribute. For example, if the object color (obj_color) depends
+    on the Sticky/Stretchy variable, it would need to be sampled independent if intervention = True.
+
+    Since the default sampler implementation in this class is only dependent upon
+    obj_name, so it is the only attribute considered in the intervention.
+
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -158,7 +164,7 @@ class Sampler:
         return value
 
     def _sample_name(self) -> str:
-        """Convienience fucntion. Returns a sampled obj_name."""
+        """Convienience function. Returns a sampled obj_name."""
         return self._sample(None, self.obj_name)
 
     def sample_obj_name(self, params: SceneParameters):
@@ -171,7 +177,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the labeling_error is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.labeling_error = self._sample(obj_name, self.labeling_error)
@@ -182,7 +188,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the spherical attribute is sampled and updated.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.spherical = self._sample(obj_name, self.spherical)
@@ -193,7 +199,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the bone bending is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.bone_bend = self._sample(obj_name, self.bone_bend, size=7)
@@ -204,7 +210,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the bone roation is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.bone_rotation = self._sample(obj_name, self.bone_rotation, size=7)
@@ -215,7 +221,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the object inclination is sampled and updated.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.obj_incline = self._sample(obj_name, self.obj_incline)
@@ -226,7 +232,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the rotation is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.obj_rotation = self._sample(obj_name, self.obj_rotation)
@@ -237,7 +243,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the fliping (left/right) is sampled and updated.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.fliplr = self._sample(obj_name, self.fliplr)
@@ -248,7 +254,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the position is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.position = self._sample(obj_name, self.position, size=2)
@@ -259,7 +265,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the arm_position is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.arm_position = float(self._sample(obj_name, self.arm_position))
@@ -273,7 +279,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the obj_color is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.obj_color_scalar = float(self._sample(obj_name, self.obj_color_scalar))
@@ -288,7 +294,7 @@ class Sampler:
 
         Attrs:
             params: SceneParameters for which the labeling_error is sampled and updated in place.
-            intervention: Flag wheter interventional sampling is applied. Details: see class docu.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.bg_color_scalar = float(self._sample(obj_name, self.bg_color))
