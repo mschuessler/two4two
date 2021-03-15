@@ -7,6 +7,7 @@ blender_dir=$1
 render_script=$2
 parameter_file=$3
 output_dir=$4
+save_blender_file=$5
 
 source "$blender_dir/venv/bin/activate"
 
@@ -15,6 +16,7 @@ echo "# Script Arguments:"
 echo "render_script: $render_script"
 echo "parameter_file: $parameter_file"
 echo "output_dir: $output_dir"
+echo "save_blender_file: $save_blender_file"
 echo ""
 echo "# Enviroment:"
 printenv
@@ -34,3 +36,4 @@ PYTHONPATH="$blender_dir/venv/lib/python3.7/site-packages" \
         -- \
         $parameter_file \
         $output_dir \
+        $save_blender_file

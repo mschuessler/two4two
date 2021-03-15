@@ -126,6 +126,7 @@ def render(
     download_blender: bool = False,
     print_output: bool = False,
     print_cmd: bool = False,
+    save_blender_file: bool = False
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -140,6 +141,8 @@ def render(
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
         print_output: Print the output of blender.
         print_cmd: Print executed subcommand (useful for debugging).
+        save_blender_file: If ``True``, the blender file will be saved to
+            "{params.id}.blender".
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -161,6 +164,7 @@ def render(
             render_script,
             parameter_file,
             output_dir,
+            str(save_blender_file),
         ]
         if print_cmd:
             print("Command to execute Blender:")
