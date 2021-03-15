@@ -35,8 +35,13 @@ def test_blender_rending(tmp_path: Path):
         n_processes=1,
         chunk_size=1,
         output_dir=str(tmp_path),
-        download_blender=True
+        download_blender=True,
+        save_blender_file=True,
+        print_output=False,
+        print_cmd=False,
     )
+    assert tmp_path.glob("*.png")
+    assert tmp_path.glob("*.blender")
 
 
 def test_blender_rending_tmp_dir(tmp_path: Path):

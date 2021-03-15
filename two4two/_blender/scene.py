@@ -199,6 +199,10 @@ class Scene():
             if self.parameters.fliplr:
                 self._fliplr_image(mask_filename)
 
+    def save_blender_file(self, filename: str):
+        """Saves the current blender state to the given filename."""
+        bpy.ops.wm.save_as_mainfile(filepath=filename)
+
     def __init__(self,
                  parameters: scene_parameters.SceneParameters,
                  ):
