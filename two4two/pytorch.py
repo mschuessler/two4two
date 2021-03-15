@@ -22,9 +22,6 @@ class Two4Two(Dataset):
     argument. Once created, you can also change it using the
     ``set_return_attributes`` method.
 
-    Any attributes that are tuples such as ``SceneParameters.bone_rotation``
-    will be flatten.
-
     You can inspect the name of each dimension of the returned label array by
     using the ``get_label_names`` method.
 
@@ -39,7 +36,7 @@ class Two4Two(Dataset):
         # -> 8
 
         dset.get_label_names()
-        # -> ['obj_name', 'bone_rotation_0', 'bone_rotation_1', ...]
+        # -> ['obj_name', 'bone_rotation']
 
         dset.set_return_attributes(['obj_name', 'bg_color_scalar'])
 
@@ -93,22 +90,10 @@ class Two4Two(Dataset):
 
         The class exposes all attributes of SceneParameters.  This function
         concatenates all attributes selected by ``set_return_attributes`` to a 1d array.
-        Any attributes that are tuples such as ``SceneParameters.bone_rotation``
-        will be also be appended.
+        Any attributes that are tuples such as will be also be appended.
 
         Additonally, the function also keeps track of the name of each dimension.
 
-        For example:
-
-        ```
-            dset = Two4Two(
-                root_dir, 'train',
-                return_attributes=['obj_name', 'bone_rotation'])
-            dset._scene_parameters_to_flat_array(params)
-            # will return:
-            # (['obj_name', 'bone_rotation_0',  ..., 'bone_rotation_7',], label_array)
-            #
-        ```
         """
         arr = []
         label_names = []

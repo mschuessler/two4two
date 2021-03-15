@@ -58,13 +58,7 @@ def test_pytorch_dataloader(tmp_path: Path):
     label_names = dataset.get_label_names()
     expected_label_names = [
         'obj_name',
-        'bone_rotation_0',
-        'bone_rotation_1',
-        'bone_rotation_2',
-        'bone_rotation_3',
-        'bone_rotation_4',
-        'bone_rotation_5',
-        'bone_rotation_6',
+        'bone_rotation',
         'bg_color_scalar',
         'spherical',
     ]

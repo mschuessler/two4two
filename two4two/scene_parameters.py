@@ -34,7 +34,7 @@ class SceneParameters:
             not change.
         spherical: For ``1``,  spherical objects. For ``0``, cubes.
             Can have values in-between.
-        bone_rotation: Rotation of the individual bone segments.
+        bone_rotation: Rotation of bone segments.
         obj_incline: Rotation of the object around the Y axis.
         obj_rotation: Rotation of the object around the Z axis.
         fliplr: Wheter the image should be flipped left to right.
@@ -56,7 +56,7 @@ class SceneParameters:
     obj_name: str = 'sticky'
     labeling_error: bool = False
     spherical: float = 0.5
-    bone_rotation: Tuple[float, ...] = tuple([0] * 7)
+    bone_rotation: float = 0.0
     obj_incline: int = 0.0
     obj_rotation: float = 0.0
     fliplr: bool = False
@@ -155,8 +155,6 @@ class SceneParameters:
             self.obj_color = tuple(self.obj_color)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
-        if type(self.bone_rotation) == list:
-            self.bone_rotation = tuple(self.bone_rotation)
 
     @staticmethod
     def load(state: Dict[str, Any]) -> SceneParameters:

@@ -199,7 +199,7 @@ class Sampler:
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.bone_rotation = self._sample(obj_name, self.bone_rotation, size=7)
+        params.bone_rotation = self._sample(obj_name, self.bone_rotation)
         params.mark_sampled('bone_rotation')
 
     def sample_obj_incline(self, params: SceneParameters, intervention: bool = False):
