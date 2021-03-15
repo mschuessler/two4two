@@ -38,6 +38,7 @@ setuptools.setup(
         'numpy',
         'scipy',
         'tqdm',
+        'toml'
     ],
     extras_require={
         'dev': [
