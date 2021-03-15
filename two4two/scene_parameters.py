@@ -39,7 +39,8 @@ class SceneParameters:
         obj_incline: Rotation of the object around the Y axis.
         obj_rotation: Rotation of the object around the Z axis.
         fliplr: Wheter the image should be flipped left to right.
-        position: Position of the object.
+        position_x: Position of the object on x-axis.
+        position_y: Position of the object on y-axis.
         arm_position: Absolute arm positions.
         obj_color: Object color as RGBA
         obj_color_scalar: Object color in [0, 1]. This is before converting
@@ -61,7 +62,8 @@ class SceneParameters:
     obj_incline: int = 0.0
     obj_rotation: float = 0.0
     fliplr: bool = False
-    position: float = (0, 0)
+    position_x: float = 0.0
+    position_y: float = 0.0
     arm_position: float = 0.0
     obj_color_scalar: float = 0.5
     # When passing 0.5 to the cmap 'seismic' the following color is obtained
@@ -83,7 +85,8 @@ class SceneParameters:
             'obj_incline': 'default',
             'obj_rotation': 'default',
             'fliplr': 'default',
-            'position': 'default',
+            'position_x': 'default',
+            'position_y': 'default',
             'arm_position': 'default',
             'bg_color_scalar': 'default',
             'obj_color_scalar': 'default'
@@ -98,7 +101,8 @@ class SceneParameters:
         'obj_incline': utils.HALF_CIRCLE,
         'obj_rotation': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
-        'position': (-3.0, 3.0),
+        'position_x': (-3.0, 3.0),
+        'position_y': (-3.0, 3.0),
         'obj_color_scalar': (0, 1),
         'bg_color_scalar': (0, 1),
     }
@@ -155,8 +159,6 @@ class SceneParameters:
             self.obj_color = tuple(self.obj_color)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
-        if type(self.position) == list:
-            self.position = tuple(self.position)
         if type(self.bone_bend) == list:
             self.bone_bend = tuple(self.bone_bend)
         if type(self.bone_rotation) == list:

@@ -225,7 +225,8 @@ class Scene():
             parameters.obj_incline,
             parameters.obj_rotation,
         )
-        x, y = parameters.position
+        x = parameters.position_x
+        y = parameters.position_y
         self._set_position(x, y)
 
         self._setup_scene(parameters.bg_color)

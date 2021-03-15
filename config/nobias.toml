@@ -13,14 +13,3 @@ n_samples = 10_000
 
 [nobias.validation]
 n_samples = 10_000
-
-
-# [nobias.resample]
-# n_samples = 0
-# resample_attributes = [
-#     'obj_color', 'bg_color', 'sphircal', 'bone_bend',
-#     'bone_rotation', 'obj_incline', 'obj_rotation',
-#     'position', 'arm_position', 'bg_color_scalar',
-#     'obj_color_scalar'
-# ]
-# n_resampling = 5

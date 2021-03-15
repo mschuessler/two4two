@@ -65,7 +65,7 @@ class Sampler:
         bone_bend: distribution of ``SceneParameters.bone_bend``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
         obj_name: distribution of ``SceneParameters.obj_name``.
-        arm_position: distribution of ``SceneParameters.arm_position``.
+        arm_position: distribution of ``SceneParameters.arm_position_x`` and ``SceneParameters.arm_position_y``
         labeling_error: distribution of ``SceneParameters.labeling_error``.
         obj_incline: distribution of ``SceneParameters.obj_incline``.
         obj_rotation:distribution of ``SceneParameters.obj_rotation``.
@@ -250,15 +250,17 @@ class Sampler:
         params.mark_sampled('fliplr')
 
     def sample_position(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``position``.
+        """Samples the ``position_x`` and ``position_y``.
 
         Attrs:
             params: SceneParameters for which the position is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.position = self._sample(obj_name, self.position, size=2)
-        params.mark_sampled('position')
+        params.position_x = self._sample(obj_name, self.position)
+        params.position_y = self._sample(obj_name, self.position)
+        params.mark_sampled('position_x')
+        params.mark_sampled('position_y')
 
     def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``arm_position``.
