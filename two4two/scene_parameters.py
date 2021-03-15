@@ -34,7 +34,6 @@ class SceneParameters:
             not change.
         spherical: For ``1``,  spherical objects. For ``0``, cubes.
             Can have values in-between.
-        bone_bend: Bending of the individual bone segments.
         bone_rotation: Rotation of the individual bone segments.
         obj_incline: Rotation of the object around the Y axis.
         obj_rotation: Rotation of the object around the Z axis.
@@ -57,7 +56,6 @@ class SceneParameters:
     obj_name: str = 'sticky'
     labeling_error: bool = False
     spherical: float = 0.5
-    bone_bend: Tuple[float, ...] = tuple([0] * 7)
     bone_rotation: Tuple[float, ...] = tuple([0] * 7)
     obj_incline: int = 0.0
     obj_rotation: float = 0.0
@@ -80,7 +78,6 @@ class SceneParameters:
             'obj_name': 'default',
             'labeling_error': 'default',
             'spherical': 'default',
-            'bone_bend': 'default',
             'bone_rotation': 'default',
             'obj_incline': 'default',
             'obj_rotation': 'default',
@@ -94,7 +91,6 @@ class SceneParameters:
 
     VALID_VALUES = {
         'spherical': (0, 1),
-        'bone_bend': utils.HALF_CIRCLE,
         'bone_rotation': utils.HALF_CIRCLE,
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
@@ -159,8 +155,6 @@ class SceneParameters:
             self.obj_color = tuple(self.obj_color)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
-        if type(self.bone_bend) == list:
-            self.bone_bend = tuple(self.bone_bend)
         if type(self.bone_rotation) == list:
             self.bone_rotation = tuple(self.bone_rotation)
 

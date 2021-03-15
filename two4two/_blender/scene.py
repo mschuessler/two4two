@@ -23,9 +23,8 @@ class Scene():
     """
 
     def _set_pose(self,
-                  bond_bend: Sequence[float],
                   bone_rotation: Sequence[float]):
-        self.obj.set_pose(bond_bend, bone_rotation)
+        self.obj.set_pose(bone_rotation)
         self.obj.center()
 
     def _set_rotation(self,
@@ -219,8 +218,7 @@ class Scene():
         if blend_dir not in sys.path:
             sys.path.append(blend_dir)
 
-        self._set_pose(parameters.bone_bend,
-                       parameters.bone_rotation)
+        self._set_pose(parameters.bone_rotation)
         self._set_rotation(
             parameters.obj_incline,
             parameters.obj_rotation,

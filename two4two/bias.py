@@ -62,7 +62,6 @@ class Sampler:
         bg_color_map: used color map for the background.
         obj_color_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
-        bone_bend: distribution of ``SceneParameters.bone_bend``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
         obj_name: distribution of ``SceneParameters.obj_name``.
         arm_position: distribution of ``SceneParameters.arm_position_x`` and ``SceneParameters.arm_position_y``
@@ -77,7 +76,6 @@ class Sampler:
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bone_bend: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
     bone_rotation: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
@@ -109,7 +107,6 @@ class Sampler:
         self.sample_obj_name(params)
         self.sample_labeling_error(params)
         self.sample_spherical(params)
-        self.sample_bone_bend(params)
         self.sample_bone_rotation(params)
         self.sample_obj_incline(params)
         self.sample_obj_rotation(params)
@@ -193,17 +190,6 @@ class Sampler:
         obj_name = self._sample_name() if intervention else params.obj_name
         params.spherical = self._sample(obj_name, self.spherical)
         params.mark_sampled('spherical')
-
-    def sample_bone_bend(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``bone_bend``.
-
-        Attrs:
-            params: SceneParameters for which the bone bending is sampled and updated in place.
-            intervention: Flag whether interventional sampling is applied. Details: see class docu.
-        """
-        obj_name = self._sample_name() if intervention else params.obj_name
-        params.bone_bend = self._sample(obj_name, self.bone_bend, size=7)
-        params.mark_sampled('bone_bend')
 
     def sample_bone_rotation(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``bone_rotation``.
