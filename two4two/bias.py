@@ -27,34 +27,31 @@ Distribution = Union[Discrete, Continouos]
 class Sampler:
     """Samples the parameters of the ``SceneParameters`` objects.
 
-    Attributes describe how the sampling is done.
-    Concretely they provide the color maps for the object and the background and
-    the distributors from which the value for the scene parameters are drawn.
+    Attributes describe how the sampling is done. Concretely they provide the color maps for the
+    object and the background and the distributors from which the value for the scene parameters are
+    drawn.
 
-    Distribution can be:
-    * scipy-distribution from ``scipy.stats``
-    * callable functions returning a single value
-    * a single (default) value.
-    * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+    Distribution can be: * scipy-distribution from ``scipy.stats`` * callable functions returning a
+    single value * a single (default) value. * a dictionary of all before-mentioned types containing
+    the keys ``sticky``and ``stretchy``.
 
-    These dictionaries are the easiest way to implement a bias.
-    If you want an attribute to be sampled diffrently based on wheter it shows a sticky or stretchy,
-    it is usually sufficient to change these dictionaries.
-    See ``ColorBiasedSampler`` as an example.
+    These dictionaries are the easiest way to implement a bias. If you want an attribute to be
+    sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to
+    change these dictionaries. See ``ColorBiasedSampler`` as an example.
 
     To implement more complex biases, you can inherit this class and modify how individual
     attributes are sampled, e.g., by introducing additional dependencies. Usually the best approach
-    is to overwrite the sampling method (e.g. ``sample_obj_rotation_pitch``) and modify the sampling to
-    be dependent on other attributes. Please be aware that you will then also need to implement
+    is to overwrite the sampling method (e.g. ``sample_obj_rotation_pitch``) and modify the sampling
+    to be dependent on other attributes. Please be aware that you will then also need to implement
     interventional sampling, because in addition to sampling new parameters, we also want to
     controll an attribute sometimes. That means that we set the attribute to a specific value
     independent of the usual dependencies. If the intervention flag is true, the parameter should be
-    sampled independent of any other attribute. For example, if the object color (obj_color_rgba) depends
-    on the Sticky/Stretchy variable, it would need to be sampled independent if intervention = True.
+    sampled independent of any other attribute. For example, if the object color (obj_color_rgba)
+    depends on the Sticky/Stretchy variable, it would need to be sampled independent
+    if intervention = True.
 
-    Since the default sampler implementation in this class is only dependent upon
-    obj_name, so it is the only attribute considered in the intervention.
-
+    Since the default sampler implementation in this class is only dependent upon obj_name, so it is
+    the only attribute considered in the intervention.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -64,7 +61,8 @@ class Sampler:
         spherical: distribution of ``SceneParameters.spherical``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
         obj_name: distribution of ``SceneParameters.obj_name``.
-        arm_position: distribution of ``SceneParameters.arm_position_x`` and ``SceneParameters.arm_position_y``
+        arm_position: distribution of ``SceneParameters.arm_position_x`` and
+            ``SceneParameters.arm_position_y``
         labeling_error: distribution of ``SceneParameters.labeling_error``.
         obj_rotation_roll: distribution of ``SceneParameters.obj_rotation_roll``.
         obj_rotation_pitch:distribution of ``SceneParameters.obj_rotation_pitch``.
