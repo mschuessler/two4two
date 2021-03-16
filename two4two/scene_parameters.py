@@ -68,7 +68,8 @@ class SceneParameters:
     obj_color_rgba: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
     bg_color: float = 0.45
     # When passing 0.45 to the cmap 'binary' the following color is obtained
-    bg_color_rgba: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
+    bg_color_rgba: utils.RGBAColor = (
+        0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
     original_id: Optional[str] = None
