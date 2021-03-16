@@ -361,3 +361,16 @@ class ColorBiasedSampler(Sampler):
             'sticky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
         })
+
+
+@dataclasses.dataclass()
+class HighVariationSampler(Sampler):
+    """A sample producing more challenging images.
+
+    This sampler allows for a higher variation in rotations and bending. Hence it creates a more
+    challenging datset.
+    """
+
+    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)

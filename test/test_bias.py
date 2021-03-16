@@ -25,8 +25,14 @@ def test_generic_sampler():
     with pytest.raises(KeyError):
         two4two.Sampler._sample('ronny', test_dict)
 
-    colorBiasedSample = two4two.ColorBiasedSampler()
-    colorBiasedSample.sample()
+
+def test_custom_samplers():
+    """Test if the custom samplers run."""
+    color_biased_sampler = two4two.ColorBiasedSampler()
+    color_biased_sampler.sample()
+
+    high_variation_sampler = two4two.HighVariationSampler()
+    high_variation_sampler.sample()
 
 
 def test_resampeling():
