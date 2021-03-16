@@ -59,7 +59,7 @@ class Sampler:
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
     Attrs:
-        bg_color_map: used color map for the background.
+        bg_color_rgba_map: used color map for the background.
         obj_color_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
@@ -71,7 +71,7 @@ class Sampler:
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
         obj_color_scalar: distribution of ``SceneParameters.obj_color_scalar``.
-        bg_color: distribution of ``SceneParameters.bg_color``.
+        bg_color_rgba: distribution of ``SceneParameters.bg_color_rgba``.
     """
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
@@ -88,8 +88,8 @@ class Sampler:
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color_scalar: Continouos = scipy.stats.uniform(0., 1.)
-    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_map: str = 'binary'
+    bg_color_rgba: Continouos = scipy.stats.uniform(0.05, 0.80)
+    bg_color_rgba_map: str = 'binary'
     obj_color_map: str = 'seismic'
 
     def sample(self) -> SceneParameters:
@@ -114,7 +114,7 @@ class Sampler:
         self.sample_position(params)
         self.sample_arm_position(params)
         self.sample_obj_color(params)
-        self.sample_bg_color(params)
+        self.sample_bg_color_rgba(params)
         params.check_values()
         return params
 
@@ -275,19 +275,19 @@ class Sampler:
         params.mark_sampled('obj_color_scalar')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
-        return plt.get_cmap(self.bg_color_map)
+        return plt.get_cmap(self.bg_color_rgba_map)
 
-    def sample_bg_color(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``bg_color`` and ``bg_color_scalar``.
+    def sample_bg_color_rgba(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bg_color_rgba`` and ``bg_color``.
 
         Attrs:
             params: SceneParameters for which the labeling_error is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.bg_color_scalar = float(self._sample(obj_name, self.bg_color))
-        params.bg_color = tuple(self._bg_cmap(params)(params.bg_color_scalar))
-        params.mark_sampled('bg_color_scalar')
+        params.bg_color = float(self._sample(obj_name, self.bg_color_rgba))
+        params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))
+        params.mark_sampled('bg_color')
 
 
 @dataclasses.dataclass()

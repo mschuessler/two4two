@@ -38,10 +38,10 @@ class Two4Two(Dataset):
         dset.get_label_names()
         # -> ['obj_name', 'bone_rotation']
 
-        dset.set_return_attributes(['obj_name', 'bg_color_scalar'])
+        dset.set_return_attributes(['obj_name', 'bg_color'])
 
         dset.get_label_names()
-        # -> ['obj_name', 'bg_color_scalar']
+        # -> ['obj_name', 'bg_color']
     ```
 
     Args:

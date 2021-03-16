@@ -227,7 +227,7 @@ class Scene():
         y = parameters.position_y
         self._set_position(x, y)
 
-        self._setup_scene(parameters.bg_color)
+        self._setup_scene(parameters.bg_color_rgba)
 
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'

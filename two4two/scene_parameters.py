@@ -44,9 +44,9 @@ class SceneParameters:
         obj_color: Object color as RGBA
         obj_color_scalar: Object color in [0, 1]. This is before converting
             the scalar to a color map.
-        bg_color_scalar: Background color in [0, 1]. This is before converting
+        bg_color: Background color in [0, 1]. This is before converting
             the scalar to a color map.
-        bg_color: Background color as RGBA
+        bg_color_rgba: Background color as RGBA
         resolution: Resolution of the final image.
         id: UUID used for saving rendered image and mask as image file.
         original_id: The id of the original SceneParameters before cloning
@@ -66,9 +66,9 @@ class SceneParameters:
     obj_color_scalar: float = 0.5
     # When passing 0.5 to the cmap 'seismic' the following color is obtained
     obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
-    bg_color_scalar: float = 0.45
+    bg_color: float = 0.45
     # When passing 0.45 to the cmap 'binary' the following color is obtained
-    bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
+    bg_color_rgba: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
     original_id: Optional[str] = None
@@ -85,7 +85,7 @@ class SceneParameters:
             'position_x': 'default',
             'position_y': 'default',
             'arm_position': 'default',
-            'bg_color_scalar': 'default',
+            'bg_color': 'default',
             'obj_color_scalar': 'default'
         })
 
@@ -100,7 +100,7 @@ class SceneParameters:
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
         'obj_color_scalar': (0, 1),
-        'bg_color_scalar': (0, 1),
+        'bg_color': (0, 1),
     }
 
     @classmethod
@@ -149,8 +149,8 @@ class SceneParameters:
 
     def __post_init__(self):
         # convert possible lists to tuples
-        if type(self.bg_color) == list:
-            self.bg_color = tuple(self.bg_color)
+        if type(self.bg_color_rgba) == list:
+            self.bg_color_rgba = tuple(self.bg_color_rgba)
         if type(self.obj_color) == list:
             self.obj_color = tuple(self.obj_color)
         if type(self.resolution) == list:
