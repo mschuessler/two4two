@@ -46,7 +46,7 @@ class Sampler:
     interventional sampling, because in addition to sampling new parameters, we also want to
     controll an attribute sometimes. That means that we set the attribute to a specific value
     independent of the usual dependencies. If the intervention flag is true, the parameter should be
-    sampled independent of any other attribute. For example, if the object color (obj_color_rgba)
+    sampled independent of any other attribute. For example, if the object color (obj_color)
     depends on the Sticky/Stretchy variable, it would need to be sampled independent
     if intervention = True.
 
@@ -70,7 +70,7 @@ class Sampler:
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
         obj_color: distribution of ``SceneParameters.obj_color``.
-        bg_color_rgba: distribution of ``SceneParameters.bg_color_rgba``.
+        bg_color: distribution of ``SceneParameters.bg_color``.
     """
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
@@ -88,7 +88,7 @@ class Sampler:
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
-    bg_color_rgba: Continouos = scipy.stats.uniform(0.05, 0.80)
+    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_map: str = 'binary'
     obj_color_map: str = 'seismic'
 
@@ -275,10 +275,10 @@ class Sampler:
         return plt.get_cmap(self.obj_color_map)
 
     def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_color`` and ``obj_color``.
+        """Samples the ``obj_color`` and ``obj_color_rgba``.
 
         Attrs:
-            params: SceneParameters for which the obj_color_rgba is sampled and updated in place.
+            params: SceneParameters for which the obj_color is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
@@ -297,7 +297,7 @@ class Sampler:
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.bg_color = float(self._sample(obj_name, self.bg_color_rgba))
+        params.bg_color = float(self._sample(obj_name, self.bg_color))
         params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))
         params.mark_sampled('bg_color')
 
