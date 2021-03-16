@@ -99,6 +99,7 @@ class SceneParameters:
         'labeling_error': set([False, True]),
         'obj_rotation_roll': utils.HALF_CIRCLE,
         'obj_rotation_pitch': utils.HALF_CIRCLE,
+        'obj_rotation_yaw': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
