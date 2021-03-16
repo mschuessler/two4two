@@ -35,8 +35,8 @@ class SceneParameters:
         spherical: For ``1``,  spherical objects. For ``0``, cubes.
             Can have values in-between.
         bone_rotation: Rotation of bone segments.
-        obj_rotation_pitch: Rotation of the object around the Y axis.
-        obj_rotation_yaw: Rotation of the object around the Z axis.
+        obj_rotation_roll: Rotation of the object around the Y axis.
+        obj_rotation_pitch: Rotation of the object around the Z axis.
         fliplr: Wheter the image should be flipped left to right.
         position_x: Position of the object on x-axis.
         position_y: Position of the object on y-axis.
@@ -57,8 +57,8 @@ class SceneParameters:
     labeling_error: bool = False
     spherical: float = 0.5
     bone_rotation: float = 0.0
-    obj_rotation_pitch: int = 0.0
-    obj_rotation_yaw: float = 0.0
+    obj_rotation_roll: int = 0.0
+    obj_rotation_pitch: float = 0.0
     fliplr: bool = False
     position_x: float = 0.0
     position_y: float = 0.0
@@ -79,8 +79,8 @@ class SceneParameters:
             'labeling_error': 'default',
             'spherical': 'default',
             'bone_rotation': 'default',
+            'obj_rotation_roll': 'default',
             'obj_rotation_pitch': 'default',
-            'obj_rotation_yaw': 'default',
             'fliplr': 'default',
             'position_x': 'default',
             'position_y': 'default',
@@ -94,8 +94,8 @@ class SceneParameters:
         'bone_rotation': utils.HALF_CIRCLE,
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
+        'obj_rotation_roll': utils.HALF_CIRCLE,
         'obj_rotation_pitch': utils.HALF_CIRCLE,
-        'obj_rotation_yaw': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),

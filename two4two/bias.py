@@ -44,7 +44,7 @@ class Sampler:
 
     To implement more complex biases, you can inherit this class and modify how individual
     attributes are sampled, e.g., by introducing additional dependencies. Usually the best approach
-    is to overwrite the sampling method (e.g. ``sample_obj_rotation_yaw``) and modify the sampling to
+    is to overwrite the sampling method (e.g. ``sample_obj_rotation_pitch``) and modify the sampling to
     be dependent on other attributes. Please be aware that you will then also need to implement
     interventional sampling, because in addition to sampling new parameters, we also want to
     controll an attribute sometimes. That means that we set the attribute to a specific value
@@ -66,8 +66,8 @@ class Sampler:
         obj_name: distribution of ``SceneParameters.obj_name``.
         arm_position: distribution of ``SceneParameters.arm_position_x`` and ``SceneParameters.arm_position_y``
         labeling_error: distribution of ``SceneParameters.labeling_error``.
-        obj_rotation_pitch: distribution of ``SceneParameters.obj_rotation_pitch``.
-        obj_rotation_yaw:distribution of ``SceneParameters.obj_rotation_yaw``.
+        obj_rotation_roll: distribution of ``SceneParameters.obj_rotation_roll``.
+        obj_rotation_pitch:distribution of ``SceneParameters.obj_rotation_pitch``.
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
         obj_color: distribution of ``SceneParameters.obj_color``.
@@ -83,8 +83,8 @@ class Sampler:
             'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
-    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
-    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
@@ -97,7 +97,7 @@ class Sampler:
 
         If you create your own biased sampled dataset by inheriting from this class,
         you might want to change the order of how attributes are set.
-        For example, if you want that ``obj_rotation_yaw`` should depend on the
+        For example, if you want that ``obj_rotation_pitch`` should depend on the
         ``arm_position``then you should also sample the ``arm_position`` first.
         However, it is highly recommended to sample the object name first, as
         the sampling of the attribute might be dependent on the label
@@ -108,8 +108,8 @@ class Sampler:
         self.sample_labeling_error(params)
         self.sample_spherical(params)
         self.sample_bone_rotation(params)
+        self.sample_obj_rotation_roll(params)
         self.sample_obj_rotation_pitch(params)
-        self.sample_obj_rotation_yaw(params)
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
@@ -202,27 +202,27 @@ class Sampler:
         params.bone_rotation = self._sample(obj_name, self.bone_rotation)
         params.mark_sampled('bone_rotation')
 
-    def sample_obj_rotation_pitch(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_rotation_pitch``.
+    def sample_obj_rotation_roll(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation_roll``.
 
         Attrs:
             params: SceneParameters for which the object inclination is sampled and updated.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.obj_rotation_pitch = self._sample(obj_name, self.obj_rotation_pitch)
-        params.mark_sampled('obj_rotation_pitch')
+        params.obj_rotation_roll = self._sample(obj_name, self.obj_rotation_roll)
+        params.mark_sampled('obj_rotation_roll')
 
-    def sample_obj_rotation_yaw(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_rotation_yaw``.
+    def sample_obj_rotation_pitch(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation_pitch``.
 
         Attrs:
             params: SceneParameters for which the rotation is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.obj_rotation_yaw = self._sample(obj_name, self.obj_rotation_yaw)
-        params.mark_sampled('obj_rotation_yaw')
+        params.obj_rotation_pitch = self._sample(obj_name, self.obj_rotation_pitch)
+        params.mark_sampled('obj_rotation_pitch')
 
     def sample_fliplr(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``fliplr``.
