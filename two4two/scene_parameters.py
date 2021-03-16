@@ -6,6 +6,7 @@ import copy
 import dataclasses
 import importlib
 import json
+import math
 import pprint
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 import uuid
@@ -94,7 +95,7 @@ class SceneParameters:
 
     VALID_VALUES = {
         'spherical': (0, 1),
-        'bending': utils.HALF_CIRCLE,
+        'bending': (- math.pi / 6, math.pi / 6),
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
         'obj_rotation_roll': utils.HALF_CIRCLE,
