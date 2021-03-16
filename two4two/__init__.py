@@ -1,6 +1,7 @@
 """two4two module."""
 
 from two4two.bias import (
+    HighVariationColorBiasedSampler,
     HighVariationSampler,
     ColorBiasedSampler,
     Sampler,

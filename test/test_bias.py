@@ -34,6 +34,9 @@ def test_custom_samplers():
     high_variation_sampler = two4two.HighVariationSampler()
     high_variation_sampler.sample()
 
+    high_variation_color_bias_sampler = two4two.HighVariationColorBiasedSampler()
+    high_variation_color_bias_sampler.sample()
+
 
 def test_resampeling():
     """Tests if sampler is keeping track of which attributes are sampled again."""

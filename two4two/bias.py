@@ -365,7 +365,7 @@ class ColorBiasedSampler(Sampler):
 
 @dataclasses.dataclass()
 class HighVariationSampler(Sampler):
-    """A sample producing more challenging images.
+    """A sampler producing more challenging images.
 
     This sampler allows for a higher variation in rotations and bending. Hence it creates a more
     challenging datset.
@@ -374,3 +374,22 @@ class HighVariationSampler(Sampler):
     obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
     obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
     obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
+
+
+class HighVariationColorBiasedSampler(Sampler):
+    """A sampler producing more challenging images with a color bias that is depent on obj_name.
+
+    This sampler allows for a higher variation in rotations and bending. Hence it creates a more
+    challenging datset. This dataset is more challenging. So the bias is more likely to be used.
+    """
+
+    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
+    obj_color: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+        })
