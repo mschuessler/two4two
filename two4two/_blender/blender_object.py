@@ -110,15 +110,24 @@ class Two4TwoBlenderObject():
             bone_bend_2: Bending of the individual bone segments.
                 (Attribute removed from SceneParameters but functionality remains implemented)
 
+
         """
         # TODO(philipp): how are the rotations applied. Shouldn't there be 3 degrees of freedom?
 
         if not isinstance(bending, tuple):
             bending = tuple([bending] * 7)
 
+        if isinstance(bending, list):
+            bending = tuple(bending)
+
         butils.set_active('skeleton')
         bpy.ops.object.posemode_toggle()
-
+        # For Reference, this is the numbering of bones
+        # O         O
+        # 1         5
+        # O 2 O 3 O 4 O
+        # 0         6
+        # O         O
         for i, bone in enumerate(bpy.data.objects['skeleton'].data.bones):
 
             bone.select = True
