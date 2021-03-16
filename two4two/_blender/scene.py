@@ -32,13 +32,11 @@ class Scene():
                       roll: float,
                       pitch: float,
                       ):
-        # TODO(martin) temper with Z,Y,X until they fit
-        # If you found how the coordinate systems matches, maybe you can shortly describe how the
-        # blender internal coordinate systems works and how the API coordinate system works
+        # TODO(martin) add link to image when #89 is done
 
-        self.obj.rotate(yaw, 'Z')
         self.obj.rotate(roll, 'Y')
-        self.obj.rotate(pitch, 'X')
+        self.obj.rotate(pitch, 'Z')
+        self.obj.rotate(yaw, 'X')
         self.obj.center()
 
     def _set_position(self, x: float, y: float):
