@@ -27,8 +27,11 @@ def _download_blender(blender_dir: str):
     subprocess.check_output(args)
 
 
-def _ensure_blender_available(blender_dir: str, download_blender: bool):
+def ensure_blender_available(blender_dir: Optional[str] = None,
+                             download_blender: bool = False):
     """Ensures blender is available in the given directory."""
+    blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
+
     blender_binary = os.path.join(blender_dir, "blender_bin")
     found_blender = os.path.exists(blender_binary)
 
@@ -123,6 +126,7 @@ def render(
     download_blender: bool = False,
     print_output: bool = False,
     print_cmd: bool = False,
+    save_blender_file: bool = False
 ) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
@@ -137,6 +141,8 @@ def render(
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
         print_output: Print the output of blender.
         print_cmd: Print executed subcommand (useful for debugging).
+        save_blender_file: If ``True``, the blender file will be saved to
+            "{params.id}.blender".
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
@@ -158,6 +164,7 @@ def render(
             render_script,
             parameter_file,
             output_dir,
+            str(save_blender_file),
         ]
         if print_cmd:
             print("Command to execute Blender:")
@@ -176,7 +183,7 @@ def render(
 
     blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
 
-    _ensure_blender_available(blender_dir, download_blender)
+    ensure_blender_available(blender_dir, download_blender)
 
     package_directory = os.path.dirname(__file__)
     render_script = os.path.join(package_directory,

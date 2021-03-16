@@ -23,9 +23,8 @@ class Scene():
     """
 
     def _set_pose(self,
-                  bond_bend: Sequence[float],
                   bone_rotation: Sequence[float]):
-        self.obj.set_pose(bond_bend, bone_rotation)
+        self.obj.set_pose(bone_rotation)
         self.obj.center()
 
     def _set_rotation(self,
@@ -199,6 +198,10 @@ class Scene():
             if self.parameters.fliplr:
                 self._fliplr_image(mask_filename)
 
+    def save_blender_file(self, filename: str):
+        """Saves the current blender state to the given filename."""
+        bpy.ops.wm.save_as_mainfile(filepath=filename)
+
     def __init__(self,
                  parameters: scene_parameters.SceneParameters,
                  ):
@@ -209,22 +212,22 @@ class Scene():
             parameters.obj_name,
             parameters.spherical,
             parameters.arm_position)
-        self.obj.add_material(parameters.obj_color)
+        self.obj.add_material(parameters.obj_color_rgba)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
         if blend_dir not in sys.path:
             sys.path.append(blend_dir)
 
-        self._set_pose(parameters.bone_bend,
-                       parameters.bone_rotation)
+        self._set_pose(parameters.bone_rotation)
         self._set_rotation(
-            parameters.obj_incline,
-            parameters.obj_rotation,
+            parameters.obj_rotation_pitch,
+            parameters.obj_rotation_yaw,
         )
-        x, y = parameters.position
+        x = parameters.position_x
+        y = parameters.position_y
         self._set_position(x, y)
 
-        self._setup_scene(parameters.bg_color)
+        self._setup_scene(parameters.bg_color_rgba)
 
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'

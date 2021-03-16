@@ -23,7 +23,7 @@ from two4two._blender.scene import Scene  # noqa: E402
 from two4two.scene_parameters import SceneParameters  # noqa: E402
 
 
-def _render_files(param_file: str, save_location: str):
+def _render_files(param_file: str, save_location: str, save_blender_file: str):
     with open(param_file) as fparam:
         for line in fparam.readlines():
             params = SceneParameters.load(json.loads(line))
@@ -31,7 +31,11 @@ def _render_files(param_file: str, save_location: str):
             image_fname = os.path.join(save_location, params.filename)
 
             mask_fname = os.path.join(save_location, params.mask_filename)
-            scene.render(image_fname, mask_fname)
+            scene.render(image_fname, mask_fname, )
+
+            if save_blender_file == "True":
+                scene.save_blender_file(
+                    os.path.join(save_location, f"{params.id}.blender"))
 
 
 if __name__ == '__main__':
@@ -42,4 +46,4 @@ if __name__ == '__main__':
         coverage.process_startup()
     except ImportError:
         pass
-    _render_files(sys.argv[-2], sys.argv[-1])
+    _render_files(sys.argv[-3], sys.argv[-2], sys.argv[-1])

@@ -53,19 +53,13 @@ def test_pytorch_dataloader(tmp_path: Path):
     assert labels.shape == (2, 1,)
 
     dataset.set_return_attributes([
-        'obj_name', 'bone_rotation', 'bg_color_scalar', 'spherical'])
+        'obj_name', 'bone_rotation', 'bg_color', 'spherical'])
 
     label_names = dataset.get_label_names()
     expected_label_names = [
         'obj_name',
-        'bone_rotation_0',
-        'bone_rotation_1',
-        'bone_rotation_2',
-        'bone_rotation_3',
-        'bone_rotation_4',
-        'bone_rotation_5',
-        'bone_rotation_6',
-        'bg_color_scalar',
+        'bone_rotation',
+        'bg_color',
         'spherical',
     ]
     assert label_names == expected_label_names

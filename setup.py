@@ -18,10 +18,11 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={
         "": ["*.sh"],
+        "two4two": ["py.typed"],
     },
     entry_points={
         'console_scripts': [
-            'two4two_create_dataset=two4two.cli_tool:main',
+            'two4two_render_dataset=two4two.cli_tool:render_dataset',
         ],
     },
     classifiers=[
@@ -37,6 +38,7 @@ setuptools.setup(
         'numpy',
         'scipy',
         'tqdm',
+        'toml'
     ],
     extras_require={
         'dev': [
