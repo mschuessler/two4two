@@ -30,13 +30,13 @@ class Two4Two(Dataset):
     ```
         dset = Two4Two(
             my_root_dir, 'train',
-            return_attributes=['obj_name', 'bone_rotation'])
+            return_attributes=['obj_name', 'bending'])
         img, mask, label = dset[0]
         len(label)
         # -> 8
 
         dset.get_label_names()
-        # -> ['obj_name', 'bone_rotation']
+        # -> ['obj_name', 'bending']
 
         dset.set_return_attributes(['obj_name', 'bg_color'])
 

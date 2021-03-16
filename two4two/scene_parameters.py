@@ -34,7 +34,7 @@ class SceneParameters:
             not change.
         spherical: For ``1``,  spherical objects. For ``0``, cubes.
             Can have values in-between.
-        bone_rotation: Rotation of bone segments.
+        bending: Rotation of bone segments causing object to bend.
         obj_rotation_roll: Rotation of the object around the Y axis.
         obj_rotation_pitch: Rotation of the object around the Z axis.
         fliplr: Wheter the image should be flipped left to right.
@@ -56,7 +56,7 @@ class SceneParameters:
     obj_name: str = 'sticky'
     labeling_error: bool = False
     spherical: float = 0.5
-    bone_rotation: float = 0.0
+    bending: float = 0.0
     obj_rotation_roll: int = 0.0
     obj_rotation_pitch: float = 0.0
     obj_rotation_yaw: float = 0.0
@@ -80,7 +80,7 @@ class SceneParameters:
             'obj_name': 'default',
             'labeling_error': 'default',
             'spherical': 'default',
-            'bone_rotation': 'default',
+            'bending': 'default',
             'obj_rotation_roll': 'default',
             'obj_rotation_pitch': 'default',
             'obj_rotation_yaw': 'default',
@@ -94,7 +94,7 @@ class SceneParameters:
 
     VALID_VALUES = {
         'spherical': (0, 1),
-        'bone_rotation': utils.HALF_CIRCLE,
+        'bending': utils.HALF_CIRCLE,
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
         'obj_rotation_roll': utils.HALF_CIRCLE,
