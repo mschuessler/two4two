@@ -49,7 +49,7 @@ class Sampler:
     interventional sampling, because in addition to sampling new parameters, we also want to
     controll an attribute sometimes. That means that we set the attribute to a specific value
     independent of the usual dependencies. If the intervention flag is true, the parameter should be
-    sampled independent of any other attribute. For example, if the object color (obj_color) depends
+    sampled independent of any other attribute. For example, if the object color (obj_color_rgba) depends
     on the Sticky/Stretchy variable, it would need to be sampled independent if intervention = True.
 
     Since the default sampler implementation in this class is only dependent upon
@@ -60,7 +60,7 @@ class Sampler:
 
     Attrs:
         bg_color_rgba_map: used color map for the background.
-        obj_color_map: used color map for the object.
+        obj_color_rgba_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
         bone_rotation: distribution of ``SceneParameters.bone_rotation``.
         obj_name: distribution of ``SceneParameters.obj_name``.
@@ -70,7 +70,7 @@ class Sampler:
         obj_rotation:distribution of ``SceneParameters.obj_rotation``.
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
-        obj_color_scalar: distribution of ``SceneParameters.obj_color_scalar``.
+        obj_color: distribution of ``SceneParameters.obj_color``.
         bg_color_rgba: distribution of ``SceneParameters.bg_color_rgba``.
     """
 
@@ -87,10 +87,10 @@ class Sampler:
     obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
-    obj_color_scalar: Continouos = scipy.stats.uniform(0., 1.)
+    obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color_rgba: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_rgba_map: str = 'binary'
-    obj_color_map: str = 'seismic'
+    obj_color_rgba_map: str = 'seismic'
 
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -113,7 +113,7 @@ class Sampler:
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
-        self.sample_obj_color(params)
+        self.sample_obj_color_rgba(params)
         self.sample_bg_color_rgba(params)
         params.check_values()
         return params
@@ -260,19 +260,19 @@ class Sampler:
         params.mark_sampled('arm_position')
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return plt.get_cmap(self.obj_color_map)
+        return plt.get_cmap(self.obj_color_rgba_map)
 
-    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_color_scalar`` and ``obj_color_scalar``.
+    def sample_obj_color_rgba(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_color`` and ``obj_color``.
 
         Attrs:
-            params: SceneParameters for which the obj_color is sampled and updated in place.
+            params: SceneParameters for which the obj_color_rgba is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.obj_color_scalar = float(self._sample(obj_name, self.obj_color_scalar))
-        params.obj_color = tuple(self._object_cmap(params)(params.obj_color_scalar))
-        params.mark_sampled('obj_color_scalar')
+        params.obj_color = float(self._sample(obj_name, self.obj_color))
+        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))
+        params.mark_sampled('obj_color')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_rgba_map)
@@ -297,7 +297,7 @@ class ColorBiasedSampler(Sampler):
     The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
-    obj_color_scalar: Continouos = dataclasses.field(
+    obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),

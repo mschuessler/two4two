@@ -41,8 +41,8 @@ class SceneParameters:
         position_x: Position of the object on x-axis.
         position_y: Position of the object on y-axis.
         arm_position: Absolute arm positions.
-        obj_color: Object color as RGBA
-        obj_color_scalar: Object color in [0, 1]. This is before converting
+        obj_color_rgba: Object color as RGBA
+        obj_color: Object color in [0, 1]. This is before converting
             the scalar to a color map.
         bg_color: Background color in [0, 1]. This is before converting
             the scalar to a color map.
@@ -63,9 +63,9 @@ class SceneParameters:
     position_x: float = 0.0
     position_y: float = 0.0
     arm_position: float = 0.0
-    obj_color_scalar: float = 0.5
+    obj_color: float = 0.5
     # When passing 0.5 to the cmap 'seismic' the following color is obtained
-    obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
+    obj_color_rgba: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
     bg_color: float = 0.45
     # When passing 0.45 to the cmap 'binary' the following color is obtained
     bg_color_rgba: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
@@ -86,7 +86,7 @@ class SceneParameters:
             'position_y': 'default',
             'arm_position': 'default',
             'bg_color': 'default',
-            'obj_color_scalar': 'default'
+            'obj_color': 'default'
         })
 
     VALID_VALUES = {
@@ -99,7 +99,7 @@ class SceneParameters:
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
-        'obj_color_scalar': (0, 1),
+        'obj_color': (0, 1),
         'bg_color': (0, 1),
     }
 
@@ -151,8 +151,8 @@ class SceneParameters:
         # convert possible lists to tuples
         if type(self.bg_color_rgba) == list:
             self.bg_color_rgba = tuple(self.bg_color_rgba)
-        if type(self.obj_color) == list:
-            self.obj_color = tuple(self.obj_color)
+        if type(self.obj_color_rgba) == list:
+            self.obj_color_rgba = tuple(self.obj_color_rgba)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
 
