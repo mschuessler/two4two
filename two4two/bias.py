@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Callable, Dict, Union
+from typing import Any, Callable, Dict, Optional, Union
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -86,13 +86,14 @@ class Sampler:
     obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
-    position: Continouos = scipy.stats.uniform(-0.5, 0.5)
+    position_x: Continouos = scipy.stats.uniform(-0.5, 0.5)
+    position_y: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color_rgba: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_map: str = 'binary'
     obj_color_map: str = 'seismic'
 
-    def sample(self) -> SceneParameters:
+    def sample(self, obj_name: Optional[str] = None, num: int = 1) -> SceneParameters:
         """Returns a new SceneParameters with random values.
 
         If you create your own biased sampled dataset by inheriting from this class,
@@ -102,20 +103,26 @@ class Sampler:
         However, it is highly recommended to sample the object name first, as
         the sampling of the attribute might be dependent on the label
         (see the explanation of distributions in class description)
+
+        Attrs:
+            obj_name: Overides the sampled obj_name with the given namen. Usally only useful for
+                manual sampling. Not recommeded when samplign larger sets.
         """
         params = SceneParameters()
         self.sample_obj_name(params)
+        # The name flag allows to overide the sampling result. The sampling is still executed to
+        # trigger any custom functionality that might be implented in subclasses.
+        if obj_name and params.obj_name != obj_name:
+            params.obj_name = obj_name
+
         self.sample_labeling_error(params)
         self.sample_spherical(params)
         self.sample_bending(params)
-        self.sample_obj_rotation_roll(params)
-        self.sample_obj_rotation_pitch(params)
-        self.sample_obj_rotation_yaw(params)
+        self.sample_rotation(params)
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
-        self.sample_obj_color(params)
-        self.sample_bg_color(params)
+        self.sample_color(params)
         params.check_values()
         return params
 
@@ -203,6 +210,17 @@ class Sampler:
         params.bending = self._sample(obj_name, self.bending)
         params.mark_sampled('bending')
 
+    def sample_rotation(self, params: SceneParameters, intervention: bool = False):
+        """Convienience function bundeling all object rotation functions by calling them.
+
+        Attrs:
+            params: SceneParameters for which the object inclination is sampled and updated.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        self.sample_obj_rotation_roll(params, intervention=intervention)
+        self.sample_obj_rotation_pitch(params, intervention=intervention)
+        self.sample_obj_rotation_yaw(params, intervention=intervention)
+
     def sample_obj_rotation_roll(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``obj_rotation_roll``.
 
@@ -248,16 +266,35 @@ class Sampler:
         params.mark_sampled('fliplr')
 
     def sample_position(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``position_x`` and ``position_y``.
+        """Convienience function calling ``sample_position_x`` and ``sample_position_y``.
+
+        Attrs:
+            params: SceneParameters for which the position is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        self.sample_position_x(params, intervention=intervention)
+        self.sample_position_y(params, intervention=intervention)
+
+    def sample_position_x(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``position_x`` of the object.
 
         Attrs:
             params: SceneParameters for which the position is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.position_x = self._sample(obj_name, self.position)
-        params.position_y = self._sample(obj_name, self.position)
+        params.position_x = self._sample(obj_name, self.position_x)
         params.mark_sampled('position_x')
+
+    def sample_position_y(self, params: SceneParameters, intervention: bool = False):
+        """Samples ``position_y`` of the object.
+
+        Attrs:
+            params: SceneParameters for which the position is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.position_y = self._sample(obj_name, self.position_y)
         params.mark_sampled('position_y')
 
     def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
@@ -273,6 +310,16 @@ class Sampler:
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
+
+    def sample_color(self, params: SceneParameters, intervention: bool = False):
+        """Convienience function calling ``sample_obj_color`` and ``sample_bg_color``.
+
+        Attrs:
+            params: SceneParameters for which the position is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        self.sample_obj_color(params, intervention=intervention)
+        self.sample_bg_color(params, intervention=intervention)
 
     def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``obj_color`` and ``obj_color``.
