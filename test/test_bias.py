@@ -3,6 +3,7 @@
 import numbers
 import random
 
+import numpy as np
 import pytest
 
 import two4two
@@ -44,3 +45,35 @@ def test_resampeling():
     assert param3.get_status('spherical') == 'resampled'
     assert param3.get_status('arm_position') == 'resampled'
     assert param3.original_id == param2.id
+
+
+def test_distribution_is_used():
+    """Sets the distributions to a narrow interval and tests if sample fall into it."""
+
+    sampler = two4two.ColorBiasedSampler()
+    param = two4two.SceneParameters()
+
+    # have a thight bound of values
+    lower = 0.5
+    upper = 0.5 + 0.00001
+
+    continouos_attributes = [
+        'labeling_error',
+        'spherical',
+        'bending',
+        'arm_position',
+        'obj_rotation_roll',
+        'obj_rotation_yaw',
+        'obj_rotation_pitch',
+        'position_x',
+        'position_y',
+        'obj_color',
+        'bg_color',
+    ]
+
+    for attr in continouos_attributes:
+        setattr(sampler, attr, lambda: np.random.uniform(lower, upper))
+        meth = getattr(sampler, 'sample_' + attr)
+        meth(param)
+        value = getattr(param, attr)
+        assert lower <= value <= upper, f"failed for {attr}, value: {value}."
