@@ -114,8 +114,8 @@ class Sampler:
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
-        self.sample_obj_color_rgba(params)
-        self.sample_bg_color_rgba(params)
+        self.sample_obj_color(params)
+        self.sample_bg_color(params)
         params.check_values()
         return params
 
@@ -274,7 +274,7 @@ class Sampler:
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
 
-    def sample_obj_color_rgba(self, params: SceneParameters, intervention: bool = False):
+    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``obj_color`` and ``obj_color``.
 
         Attrs:
@@ -289,7 +289,7 @@ class Sampler:
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_map)
 
-    def sample_bg_color_rgba(self, params: SceneParameters, intervention: bool = False):
+    def sample_bg_color(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``bg_color_rgba`` and ``bg_color``.
 
         Attrs:
