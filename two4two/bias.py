@@ -93,7 +93,7 @@ class Sampler:
     bg_color_map: str = 'binary'
     obj_color_map: str = 'seismic'
 
-    def sample(self, obj_name: Optional[str] = None, num: int = 1) -> SceneParameters:
+    def sample(self, obj_name: Optional[str] = None) -> SceneParameters:
         """Returns a new SceneParameters with random values.
 
         If you create your own biased sampled dataset by inheriting from this class,
