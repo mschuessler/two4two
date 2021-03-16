@@ -59,6 +59,7 @@ class SceneParameters:
     bone_rotation: float = 0.0
     obj_rotation_roll: int = 0.0
     obj_rotation_pitch: float = 0.0
+    obj_rotation_yaw: float = 0.0
     fliplr: bool = False
     position_x: float = 0.0
     position_y: float = 0.0
@@ -82,6 +83,7 @@ class SceneParameters:
             'bone_rotation': 'default',
             'obj_rotation_roll': 'default',
             'obj_rotation_pitch': 'default',
+            'obj_rotation_yaw': 'default',
             'fliplr': 'default',
             'position_x': 'default',
             'position_y': 'default',
