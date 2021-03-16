@@ -114,11 +114,11 @@ class Two4TwoBlenderObject():
         """
         # TODO(philipp): how are the rotations applied. Shouldn't there be 3 degrees of freedom?
 
-        if not isinstance(bending, tuple):
-            bending = tuple([bending] * 7)
-
         if isinstance(bending, list):
             bending = tuple(bending)
+
+        if not isinstance(bending, tuple):
+            bending = tuple([bending] * 7)
 
         butils.set_active('skeleton')
         bpy.ops.object.posemode_toggle()
