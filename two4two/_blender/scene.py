@@ -28,11 +28,17 @@ class Scene():
         self.obj.center()
 
     def _set_rotation(self,
-                      incline: float,
-                      rotation: float,
+                      yaw: float,
+                      roll: float,
+                      pitch: float,
                       ):
-        self.obj.rotate(incline, 'Y')
-        self.obj.rotate(rotation, 'Z')
+        # TODO(martin) temper with Z,Y,X until they fit
+        # If you found how the coordinate systems matches, maybe you can shortly describe how the
+        # blender internal coordinate systems works and how the API coordinate system works
+
+        self.obj.rotate(yaw, 'Z')
+        self.obj.rotate(roll, 'Y')
+        self.obj.rotate(pitch, 'X')
         self.obj.center()
 
     def _set_position(self, x: float, y: float):
@@ -219,9 +225,11 @@ class Scene():
             sys.path.append(blend_dir)
 
         self._set_pose(parameters.bone_rotation)
+
         self._set_rotation(
-            parameters.obj_rotation_pitch,
             parameters.obj_rotation_yaw,
+            parameters.obj_rotation_roll,
+            parameters.obj_rotation_pitch,
         )
         x = parameters.position_x
         y = parameters.position_y
