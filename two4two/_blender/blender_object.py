@@ -100,21 +100,21 @@ class Two4TwoBlenderObject():
         butils.select('skeleton')
         bpy.ops.object.parent_set(type='ARMATURE_AUTO')
 
-    def set_pose(self, bone_rotation: Union[float, Sequence[float]],
-                 bone_bend: Sequence[float] = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)):
+    def set_pose(self, bending: Union[float, Sequence[float]],
+                 bone_bend_2: Sequence[float] = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)):
         """Set bond bending and rotations.
 
         Attrs:
-            bone_rotation: Rotation of the individual bone segments.
+            bending: Rotation of the individual bone segments.
                 Either as one float for all roations or a tuple of seven values.
-            bone_bend: Bending of the individual bone segments.
+            bone_bend_2: Bending of the individual bone segments.
                 (Attribute removed from SceneParameters but functionality remains implemented)
 
         """
         # TODO(philipp): how are the rotations applied. Shouldn't there be 3 degrees of freedom?
 
-        if not isinstance(bone_rotation, tuple):
-            bone_rotation = tuple([bone_rotation] * 7)
+        if not isinstance(bending, tuple):
+            bending = tuple([bending] * 7)
 
         butils.set_active('skeleton')
         bpy.ops.object.posemode_toggle()
@@ -123,8 +123,8 @@ class Two4TwoBlenderObject():
 
             bone.select = True
 
-            bend_angle = bone_bend[i]
-            rotation_angle = bone_rotation[i]
+            bend_angle = bone_bend_2[i]
+            rotation_angle = bending[i]
 
             bpy.ops.transform.translate(
                 value=(bend_angle, 0, 0),
