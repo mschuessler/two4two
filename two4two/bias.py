@@ -27,34 +27,31 @@ Distribution = Union[Discrete, Continouos]
 class Sampler:
     """Samples the parameters of the ``SceneParameters`` objects.
 
-    Attributes describe how the sampling is done.
-    Concretely they provide the color maps for the object and the background and
-    the distributors from which the value for the scene parameters are drawn.
+    Attributes describe how the sampling is done. Concretely they provide the color maps for the
+    object and the background and the distributors from which the value for the scene parameters are
+    drawn.
 
-    Distribution can be:
-    * scipy-distribution from ``scipy.stats``
-    * callable functions returning a single value
-    * a single (default) value.
-    * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+    Distribution can be: * scipy-distribution from ``scipy.stats`` * callable functions returning a
+    single value * a single (default) value. * a dictionary of all before-mentioned types containing
+    the keys ``sticky``and ``stretchy``.
 
-    These dictionaries are the easiest way to implement a bias.
-    If you want an attribute to be sampled diffrently based on wheter it shows a sticky or stretchy,
-    it is usually sufficient to change these dictionaries.
-    See ``ColorBiasedSampler`` as an example.
+    These dictionaries are the easiest way to implement a bias. If you want an attribute to be
+    sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to
+    change these dictionaries. See ``ColorBiasedSampler`` as an example.
 
     To implement more complex biases, you can inherit this class and modify how individual
     attributes are sampled, e.g., by introducing additional dependencies. Usually the best approach
-    is to overwrite the sampling method (e.g. ``sample_obj_rotation``) and modify the sampling to
-    be dependent on other attributes. Please be aware that you will then also need to implement
+    is to overwrite the sampling method (e.g. ``sample_obj_rotation_pitch``) and modify the sampling
+    to be dependent on other attributes. Please be aware that you will then also need to implement
     interventional sampling, because in addition to sampling new parameters, we also want to
     controll an attribute sometimes. That means that we set the attribute to a specific value
     independent of the usual dependencies. If the intervention flag is true, the parameter should be
-    sampled independent of any other attribute. For example, if the object color (obj_color) depends
-    on the Sticky/Stretchy variable, it would need to be sampled independent if intervention = True.
+    sampled independent of any other attribute. For example, if the object color (obj_color_rgba)
+    depends on the Sticky/Stretchy variable, it would need to be sampled independent
+    if intervention = True.
 
-    Since the default sampler implementation in this class is only dependent upon
-    obj_name, so it is the only attribute considered in the intervention.
-
+    Since the default sampler implementation in this class is only dependent upon obj_name, so it is
+    the only attribute considered in the intervention.
 
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
@@ -62,35 +59,36 @@ class Sampler:
         bg_color_map: used color map for the background.
         obj_color_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
-        bone_bend: distribution of ``SceneParameters.bone_bend``.
-        bone_rotation: distribution of ``SceneParameters.bone_rotation``.
+        bending: distribution of ``SceneParameters.bending``.
         obj_name: distribution of ``SceneParameters.obj_name``.
-        arm_position: distribution of ``SceneParameters.arm_position``.
+        arm_position: distribution of ``SceneParameters.arm_position_x`` and
+            ``SceneParameters.arm_position_y``
         labeling_error: distribution of ``SceneParameters.labeling_error``.
-        obj_incline: distribution of ``SceneParameters.obj_incline``.
-        obj_rotation:distribution of ``SceneParameters.obj_rotation``.
+        obj_rotation_roll: distribution of ``SceneParameters.obj_rotation_roll``.
+        obj_rotation_pitch:distribution of ``SceneParameters.obj_rotation_pitch``.
+        obj_rotation_yaw:distribution of ``SceneParameters.obj_rotation_pitch``.
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
-        obj_color_scalar: distribution of ``SceneParameters.obj_color_scalar``.
-        bg_color: distribution of ``SceneParameters.bg_color``.
+        obj_color: distribution of ``SceneParameters.obj_color``.
+        bg_color_rgba: distribution of ``SceneParameters.bg_color_rgba``.
     """
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bone_bend: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
-    bone_rotation: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
+    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
             'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
-    obj_incline: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
-    obj_rotation: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
-    obj_color_scalar: Continouos = scipy.stats.uniform(0., 1.)
-    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
+    obj_color: Continouos = scipy.stats.uniform(0., 1.)
+    bg_color_rgba: Continouos = scipy.stats.uniform(0.05, 0.80)
     bg_color_map: str = 'binary'
     obj_color_map: str = 'seismic'
 
@@ -99,7 +97,7 @@ class Sampler:
 
         If you create your own biased sampled dataset by inheriting from this class,
         you might want to change the order of how attributes are set.
-        For example, if you want that ``obj_rotation`` should depend on the
+        For example, if you want that ``obj_rotation_pitch`` should depend on the
         ``arm_position``then you should also sample the ``arm_position`` first.
         However, it is highly recommended to sample the object name first, as
         the sampling of the attribute might be dependent on the label
@@ -109,15 +107,15 @@ class Sampler:
         self.sample_obj_name(params)
         self.sample_labeling_error(params)
         self.sample_spherical(params)
-        self.sample_bone_bend(params)
-        self.sample_bone_rotation(params)
-        self.sample_obj_incline(params)
-        self.sample_obj_rotation(params)
+        self.sample_bending(params)
+        self.sample_obj_rotation_roll(params)
+        self.sample_obj_rotation_pitch(params)
+        self.sample_obj_rotation_yaw(params)
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
-        self.sample_obj_color(params)
-        self.sample_bg_color(params)
+        self.sample_obj_color_rgba(params)
+        self.sample_bg_color_rgba(params)
         params.check_values()
         return params
 
@@ -194,49 +192,49 @@ class Sampler:
         params.spherical = self._sample(obj_name, self.spherical)
         params.mark_sampled('spherical')
 
-    def sample_bone_bend(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``bone_bend``.
-
-        Attrs:
-            params: SceneParameters for which the bone bending is sampled and updated in place.
-            intervention: Flag whether interventional sampling is applied. Details: see class docu.
-        """
-        obj_name = self._sample_name() if intervention else params.obj_name
-        params.bone_bend = self._sample(obj_name, self.bone_bend, size=7)
-        params.mark_sampled('bone_bend')
-
-    def sample_bone_rotation(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``bone_rotation``.
+    def sample_bending(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bending``.
 
         Attrs:
             params: SceneParameters for which the bone roation is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.bone_rotation = self._sample(obj_name, self.bone_rotation, size=7)
-        params.mark_sampled('bone_rotation')
+        params.bending = self._sample(obj_name, self.bending)
+        params.mark_sampled('bending')
 
-    def sample_obj_incline(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_incline``.
+    def sample_obj_rotation_roll(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation_roll``.
 
         Attrs:
             params: SceneParameters for which the object inclination is sampled and updated.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.obj_incline = self._sample(obj_name, self.obj_incline)
-        params.mark_sampled('obj_incline')
+        params.obj_rotation_roll = self._sample(obj_name, self.obj_rotation_roll)
+        params.mark_sampled('obj_rotation_roll')
 
-    def sample_obj_rotation(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_rotation``.
+    def sample_obj_rotation_pitch(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation_pitch``.
 
         Attrs:
             params: SceneParameters for which the rotation is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.obj_rotation = self._sample(obj_name, self.obj_rotation)
-        params.mark_sampled('obj_rotation')
+        params.obj_rotation_pitch = self._sample(obj_name, self.obj_rotation_pitch)
+        params.mark_sampled('obj_rotation_pitch')
+
+    def sample_obj_rotation_yaw(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation_yaw``.
+
+        Attrs:
+            params: SceneParameters for which the rotation is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.obj_rotation_yaw = self._sample(obj_name, self.obj_rotation_yaw)
+        params.mark_sampled('obj_rotation_yaw')
 
     def sample_fliplr(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``fliplr``.
@@ -250,15 +248,17 @@ class Sampler:
         params.mark_sampled('fliplr')
 
     def sample_position(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``position``.
+        """Samples the ``position_x`` and ``position_y``.
 
         Attrs:
             params: SceneParameters for which the position is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.position = self._sample(obj_name, self.position, size=2)
-        params.mark_sampled('position')
+        params.position_x = self._sample(obj_name, self.position)
+        params.position_y = self._sample(obj_name, self.position)
+        params.mark_sampled('position_x')
+        params.mark_sampled('position_y')
 
     def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``arm_position``.
@@ -274,32 +274,32 @@ class Sampler:
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
         return plt.get_cmap(self.obj_color_map)
 
-    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_color_scalar`` and ``obj_color_scalar``.
+    def sample_obj_color_rgba(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_color`` and ``obj_color``.
 
         Attrs:
-            params: SceneParameters for which the obj_color is sampled and updated in place.
+            params: SceneParameters for which the obj_color_rgba is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.obj_color_scalar = float(self._sample(obj_name, self.obj_color_scalar))
-        params.obj_color = tuple(self._object_cmap(params)(params.obj_color_scalar))
-        params.mark_sampled('obj_color_scalar')
+        params.obj_color = float(self._sample(obj_name, self.obj_color))
+        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))
+        params.mark_sampled('obj_color')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.bg_color_map)
 
-    def sample_bg_color(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``bg_color`` and ``bg_color_scalar``.
+    def sample_bg_color_rgba(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bg_color_rgba`` and ``bg_color``.
 
         Attrs:
             params: SceneParameters for which the labeling_error is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.bg_color_scalar = float(self._sample(obj_name, self.bg_color))
-        params.bg_color = tuple(self._bg_cmap(params)(params.bg_color_scalar))
-        params.mark_sampled('bg_color_scalar')
+        params.bg_color = float(self._sample(obj_name, self.bg_color_rgba))
+        params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))
+        params.mark_sampled('bg_color')
 
 
 @dataclasses.dataclass()
@@ -309,7 +309,7 @@ class ColorBiasedSampler(Sampler):
     The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
-    obj_color_scalar: Continouos = dataclasses.field(
+    obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),

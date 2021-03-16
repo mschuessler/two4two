@@ -23,17 +23,20 @@ class Scene():
     """
 
     def _set_pose(self,
-                  bond_bend: Sequence[float],
-                  bone_rotation: Sequence[float]):
-        self.obj.set_pose(bond_bend, bone_rotation)
+                  bending: Sequence[float]):
+        self.obj.set_pose(bending)
         self.obj.center()
 
     def _set_rotation(self,
-                      incline: float,
-                      rotation: float,
+                      yaw: float,
+                      roll: float,
+                      pitch: float,
                       ):
-        self.obj.rotate(incline, 'Y')
-        self.obj.rotate(rotation, 'Z')
+        # TODO(martin) add link to image when #89 is done
+
+        self.obj.rotate(roll, 'Y')
+        self.obj.rotate(pitch, 'Z')
+        self.obj.rotate(yaw, 'X')
         self.obj.center()
 
     def _set_position(self, x: float, y: float):
@@ -213,22 +216,24 @@ class Scene():
             parameters.obj_name,
             parameters.spherical,
             parameters.arm_position)
-        self.obj.add_material(parameters.obj_color)
+        self.obj.add_material(parameters.obj_color_rgba)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
         if blend_dir not in sys.path:
             sys.path.append(blend_dir)
 
-        self._set_pose(parameters.bone_bend,
-                       parameters.bone_rotation)
+        self._set_pose(parameters.bending)
+
         self._set_rotation(
-            parameters.obj_incline,
-            parameters.obj_rotation,
+            parameters.obj_rotation_yaw,
+            parameters.obj_rotation_roll,
+            parameters.obj_rotation_pitch,
         )
-        x, y = parameters.position
+        x = parameters.position_x
+        y = parameters.position_y
         self._set_position(x, y)
 
-        self._setup_scene(parameters.bg_color)
+        self._setup_scene(parameters.bg_color_rgba)
 
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'

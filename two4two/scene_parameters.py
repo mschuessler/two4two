@@ -34,19 +34,19 @@ class SceneParameters:
             not change.
         spherical: For ``1``,  spherical objects. For ``0``, cubes.
             Can have values in-between.
-        bone_bend: Bending of the individual bone segments.
-        bone_rotation: Rotation of the individual bone segments.
-        obj_incline: Rotation of the object around the Y axis.
-        obj_rotation: Rotation of the object around the Z axis.
+        bending: Rotation of bone segments causing object to bend.
+        obj_rotation_roll: Rotation of the object around the Y axis.
+        obj_rotation_pitch: Rotation of the object around the Z axis.
         fliplr: Wheter the image should be flipped left to right.
-        position: Position of the object.
+        position_x: Position of the object on x-axis.
+        position_y: Position of the object on y-axis.
         arm_position: Absolute arm positions.
-        obj_color: Object color as RGBA
-        obj_color_scalar: Object color in [0, 1]. This is before converting
+        obj_color_rgba: Object color as RGBA
+        obj_color: Object color in [0, 1]. This is before converting
             the scalar to a color map.
-        bg_color_scalar: Background color in [0, 1]. This is before converting
+        bg_color: Background color in [0, 1]. This is before converting
             the scalar to a color map.
-        bg_color: Background color as RGBA
+        bg_color_rgba: Background color as RGBA
         resolution: Resolution of the final image.
         id: UUID used for saving rendered image and mask as image file.
         original_id: The id of the original SceneParameters before cloning
@@ -56,19 +56,21 @@ class SceneParameters:
     obj_name: str = 'sticky'
     labeling_error: bool = False
     spherical: float = 0.5
-    bone_bend: Tuple[float, ...] = tuple([0] * 7)
-    bone_rotation: Tuple[float, ...] = tuple([0] * 7)
-    obj_incline: int = 0.0
-    obj_rotation: float = 0.0
+    bending: float = 0.0
+    obj_rotation_roll: int = 0.0
+    obj_rotation_pitch: float = 0.0
+    obj_rotation_yaw: float = 0.0
     fliplr: bool = False
-    position: float = (0, 0)
+    position_x: float = 0.0
+    position_y: float = 0.0
     arm_position: float = 0.0
-    obj_color_scalar: float = 0.5
+    obj_color: float = 0.5
     # When passing 0.5 to the cmap 'seismic' the following color is obtained
-    obj_color: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
-    bg_color_scalar: float = 0.45
+    obj_color_rgba: utils.RGBAColor = (1.0, 0.9921568627450981, 0.9921568627450981, 1.0)
+    bg_color: float = 0.45
     # When passing 0.45 to the cmap 'binary' the following color is obtained
-    bg_color: utils.RGBAColor = (0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
+    bg_color_rgba: utils.RGBAColor = (
+        0.5490196078431373, 0.5490196078431373, 0.5490196078431373, 1.0)
     resolution: Tuple[int, int] = (128, 128)
     id: str = dataclasses.field(default_factory=lambda: str(uuid.uuid4()))
     original_id: Optional[str] = None
@@ -78,29 +80,31 @@ class SceneParameters:
             'obj_name': 'default',
             'labeling_error': 'default',
             'spherical': 'default',
-            'bone_bend': 'default',
-            'bone_rotation': 'default',
-            'obj_incline': 'default',
-            'obj_rotation': 'default',
+            'bending': 'default',
+            'obj_rotation_roll': 'default',
+            'obj_rotation_pitch': 'default',
+            'obj_rotation_yaw': 'default',
             'fliplr': 'default',
-            'position': 'default',
+            'position_x': 'default',
+            'position_y': 'default',
             'arm_position': 'default',
-            'bg_color_scalar': 'default',
-            'obj_color_scalar': 'default'
+            'bg_color': 'default',
+            'obj_color': 'default'
         })
 
     VALID_VALUES = {
         'spherical': (0, 1),
-        'bone_bend': utils.HALF_CIRCLE,
-        'bone_rotation': utils.HALF_CIRCLE,
+        'bending': utils.HALF_CIRCLE,
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
-        'obj_incline': utils.HALF_CIRCLE,
-        'obj_rotation': utils.HALF_CIRCLE,
+        'obj_rotation_roll': utils.HALF_CIRCLE,
+        'obj_rotation_pitch': utils.HALF_CIRCLE,
+        'obj_rotation_yaw': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
-        'position': (-3.0, 3.0),
-        'obj_color_scalar': (0, 1),
-        'bg_color_scalar': (0, 1),
+        'position_x': (-3.0, 3.0),
+        'position_y': (-3.0, 3.0),
+        'obj_color': (0, 1),
+        'bg_color': (0, 1),
     }
 
     @classmethod
@@ -149,18 +153,12 @@ class SceneParameters:
 
     def __post_init__(self):
         # convert possible lists to tuples
-        if type(self.bg_color) == list:
-            self.bg_color = tuple(self.bg_color)
-        if type(self.obj_color) == list:
-            self.obj_color = tuple(self.obj_color)
+        if type(self.bg_color_rgba) == list:
+            self.bg_color_rgba = tuple(self.bg_color_rgba)
+        if type(self.obj_color_rgba) == list:
+            self.obj_color_rgba = tuple(self.obj_color_rgba)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
-        if type(self.position) == list:
-            self.position = tuple(self.position)
-        if type(self.bone_bend) == list:
-            self.bone_bend = tuple(self.bone_bend)
-        if type(self.bone_rotation) == list:
-            self.bone_rotation = tuple(self.bone_rotation)
 
     @staticmethod
     def load(state: Dict[str, Any]) -> SceneParameters:
