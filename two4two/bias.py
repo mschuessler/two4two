@@ -56,10 +56,10 @@ class Sampler:
     For the valid values ranges, see ``SceneParameters.VALID_VALUES``.
 
     Attrs:
-        bg_color_rgba_map: used color map for the background.
-        obj_color_rgba_map: used color map for the object.
+        bg_color_map: used color map for the background.
+        obj_color_map: used color map for the object.
         spherical: distribution of ``SceneParameters.spherical``.
-        bone_rotation: distribution of ``SceneParameters.bone_rotation``.
+        bending: distribution of ``SceneParameters.bending``.
         obj_name: distribution of ``SceneParameters.obj_name``.
         arm_position: distribution of ``SceneParameters.arm_position_x`` and
             ``SceneParameters.arm_position_y``
@@ -75,7 +75,7 @@ class Sampler:
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bone_rotation: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
+    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
@@ -89,8 +89,8 @@ class Sampler:
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
     bg_color_rgba: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_rgba_map: str = 'binary'
-    obj_color_rgba_map: str = 'seismic'
+    bg_color_map: str = 'binary'
+    obj_color_map: str = 'seismic'
 
     def sample(self) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -107,7 +107,7 @@ class Sampler:
         self.sample_obj_name(params)
         self.sample_labeling_error(params)
         self.sample_spherical(params)
-        self.sample_bone_rotation(params)
+        self.sample_bending(params)
         self.sample_obj_rotation_roll(params)
         self.sample_obj_rotation_pitch(params)
         self.sample_obj_rotation_yaw(params)
@@ -192,16 +192,16 @@ class Sampler:
         params.spherical = self._sample(obj_name, self.spherical)
         params.mark_sampled('spherical')
 
-    def sample_bone_rotation(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``bone_rotation``.
+    def sample_bending(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``bending``.
 
         Attrs:
             params: SceneParameters for which the bone roation is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        params.bone_rotation = self._sample(obj_name, self.bone_rotation)
-        params.mark_sampled('bone_rotation')
+        params.bending = self._sample(obj_name, self.bending)
+        params.mark_sampled('bending')
 
     def sample_obj_rotation_roll(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``obj_rotation_roll``.
@@ -272,7 +272,7 @@ class Sampler:
         params.mark_sampled('arm_position')
 
     def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
-        return plt.get_cmap(self.obj_color_rgba_map)
+        return plt.get_cmap(self.obj_color_map)
 
     def sample_obj_color_rgba(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``obj_color`` and ``obj_color``.
@@ -287,7 +287,7 @@ class Sampler:
         params.mark_sampled('obj_color')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
-        return plt.get_cmap(self.bg_color_rgba_map)
+        return plt.get_cmap(self.bg_color_map)
 
     def sample_bg_color_rgba(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``bg_color_rgba`` and ``bg_color``.
