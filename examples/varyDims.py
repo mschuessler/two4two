@@ -53,23 +53,23 @@ render_single_param(fliped_sticky)
 # Next lets look at the attribute of **roation**
 # Here we are setting it to the minimum recomemnded value.
 # %%
-rotating_sticky = two4two.SceneParameters()
-rotating_sticky.obj_rotation_pitch = two4two.SceneParameters.VALID_VALUES['obj_rotation_pitch'][0]
-render_single_param(rotating_sticky)
+rotating_pitch_sticky = two4two.SceneParameters()
+rotating_pitch_sticky.obj_rotation_pitch = two4two.SceneParameters.VALID_VALUES['obj_rotation_pitch'][0]
+render_single_param(rotating_pitch_sticky)
 # %% md
 # After that we are setting it to the recommended maximum value
 # %%
-rotating_sticky.obj_rotation_pitch = two4two.SceneParameters.VALID_VALUES['obj_rotation_pitch'][1]
-render_single_param(rotating_sticky)
+rotating_pitch_sticky.obj_rotation_pitch = two4two.SceneParameters.VALID_VALUES['obj_rotation_pitch'][1]
+render_single_param(rotating_pitch_sticky)
 # %% md
 # It is possible to set attributes outside of the recomemnded values
 # %%
 rotating_sticky.obj_rotation_pitch = 1.2
-render_single_param(rotating_sticky)
+render_single_param(rotating_pitch_sticky)
 # %% md
 # To check wheter values are with recommended ranges you can use *check_value*
 # %%
-rotating_sticky.check_values()
+rotating_pitch_sticky.check_values()
 # %% md
 # The following examples will illustrate the other attibutes and their corresponding
 # maximum and minimum recommended values.
