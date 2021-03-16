@@ -66,6 +66,7 @@ class Sampler:
         labeling_error: distribution of ``SceneParameters.labeling_error``.
         obj_rotation_roll: distribution of ``SceneParameters.obj_rotation_roll``.
         obj_rotation_pitch:distribution of ``SceneParameters.obj_rotation_pitch``.
+        obj_rotation_yaw:distribution of ``SceneParameters.obj_rotation_pitch``.
         fliplr: distribution of ``SceneParameters.fliplr``.
         position: distribution of ``SceneParameters.position``.
         obj_color: distribution of ``SceneParameters.obj_color``.
@@ -83,6 +84,7 @@ class Sampler:
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
     obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
     obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position: Continouos = scipy.stats.uniform(-0.5, 0.5)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
@@ -108,6 +110,7 @@ class Sampler:
         self.sample_bone_rotation(params)
         self.sample_obj_rotation_roll(params)
         self.sample_obj_rotation_pitch(params)
+        self.sample_obj_rotation_yaw(params)
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_arm_position(params)
@@ -221,6 +224,17 @@ class Sampler:
         obj_name = self._sample_name() if intervention else params.obj_name
         params.obj_rotation_pitch = self._sample(obj_name, self.obj_rotation_pitch)
         params.mark_sampled('obj_rotation_pitch')
+
+    def sample_obj_rotation_yaw(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_rotation_yaw``.
+
+        Attrs:
+            params: SceneParameters for which the rotation is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.obj_rotation_yaw = self._sample(obj_name, self.obj_rotation_yaw)
+        params.mark_sampled('obj_rotation_yaw')
 
     def sample_fliplr(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``fliplr``.
