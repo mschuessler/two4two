@@ -54,17 +54,17 @@ render_single_param(fliped_sticky)
 # Here we are setting it to the minimum recomemnded value.
 # %%
 rotating_sticky = two4two.SceneParameters()
-rotating_sticky.obj_rotation = two4two.SceneParameters.VALID_VALUES['obj_rotation'][0]
+rotating_sticky.obj_rotation_pitch = two4two.SceneParameters.VALID_VALUES['obj_rotation_pitch'][0]
 render_single_param(rotating_sticky)
 # %% md
 # After that we are setting it to the recommended maximum value
 # %%
-rotating_sticky.obj_rotation = two4two.SceneParameters.VALID_VALUES['obj_rotation'][1]
+rotating_sticky.obj_rotation_pitch = two4two.SceneParameters.VALID_VALUES['obj_rotation_pitch'][1]
 render_single_param(rotating_sticky)
 # %% md
 # It is possible to set attributes outside of the recomemnded values
 # %%
-rotating_sticky.obj_rotation = 1.2
+rotating_sticky.obj_rotation_pitch = 1.2
 render_single_param(rotating_sticky)
 # %% md
 # To check wheter values are with recommended ranges you can use *check_value*
@@ -75,9 +75,9 @@ rotating_sticky.check_values()
 # maximum and minimum recommended values.
 # The enxt examples shows the **inclination**
 # %%
-inclined_sticky = two4two.SceneParameters()
-inclined_sticky.obj_incline = two4two.SceneParameters.VALID_VALUES['obj_incline'][0]
-render_single_param(inclined_sticky)
+rotating_yaw_sticky = two4two.SceneParameters()
+rotating_yaw_sticky.obj_rotation_yaw = two4two.SceneParameters.VALID_VALUES['obj_rotation_yaw'][0]
+render_single_param(rotating_yaw_sticky)
 # %%
 inclined_sticky.obj_incline = two4two.SceneParameters.VALID_VALUES['obj_incline'][1]
 render_single_param(inclined_sticky)
