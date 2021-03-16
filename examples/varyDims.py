@@ -79,9 +79,15 @@ rotating_yaw_sticky = two4two.SceneParameters()
 rotating_yaw_sticky.obj_rotation_yaw = two4two.SceneParameters.VALID_VALUES['obj_rotation_yaw'][0]
 render_single_param(rotating_yaw_sticky)
 # %%
-inclined_sticky.obj_incline = two4two.SceneParameters.VALID_VALUES['obj_incline'][1]
-render_single_param(inclined_sticky)
-
+rotating_yaw_sticky.obj_rotation_yaw = two4two.SceneParameters.VALID_VALUES['obj_rotation_yaw'][1]
+render_single_param(rotating_yaw_sticky)
+# %%
+rotating_roll_sticky = two4two.SceneParameters()
+rotating_roll_sticky.obj_rotation_roll = two4two.SceneParameters.VALID_VALUES['obj_rotation_roll'][0]
+render_single_param(rotating_roll_sticky)
+# %%
+rotating_roll_sticky.obj_rotation_roll = two4two.SceneParameters.VALID_VALUES['obj_rotation_roll'][1]
+render_single_param(rotating_yaw_sticky)
 # %% md
 # We can also alter the **postion** in the scene
 # %%
