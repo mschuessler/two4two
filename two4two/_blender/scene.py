@@ -221,7 +221,7 @@ class Scene():
         self._set_pose(parameters.bone_rotation)
         self._set_rotation(
             parameters.obj_incline,
-            parameters.obj_rotation,
+            parameters.obj_rotation_yaw,
         )
         x = parameters.position_x
         y = parameters.position_y
