@@ -127,7 +127,7 @@ def render(
     print_output: bool = False,
     print_cmd: bool = False,
     save_blender_file: bool = False
-) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
+) -> Iterator[Tuple[np.ndarray, np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
 
     Args:
@@ -221,3 +221,45 @@ def render(
     finally:
         if use_tmp_dir:
             shutil.rmtree(output_dir)
+
+
+def render_single(
+    param: scene_parameters.SceneParameters,
+    output_dir: Optional[str] = None,
+    blender_dir: Optional[str] = None,
+    download_blender: bool = False,
+    print_output: bool = False,
+    print_cmd: bool = False,
+    save_blender_file: bool = False
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Convienience function. Renders a single images with Blender using the given SceneParameters.
+
+    For rendering more than one image use ``blender.render`` which will be more efficent.
+    Args:
+        param: The scence parameters describing the image.
+        output_dir: Save rendered images to this directory. If ``None``, the images
+            will not be saves permanently.
+        download_blender: flag to automatically downloads blender.
+        blender_dir: blender directory to use. Default ``~/.cache/two4two``.
+        print_output: Print the output of blender.
+        print_cmd: Print executed subcommand (useful for debugging).
+        save_blender_file: If ``True``, the blender file will be saved to
+            "{params.id}.blender".
+
+    Raises:
+        FileNotFoundError: if no blender installation is found in ``blender_dir``.
+
+    Yields:
+        tuple of (rendered image, segmentation mask of image).
+    """
+    result = list(render([param],
+                         n_processes=1,
+                         chunk_size=1,
+                         output_dir=output_dir,
+                         blender_dir=blender_dir,
+                         download_blender=download_blender,
+                         print_output=print_output,
+                         print_cmd=print_cmd,
+                         save_blender_file=save_blender_file))
+
+    return (result[0][0], result[0][1])
