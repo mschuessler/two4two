@@ -2,6 +2,7 @@ import two4two
 from two4two.plotvis import render_grid
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy.stats
 # %% md
 # We can create SceneParameters which will be initialize with default values
 # %%
@@ -64,7 +65,7 @@ render_single_param(rotating_pitch_sticky)
 # %% md
 # It is possible to set attributes outside of the recomemnded values
 # %%
-rotating_sticky.obj_rotation_pitch = 1.2
+rotating_pitch_sticky.obj_rotation_pitch = 1.2
 render_single_param(rotating_pitch_sticky)
 # %% md
 # To check wheter values are with recommended ranges you can use *check_value*
@@ -92,7 +93,8 @@ render_single_param(rotating_yaw_sticky)
 # We can also alter the **postion** in the scene
 # %%
 right_down_sticky = two4two.SceneParameters()
-right_down_sticky.position = tuple([two4two.SceneParameters.VALID_VALUES['position'][0]] * 2)
+right_down_sticky.position_x = two4two.SceneParameters.VALID_VALUES['position_x'][0]
+right_down_sticky.position_y = two4two.SceneParameters.VALID_VALUES['position_y'][0]
 render_single_param(right_down_sticky)
 # %% md
 # The 8 building blocks of sticky and stretchy can be altered to be more or less **spherical**
@@ -105,26 +107,11 @@ cubic_stretchy = two4two.SceneParameters.default_stretchy()
 cubic_stretchy.spherical = two4two.SceneParameters.VALID_VALUES['spherical'][0]
 render_single_param(cubic_stretchy)
 # %% md
-# *bone roation*
-# %%f86c8ddf48463f0e56421fb9f8f42103c87f0adab3af3f61
-bone_rotating_sticky = two4two.SceneParameters()
-# #   #     #
-# 1         5
-# # 2 # 3 # 4 #
-# 0         6
-# #         #
-bone_rotating_sticky.bone_rotation = (0, np.pi/4, np.pi/4, np.pi/4, np.pi/4, 0, 0)
-render_single_param(bone_rotating_sticky)
+# The objects can take on "postures" with the attribute *bending*
 # %%
 bending_sticky = two4two.SceneParameters()
-# #   #     #
-# 1         5
-# # 2 # 3 # 4 #
-# 0         6
-# #         #
-bending_sticky.bone_bend = (0, np.pi/4, np.pi/4, np.pi/4, np.pi/4, 0, 0)
-render_single_param(bending_sticky)
-bending_sticky.bone_bend = (np.pi, 0, 0, 0, 0, 0, 0)
+bending_sticky.bending = two4two.SceneParameters.VALID_VALUES['bending'][0]
+bending_sticky.check_values()
 render_single_param(bending_sticky)
 
 # %% md
@@ -145,7 +132,7 @@ render_single_param(sampled_params)
 # %%
 params = [sampler.sample() for i in range(18)]
 render_grid(params)
-
+params
 # %% md
 # A sample works by setting attributes using a distributon
 # We can also use a sampler to sample individual attributes of SceneParameters.
@@ -158,8 +145,8 @@ stickies = [two4two.SceneParameters.default_sticky() for i in range(num_images)]
 strechies = [two4two.SceneParameters.default_stretchy() for i in range(num_images)]
 
 _ = [sampler.sample_obj_color(params) for params in stickies + strechies]
-strechies.sort(key=lambda x: x.obj_color_scalar)
-stickies.sort(key=lambda x: x.obj_color_scalar)
+strechies.sort(key=lambda x: x.obj_color)
+stickies.sort(key=lambda x: x.obj_color)
 render_grid(stickies + strechies)
 # %% md
 # In the following example we repeat this experiement with a diffrent sampler, which has a known **color bias**.
@@ -167,8 +154,8 @@ render_grid(stickies + strechies)
 # %%
 sampler = two4two.ColorBiasedSampler()
 _ = [sampler.sample_obj_color(params) for params in stickies + strechies]
-strechies.sort(key=lambda x: x.obj_color_scalar)
-stickies.sort(key=lambda x: x.obj_color_scalar)
+strechies.sort(key=lambda x: x.obj_color)
+stickies.sort(key=lambda x: x.obj_color)
 render_grid(stickies + strechies)
 
 # %% md
@@ -196,8 +183,8 @@ stickies = [two4two.SceneParameters.default_sticky() for i in range(num_images)]
 strechies = [two4two.SceneParameters.default_stretchy() for i in range(num_images)]
 sampler = two4two.Sampler()
 _ = [sampler.sample_bg_color(params) for params in stickies + strechies]
-strechies.sort(key=lambda x: x.bg_color_scalar)
-stickies.sort(key=lambda x: x.bg_color_scalar)
+strechies.sort(key=lambda x: x.bg_color)
+stickies.sort(key=lambda x: x.bg_color)
 render_grid(stickies + strechies)
 # %% md
 # The changes in the background color are barely noticeable. But they are there.
@@ -207,28 +194,96 @@ stickies = [two4two.SceneParameters.default_sticky() for i in range(num_images)]
 strechies = [two4two.SceneParameters.default_stretchy() for i in range(num_images)]
 sampler = two4two.Sampler()
 sampler.bg_color = {
-    'sticky': two4two.utils.truncated_normal(0.8, 0.425, 0.05, 0.8),
-    'stretchy': two4two.utils.truncated_normal(0.05, 0.425, 0.055, 0.8)}
+    'sticky': two4two.utils.truncated_normal(0.8, 0.3, 0.3, 0.85),
+    'stretchy': two4two.utils.truncated_normal(0.2, 0.3, 0.15, 0.7)}
 _ = [sampler.sample_bg_color(params) for params in stickies + strechies]
-strechies.sort(key=lambda x: x.bg_color_scalar)
-stickies.sort(key=lambda x: x.bg_color_scalar)
+strechies.sort(key=lambda x: x.bg_color)
+stickies.sort(key=lambda x: x.bg_color)
+render_grid(stickies + strechies)
+# %%
+stickies = [sampler.sample(obj_name='sticky') for i in range(num_images)]
+strechies = [sampler.sample(obj_name='stretchy') for i in range(num_images)]
 render_grid(stickies + strechies)
 
-np.mean([x.bg_color_scalar for x in stickies])
-np.mean([x.bg_color_scalar for x in strechies])
+
+# %% md
+# **roation_pitch**
+# %%
+stickies = [two4two.SceneParameters.default_sticky() for i in range(2*num_images)]
+strechies = [two4two.SceneParameters.default_stretchy() for i in range(2*num_images)]
+sampler = two4two.Sampler()
+sampler.obj_rotation_pitch = scipy.stats.uniform(- np.pi /3, 2*np.pi/3)
+_ = [sampler.sample_obj_rotation_pitch(params) for params in stickies + strechies]
+
+strechies.sort(key=lambda x: x.obj_rotation_pitch)
+stickies.sort(key=lambda x: x.obj_rotation_pitch)
+
+render_grid(stickies + strechies)
+
+# %% md
+# **roation_yaw**
+# %%
+stickies = [two4two.SceneParameters.default_sticky() for i in range(2*num_images)]
+strechies = [two4two.SceneParameters.default_stretchy() for i in range(2*num_images)]
+sampler.obj_rotation_yaw = scipy.stats.uniform(- np.pi, np.pi)
+_ = [sampler.sample_obj_rotation_yaw(params) for params in stickies + strechies]
+
+strechies.sort(key=lambda x: x.obj_rotation_yaw)
+stickies.sort(key=lambda x: x.obj_rotation_yaw)
+
+render_grid(stickies + strechies)
+
+# %% md
+# **roation_roll**
+# %%
+stickies = [two4two.SceneParameters.default_sticky() for i in range(2*num_images)]
+strechies = [two4two.SceneParameters.default_stretchy() for i in range(2*num_images)]
+sampler.obj_rotation_roll = scipy.stats.uniform(- np.pi /3, 2*np.pi/3)
+_ = [sampler.sample_obj_rotation_roll(params) for params in stickies + strechies]
+
+strechies.sort(key=lambda x: x.obj_rotation_roll)
+stickies.sort(key=lambda x: x.obj_rotation_roll)
+
+render_grid(stickies + strechies)
+
+
+# %% md
+# Applying all suggested approaches jointly
+# %%
+_ = [sampler.sample_rotation(params) for params in stickies + strechies]
+render_grid(stickies + strechies)
+# %% md
+# Showing together with all other attibutes
+# %%
+render_grid([sampler.sample() for i in range(2*num_images)])
+
+
+# %% md
+# Taking all attributes together
+# %%
+stickies = [sampler.sample(obj_name='sticky') for i in range(num_images)]
+strechies = [sampler.sample(obj_name='stretchy') for i in range(num_images)]
+render_grid(stickies + strechies)
 
 
 # %% md
 # **bone bend**
 # %%
-stickies = [two4two.SceneParameters.default_sticky() for i in range(num_images)]
-strechies = [two4two.SceneParameters.default_stretchy() for i in range(num_images)]
-sampler = two4two.Sampler()
-_ = [sampler.sample_bone_bend(params) for params in stickies + strechies]
-strechies.sort(key=lambda x: x.bone_bend)
-stickies.sort(key=lambda x: x.bone_bend)
+stickies = [two4two.SceneParameters.default_sticky() for i in range(2*num_images)]
+strechies = [two4two.SceneParameters.default_stretchy() for i in range(2*num_images)]
+sampler.bending = scipy.stats.uniform(- np.pi /6, np.pi/3)
+_ = [sampler.sample_bending(params) for params in stickies + strechies]
+strechies.sort(key=lambda x: x.bending)
+stickies.sort(key=lambda x: x.bending)
 render_grid(stickies + strechies)
 
+# %%md
+# again applying things all together
+# %%
+_ = [sampler.sample_bending(params) for params in stickies + strechies]
+_ = [sampler.sample_rotation(params) for params in stickies + strechies]
+
+render_grid(stickies + strechies)
 # %%
 stickies = [two4two.SceneParameters.default_sticky() for i in range(num_images)]
 strechies = [two4two.SceneParameters.default_stretchy() for i in range(num_images)]
@@ -237,3 +292,15 @@ _ = [sampler.sample_bone_rotation(params) for params in stickies + strechies]
 strechies.sort(key=lambda x: x.bone_rotation)
 stickies.sort(key=lambda x: x.bone_rotation)
 render_grid(stickies + strechies)
+
+
+render_grid([two4two.HighVariationColorBiasedSampler().sample() for i in range(2*num_images)])
+
+render_grid([two4two.Sampler().sample() for i in range(2*num_images)])
+
+
+render_grid([two4two.HighVariationSampler().sample() for i in range(2*num_images)])
+
+
+np.mean([param.obj_color for param in[two4two.HighVariationColorBiasedSampler().sample('sticky') for i in range(5000)]])
+np.mean([param.obj_color for param in[two4two.HighVariationColorBiasedSampler().sample('stretchy') for i in range(5000)]])
