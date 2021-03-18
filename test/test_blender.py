@@ -43,6 +43,8 @@ def test_blender_rending(tmp_path: Path):
     assert tmp_path.glob("*.png")
     assert tmp_path.glob("*.blender")
 
+    two4two.blender.render_single(two4two.SceneParameters())
+
 
 def test_blender_rending_tmp_dir(tmp_path: Path):
     """Tests the rendering using a temporary directory."""
