@@ -254,7 +254,6 @@ def render_single(
     result = list(render([param],
                          n_processes=1,
                          chunk_size=1,
-                         output_dir=output_dir,
                          blender_dir=blender_dir,
                          download_blender=download_blender,
                          print_output=print_output,
