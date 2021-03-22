@@ -376,6 +376,7 @@ class HighVariationSampler(Sampler):
     obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
     bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
 
+
 @dataclasses.dataclass()
 class HighVariationColorBiasedSampler(Sampler):
     """A sampler producing more challenging images with a color bias that is depent on obj_name.

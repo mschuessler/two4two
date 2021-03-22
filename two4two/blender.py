@@ -225,7 +225,6 @@ def render(
 
 def render_single(
     param: scene_parameters.SceneParameters,
-    output_dir: Optional[str] = None,
     blender_dir: Optional[str] = None,
     download_blender: bool = False,
     print_output: bool = False,

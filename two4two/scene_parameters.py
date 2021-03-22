@@ -100,7 +100,7 @@ class SceneParameters:
         'labeling_error': set([False, True]),
         'obj_rotation_roll': (- math.pi / 3, math.pi / 3),
         'obj_rotation_pitch': (- math.pi / 3, math.pi / 3),
-        'obj_rotation_yaw': (- math.pi, math.pi),
+        'obj_rotation_yaw': utils.HALF_CIRCLE,
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
@@ -121,7 +121,6 @@ class SceneParameters:
         params.arm_position = 1
         return params
 
-
     @classmethod
     def _is_allowed_value(cls, value: Any, name: str) -> bool:
         """Checks if values are in the allowed value ranges."""
@@ -134,19 +133,6 @@ class SceneParameters:
             return value in valid
         else:
             raise ValueError(f"Unknown valid value description: {valid}")
-
-    @classmethod
-    def default_sticky(cls) -> SceneParameters:
-        """Creates SceneParameters with default values for sticky."""
-        return cls()
-
-    @classmethod
-    def default_stretchy(cls) -> SceneParameters:
-        """Creates SceneParameters with default values for stretchy."""
-        params = cls()
-        params.obj_name = 'stretchy'
-        params.arm_position = 1
-        return params
 
     def check_values(self):
         """Raises a ValueError if a value is not in its valid range."""

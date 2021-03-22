@@ -57,6 +57,7 @@ def render_grid(
     fig.subplots_adjust(wspace=0, hspace=0)
     return fig, ax
 
+
 def render_single_param(param: scene_parameters.SceneParameters):
     """Renders the image from the given ``SceneParameters`` and plots it.
 

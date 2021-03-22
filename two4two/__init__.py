@@ -1,9 +1,9 @@
 """two4two module."""
 
 from two4two.bias import (
+    ColorBiasedSampler,
     HighVariationColorBiasedSampler,
     HighVariationSampler,
-    ColorBiasedSampler,
     Sampler,
 )
 from two4two.blender import render
