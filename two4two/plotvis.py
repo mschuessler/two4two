@@ -15,7 +15,7 @@ def render_grid(
     params: Sequence[scene_parameters.SceneParameters],
     num_cols_per_class: int = 3,
     equal_class_distribution: bool = True,
-    download_blender: bool = False
+    # see #75 download_blender: bool = False
 ) -> Tuple[mlp.figure.Figure, Sequence[Sequence[mlp.axes.Axes]]]:
     """Renders scene from a list of SceneParameters and displays the in an image grid.
 
@@ -23,7 +23,6 @@ def render_grid(
         params: List of SceneParameters
         num_cols_per_class: Number of colums of the grid reserved for a single class
         equal_class_distribution: Enforce equal class distribution in visulization.
-        download_blender: flag to automatically downloads blender if not installed.
 
     """
     sticky_params, stretchy_params = scene_parameters.split_sticky_stretchy(params)
@@ -48,7 +47,7 @@ def render_grid(
     for (img, mask, param) in blender.render(
             params=sticky_params + stretchy_params,
             chunk_size=num_cols_per_class,
-            download_blender=download_blender):
+            download_blender=True):  # download_blender is true until #75 is fixed
         ax1 = sticky_ax.pop() if param.obj_name == 'sticky' else stretchy_ax.pop()
         ax1.axis('off')
         ax1.set_aspect('equal')
@@ -57,3 +56,14 @@ def render_grid(
     [ax.axis('off') for ax in stretchy_ax + sticky_ax]
     fig.subplots_adjust(wspace=0, hspace=0)
     return fig, ax
+
+
+def render_single_param(param: scene_parameters.SceneParameters):
+    """Renders the image from the given ``SceneParameters`` and plots it.
+
+    Attrs:
+        param: SceneParameters of the image
+    """
+    (img, mask) = blender.render_single(param)
+    plt.imshow(img)
+    plt.axis('off')

@@ -75,16 +75,18 @@ class Sampler:
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
+    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
             'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
-    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
-    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
-    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4,
+                                                           *utils.QUARTER_CIRCLE)
+    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4,
+                                                            *utils.QUARTER_CIRCLE)
+    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position_x: Continouos = scipy.stats.uniform(-0.5, 0.5)
     position_y: Continouos = scipy.stats.uniform(-0.5, 0.5)
@@ -356,6 +358,39 @@ class ColorBiasedSampler(Sampler):
     The color is sampled from a conditional distribution that is dependent on the object type.
     """
 
+    obj_color: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+        })
+
+
+@dataclasses.dataclass()
+class HighVariationSampler(Sampler):
+    """A sampler producing more challenging images.
+
+    This sampler allows for a higher variation in rotations and bending. Hence it creates a more
+    challenging datset.
+    """
+
+    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
+
+
+@dataclasses.dataclass()
+class HighVariationColorBiasedSampler(Sampler):
+    """A sampler producing more challenging images with a color bias that is depent on obj_name.
+
+    This sampler allows for a higher variation in rotations and bending. Hence it creates a more
+    challenging datset. This dataset is more challenging. So the bias is more likely to be used.
+    """
+
+    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(1, 0.5, 0, 1),

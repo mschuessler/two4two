@@ -98,28 +98,15 @@ class SceneParameters:
         'bending': (- math.pi / 6, math.pi / 6),
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
-        'obj_rotation_roll': utils.HALF_CIRCLE,
-        'obj_rotation_pitch': utils.HALF_CIRCLE,
-        'obj_rotation_yaw': utils.HALF_CIRCLE,
+        'obj_rotation_roll': (- math.pi / 3, math.pi / 3),
+        'obj_rotation_pitch': (- math.pi / 3, math.pi / 3),
+        'obj_rotation_yaw': utils.FULL_CIRCLE,
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
         'obj_color': (0, 1),
         'bg_color': (0, 1),
     }
-
-    @classmethod
-    def _is_allowed_value(cls, value: Any, name: str) -> bool:
-        """Checks if values are in the allowed value ranges."""
-        valid = cls.VALID_VALUES[name]
-        if type(valid) == tuple:
-            vmin, vmax = valid
-
-            return vmin <= value <= vmax
-        elif type(valid) == set:
-            return value in valid
-        else:
-            raise ValueError(f"Unknown valid value description: {valid}")
 
     @classmethod
     def default_sticky(cls) -> SceneParameters:
@@ -133,6 +120,19 @@ class SceneParameters:
         params.obj_name = 'stretchy'
         params.arm_position = 1
         return params
+
+    @classmethod
+    def _is_allowed_value(cls, value: Any, name: str) -> bool:
+        """Checks if values are in the allowed value ranges."""
+        valid = cls.VALID_VALUES[name]
+        if type(valid) == tuple:
+            vmin, vmax = valid
+
+            return vmin <= value <= vmax
+        elif type(valid) == set:
+            return value in valid
+        else:
+            raise ValueError(f"Unknown valid value description: {valid}")
 
     def check_values(self):
         """Raises a ValueError if a value is not in its valid range."""

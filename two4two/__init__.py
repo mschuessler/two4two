@@ -2,6 +2,8 @@
 
 from two4two.bias import (
     ColorBiasedSampler,
+    HighVariationColorBiasedSampler,
+    HighVariationSampler,
     Sampler,
 )
 from two4two.blender import render
