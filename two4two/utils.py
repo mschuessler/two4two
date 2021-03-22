@@ -11,7 +11,9 @@ import scipy.stats
 
 RGBAColor = Tuple[float, float, float, float]
 
-HALF_CIRCLE = (-np.pi / 4, np.pi / 4)
+QUARTER_CIRCLE = (-np.pi / 4, np.pi / 4)
+# HALF_CIRCLE = (-np.pi / 4, np.pi / 4)
+FULL_CIRCLE = (-np.pi, np.pi)
 
 T = TypeVar('T')
 

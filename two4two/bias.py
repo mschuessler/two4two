@@ -75,16 +75,16 @@ class Sampler:
 
     obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.HALF_CIRCLE)
+    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
             'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
-    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.HALF_CIRCLE)
-    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
-    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.HALF_CIRCLE)
+    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position_x: Continouos = scipy.stats.uniform(-0.5, 0.5)
     position_y: Continouos = scipy.stats.uniform(-0.5, 0.5)
