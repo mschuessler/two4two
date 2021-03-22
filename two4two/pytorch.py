@@ -85,7 +85,7 @@ class Two4Two(Dataset):
     def _scene_parameters_to_flat_array(
         self,
         params: two4two.SceneParameters,
-    ) -> Tuple[Sequence[str], np.ndarray]:
+    ) -> Tuple[Sequence[str], torch.Tensor]:
         """Returns a list of label names and numpy array with the labels.
 
         The class exposes all attributes of SceneParameters.  This function
@@ -112,7 +112,7 @@ class Two4Two(Dataset):
                 arr.append(attr_value)
         return label_names, torch.FloatTensor(arr)
 
-    def __getitem__(self, idx: int) -> Tuple[np.ndarray, np.ndarray]:
+    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, ...]:
         param = self.params[idx]
         fname = param.filename
         img = Image.open(os.path.join(self.root_dir, self.split, fname))
@@ -123,8 +123,8 @@ class Two4Two(Dataset):
         _, label_arr = self._scene_parameters_to_flat_array(param)
 
         if self._return_segmentation_mask:
-            mask = Image.open(os.path.join(self.root_dir, self.split, param.mask_filename))
-            mask = torch.from_numpy(np.array(mask)[np.newaxis])
+            mask_img = Image.open(os.path.join(self.root_dir, self.split, param.mask_filename))
+            mask = torch.from_numpy(np.array(mask_img)[np.newaxis])
             return img, mask, label_arr
         else:
             return img, label_arr
