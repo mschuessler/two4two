@@ -12,23 +12,32 @@ import PIL.Image
 import os
 
 
-strategy = tf.distribute.MirroredStrategy()
+
+
 dataset_url = "https://f001.backblazeb2.com/file/mschuessler-share/two4two_leon_dataset/obj_color_bias.tar.gz"
 data_dir = tf.keras.utils.get_file(origin=dataset_url, fname='obj_color_bias', untar=True)
+data_dir = os.path.join("data","color_bias")
+
 data_dir = pathlib.Path(data_dir)
 
 train_df = pd.read_json(os.path.join(data_dir,"labels_train.json"), lines=True)
 train_df['obj_type'] = train_df['obj_type'].astype(str)
 
-test_df = pd.read_json(os.path.join(data_dir,"labels_test.json"), lines=True)
-test_df['obj_type'] = test_df['obj_type'].astype(str)
+# new way of loading
+test_dir = os.path.join(data_dir,"test")
+test_df = pd.read_json(os.path.join(test_dir,"parameters.jsonl"), lines=True)
+test_df["filename"] = test_df["id"] + ".png"
+
+#test_df['obj_type'] = test_df['obj_type'].astype(str)
+
+test_df
 # Assuming that 1/255 is a good idea as it was with MNIST
 datagen=ImageDataGenerator(rescale=1./255)
-train_generator=datagen.flow_from_dataframe(dataframe=train_df, directory=data_dir, x_col="filename", y_col="obj_type", batch_size=64)
+train_generator=datagen.flow_from_dataframe(dataframe=test_df, directory=test_dir, x_col="filename", y_col="obj_name", batch_size=64)
 valid_generator=datagen.flow_from_dataframe(dataframe=test_df, directory=data_dir, x_col="filename", y_col="obj_type", batch_size=64)
 STEP_SIZE_TRAIN=train_generator.n//train_generator.batch_size
 STEP_SIZE_VALID=valid_generator.n//valid_generator.batch_size
-
+strategy = tf.distribute.MirroredStrategy()
 with strategy.scope():
     modernLenetModel = keras.models.Sequential([
             layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
@@ -54,8 +63,8 @@ with strategy.scope():
 
 modernLenetModel.fit(train_generator,
                     steps_per_epoch=STEP_SIZE_TRAIN,
-                    validation_data=valid_generator,
-                    validation_steps=STEP_SIZE_VALID,
+                    #validation_data=valid_generator,
+                    #validation_steps=STEP_SIZE_VALID,
                     epochs=30,
                     #callbacks = [PlotLossesKerasTF()]
                     )
