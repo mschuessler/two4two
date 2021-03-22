@@ -257,7 +257,6 @@ def render_single(
                          output_dir=output_dir,
                          blender_dir=blender_dir,
                          download_blender=download_blender,
-                         print_output=print_output,
                          print_cmd=print_cmd,
                          save_blender_file=save_blender_file))
 
