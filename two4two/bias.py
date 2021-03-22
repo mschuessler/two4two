@@ -82,8 +82,10 @@ class Sampler:
             'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
-    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4, *utils.QUARTER_CIRCLE)
-    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4,
+                                                           *utils.QUARTER_CIRCLE)
+    obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4,
+                                                            *utils.QUARTER_CIRCLE)
     obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
     position_x: Continouos = scipy.stats.uniform(-0.5, 0.5)
