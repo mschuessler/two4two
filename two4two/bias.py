@@ -366,6 +366,21 @@ class ColorBiasedSampler(Sampler):
 
 
 @dataclasses.dataclass()
+class MediumVariationSampler(Sampler):
+    """An example implementation of Sampler with medium varation.
+    """
+
+    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    bending: Continouos = utils.truncated_normal(0, np.pi / 18, - np.pi / 6, np.pi / 6)
+    bg_color_map: str = 'binary'
+    obj_color_map: str = 'seismic'
+    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
+
+
+@dataclasses.dataclass()
 class HighVariationSampler(Sampler):
     """A sampler producing more challenging images.
 
