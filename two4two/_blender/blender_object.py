@@ -1,5 +1,9 @@
 """module for the blender object of Sticky and Stretechy."""
-from typing import Sequence, Tuple, Union
+
+from __future__ import annotations
+
+import dataclasses
+from typing import Dict, Tuple
 
 import bpy
 from mathutils import Vector
@@ -7,6 +11,47 @@ import numpy as np
 
 from two4two._blender import butils
 import two4two.utils
+
+
+@dataclasses.dataclass
+class BoneRotation:
+    r"""Specifies the rotation of the individual bones.
+
+    ```
+         arm_left_top
+           \              center_left          /
+            \    left     |           right   /
+             [] ------ [] -- [] -- [] ------ []
+            /                   |             \
+           /                    center_right   \
+          arm_left_bottom
+    ```
+    """
+
+    center_right: float = 0.
+    right: float = 0.
+    arm_right_top: float = 0.
+    arm_right_bottom: float = 0.
+
+    center_left: float = 0.
+    left: float = 0.
+    arm_left_top: float = 0.
+    arm_left_bottom: float = 0.
+
+    @staticmethod
+    def from_bending(bending: float) -> BoneRotation:
+        """Creates rotation for a single bending scalar."""
+        return BoneRotation(
+            center_right=bending / 2,
+            right=bending,
+            arm_right_top=bending,
+            arm_right_bottom=bending,
+            # switch sign for left
+            center_left=-bending / 2,
+            left=-bending,
+            arm_left_top=-bending,
+            arm_left_bottom=-bending,
+        )
 
 
 class Two4TwoBlenderObject():
@@ -19,6 +64,19 @@ class Two4TwoBlenderObject():
         arm_position: Absolute arm positions.
     """
 
+    def _get_object_locations(self) -> Dict[str, Tuple[float, float, float]]:
+        arm_pos = 1.5 + self.arm_position
+        return {
+            'arm_left_top': Vector((0., -1.5, 1.)),
+            'arm_left_bottom': Vector((0., -1.5, -1.)),
+            'spline_left': Vector((0., -1., 0)),
+            'spline_left_center': Vector((0., 0., 0.)),
+            'spline_right_center': Vector((0., 1., 0.)),
+            'spline_right': Vector((0., 2., 0.)),
+            'arm_right_top': Vector((0., arm_pos, 1.)),
+            'arm_right_bottom': Vector((0., arm_pos, -1.)),
+        }
+
     def _create_model(self):
         """Creates the blocks of the object.
 
@@ -29,17 +87,7 @@ class Two4TwoBlenderObject():
         [arm_left_bottom]                                                       [arm_right_bottom]
 
         """
-        arm_pos = 1.5 + self.arm_position
-        object_locations = {
-            'arm_left_top': (0, -1.5, 1),
-            'arm_left_bottom': (0, -1.5, -1),
-            'spline_left': (0, -1, 0),
-            'spline_left_center': (0, 0, 0),
-            'spline_right_center': (0, 1, 0),
-            'spline_right': (0, 2, 0),
-            'arm_right_top': (0, arm_pos, 1),
-            'arm_right_bottom': (0, arm_pos, -1),
-        }
+        object_locations = self._get_object_locations()
 
         animal_blocks = bpy.data.collections.new("animal_blocks")
         for name, location in object_locations.items():
@@ -54,54 +102,125 @@ class Two4TwoBlenderObject():
 
     def _create_armature(self):
         """Add bones."""
-        # TODO(philipp): can you document how each bone is connected?
+        #
+        #
+        #     arm_left_top
+        #       \              center_left          /
+        #        \    left     |           right   /
+        #         [] ------ [] -- [] -- [] ------ []
+        #        /                   |             \
+        #       /                    center_right   \
+        #      arm_left_bottom
+        #
+        blocks = self._get_object_locations()
+
+        def block_offset(block1: str, block2: str) -> Vector:
+            return blocks[block1] - blocks[block2]
+
+        def add_bone(bone_name: str,
+                     from_block: str,
+                     to_block: str,
+                     forked: bool = False):
+            bpy.ops.armature.extrude_move(
+                ARMATURE_OT_extrude={"forked": forked},
+                TRANSFORM_OT_translate={
+                    "value": block_offset(to_block, from_block)})
+            bpy.context.active_bone.name = bone_name
+
+        def select(bone_name: str, mode: str):
+            bpy.ops.armature.select_all(action='DESELECT')
+            bone = bpy.context.active_object.data.edit_bones[bone_name]
+            bone.select = False
+            if mode == 'tail':
+                bone.select_tail = True
+                bone.select_head = False
+            elif mode == 'head':
+                bone.select_tail = False
+                bone.select_head = True
+            else:
+                raise ValueError(mode)
+
+        def attach_bones_to_blocks(orientation: str):
+            """Combines bones with blocks."""
+
+            butils.object_mode()
+            bpy.ops.object.select_all(action='DESELECT')
+            for name in self.blocks.keys():
+                if orientation in name:
+                    print(name)
+                    butils.select(name)
+            butils.select(f'skeleton_{orientation}')
+            bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+
+        obj_center = (blocks['spline_right_center'] + blocks['spline_left_center']) / 2
+
         bpy.ops.object.armature_add(enter_editmode=True,
-                                    radius=np.sqrt(1.25),
-                                    location=(0, -1.5, -1),
-                                    rotation=(-np.arctan(0.25), 0, 0))
-        bpy.context.active_object.name = 'skeleton'
-        bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
-                                      TRANSFORM_OT_translate={"value": (0, -0.5, 1)})
+                                    radius=0.5,
+                                    location=obj_center,
+                                    rotation=(-np.pi / 2, 0, 0))
+        bpy.context.active_object.name = 'skeleton_right'
+        bpy.context.active_bone.name = 'center_right'
 
-        bpy.ops.armature.select_hierarchy()
+        select('center_right', 'tail')
+        add_bone('right',
+                 from_block='spline_right_center',
+                 to_block='spline_right')
 
-        bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
-                                      TRANSFORM_OT_translate={"value": (0, 1, 0)})
+        select('right', 'tail')
+        add_bone('arm_right_top',
+                 from_block='spline_right',
+                 to_block='arm_right_top')
 
-        bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
-                                      TRANSFORM_OT_translate={"value": (0, 1, 0)})
+        select('right', 'tail')
+        add_bone('arm_right_bottom',
+                 from_block='spline_right',
+                 to_block='arm_right_bottom')
 
-        bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
-                                      TRANSFORM_OT_translate={"value": (0, 1, 0)})
+        butils.object_mode()
+        attach_bones_to_blocks('right')
 
-        if self.obj_name == 'sticky':
-            # TODO(philipp): why is this if here? why different bones connection for sticky?
-            bpy.context.active_bone.select_tail = False
-            bpy.context.active_bone.select_head = True
-            arm_shift = self.arm_position
-        else:
-            arm_shift = 1 - self.arm_position
+        # build the left part
+        bpy.ops.object.armature_add(enter_editmode=True,
+                                    radius=0.5,
+                                    location=obj_center,
+                                    rotation=(+np.pi / 2, 0, 0))
+        bpy.context.active_object.name = 'skeleton_left'
+        bpy.context.active_bone.name = 'center_left'
 
-        bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
-                                      TRANSFORM_OT_translate={"value": (0, 0.5 + arm_shift, 1)})
+        select('center_left', 'tail')
+        add_bone('left',
+                 from_block='spline_left_center',
+                 to_block='spline_left')
 
-        bpy.context.active_bone.select_tail = False
-        bpy.context.active_bone.select_head = True
+        select('left', 'tail')
+        add_bone('arm_left_top',
+                 from_block='spline_left',
+                 to_block='arm_left_top')
 
-        bpy.ops.armature.extrude_move(ARMATURE_OT_extrude={"forked": False},
-                                      TRANSFORM_OT_translate={"value": (0, 0.5 + arm_shift, -1)})
+        select('left', 'tail')
+        add_bone('arm_left_bottom',
+                 from_block='spline_left',
+                 to_block='arm_left_bottom')
+        attach_bones_to_blocks('left')
 
     def _attach_bones_to_blocks(self):
         """Combines bones with blocks."""
-        butils.object_mode()
-        bpy.ops.object.select_all(action='DESELECT')
-        for name in self.blocks.keys():
-            butils.select(name)
-        butils.select('skeleton')
-        bpy.ops.object.parent_set(type='ARMATURE_AUTO')
 
-    def set_pose(self, bending: Union[float, Sequence[float]],
-                 bone_bend_2: Sequence[float] = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)):
+        for skeleton_orientation in ('right',):  # 'left'):
+            print("skeleton_orientation")
+            print(skeleton_orientation)
+            butils.object_mode()
+            bpy.ops.object.select_all(action='DESELECT')
+            for name in self.blocks.keys():
+                if skeleton_orientation in name:
+                    print(name)
+                    butils.select(name)
+            butils.select(f'skeleton_{skeleton_orientation}')
+            bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+
+    def set_pose(self,
+                 bending: BoneRotation,
+                 bone_translation: BoneRotation = None):
         """Set bond bending and rotations.
 
         Attrs:
@@ -109,54 +228,43 @@ class Two4TwoBlenderObject():
                 Either as one float for all roations or a tuple of seven values.
             bone_bend_2: Bending of the individual bone segments.
                 (Attribute removed from SceneParameters but functionality remains implemented)
-
-
         """
-        # TODO(philipp): how are the rotations applied. Shouldn't there be 3 degrees of freedom?
 
-        if isinstance(bending, list):
-            bending = tuple(bending)
+        if bone_translation is None:
+            # creates an emptpy translation of 0.
+            bone_translation = BoneRotation()
 
-        if not isinstance(bending, tuple):
-            bending = tuple([bending] * 7)
+        for orientation in ('right', 'left'):
+            skeleton = f'skeleton_{orientation}'
+            butils.set_active(skeleton)
+            bpy.ops.object.posemode_toggle()
 
-        butils.set_active('skeleton')
-        bpy.ops.object.posemode_toggle()
-        # For Reference, this is the numbering of bones
-        # O         O
-        # 1         5
-        # O 2 O 3 O 4 O
-        # 0         6
-        # O         O
-        for i, bone in enumerate(bpy.data.objects['skeleton'].data.bones):
+            for bone in bpy.data.objects[skeleton].data.bones:
+                rotation_angle = getattr(bending, bone.name)
+                bone.select = True
+                bend_angle = getattr(bone_translation, bone.name)
+                bpy.ops.transform.translate(
+                    value=(bend_angle, 0, 0),
+                    orient_type='GLOBAL',
+                    orient_matrix=((1, 0, 0),
+                                   (0, 1, 0),
+                                   (0, 0, 1)),
+                    orient_matrix_type='GLOBAL',
+                    constraint_axis=(False, True, False))
 
-            bone.select = True
+                bpy.ops.transform.rotate(value=rotation_angle, orient_axis='X')
+                bone.select = False
 
-            bend_angle = bone_bend_2[i]
-            rotation_angle = bending[i]
-
-            bpy.ops.transform.translate(
-                value=(bend_angle, 0, 0),
-                orient_type='GLOBAL',
-                orient_matrix=((1, 0, 0),
-                               (0, 1, 0),
-                               (0, 0, 1)),
-                orient_matrix_type='GLOBAL',
-                constraint_axis=(False, True, False))
-
-            bpy.ops.transform.rotate(value=rotation_angle, orient_axis='X')
-
-            bone.select = False
-
-        butils.object_mode()
-        bpy.ops.object.select_all(action='DESELECT')
-        for block_name in self.blocks.keys():
-            butils.set_active(block_name)
+            butils.object_mode()
+            bpy.ops.object.select_all(action='DESELECT')
+            for block_name in self.blocks.keys():
+                if orientation in block_name:
+                    butils.set_active(block_name)
+                    bpy.ops.object.modifier_apply(apply_as='DATA',
+                                                  modifier='Armature')
+            butils.set_active(skeleton)
             bpy.ops.object.modifier_apply(apply_as='DATA',
                                           modifier='Armature')
-        butils.set_active('skeleton')
-        bpy.ops.object.modifier_apply(apply_as='DATA',
-                                      modifier='Armature')
 
     def create_bounding_box(self):
         """Add a bounding box around all blocks.
@@ -175,7 +283,8 @@ class Two4TwoBlenderObject():
                                  center_override=(min_x, min_y, min_z))
 
         butils.select('bounding_box')
-        butils.select('skeleton', add_to_selection=True)
+        butils.select('skeleton_right', add_to_selection=True)
+        butils.select('skeleton_left', add_to_selection=True)
 
         bpy.ops.object.parent_set(type='OBJECT',
                                   keep_transform=True)
@@ -183,7 +292,8 @@ class Two4TwoBlenderObject():
     def remove_bounding_box(self):
         """Remove bounding box."""
         butils.select('bounding_box')
-        butils.select('skeleton', add_to_selection=True)
+        butils.select('skeleton_right', add_to_selection=True)
+        butils.select('skeleton_left', add_to_selection=True)
         bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
         bpy.ops.object.select_all(action='DESELECT')
         butils.select('bounding_box')
@@ -192,7 +302,8 @@ class Two4TwoBlenderObject():
         for block_name in self.blocks.keys():
             butils.set_active(block_name)
             bpy.ops.object.transform_apply()
-        butils.set_active('skeleton')
+        butils.set_active('skeleton_right')
+        butils.set_active('skeleton_left')
         bpy.ops.object.transform_apply()
 
     def move(self, translation_vec: Tuple[float, float, float]):
@@ -250,24 +361,23 @@ class Two4TwoBlenderObject():
     @property
     def boundaries(self) -> butils.BOUNDING_BOX:
         """The object boundaries."""
-        return butils.get_boundaries(self.blocks.values())
+        return butils.get_boundaries(list(self.blocks.values()))
 
     def __init__(self,
                  obj_name: str,
                  spherical: float = 0,
-                 arm_position: float = None):
+                 arm_position: float = 0):
 
         # Object Type. 'sticky' or 'stretchy'
         self.obj_name = obj_name
 
         self.arm_position = arm_position
-        self.blocks = {}
+        self.blocks: Dict[str, bpy.types.Object] = {}
         self.num_of_cubes = 8
         base_width = 0.8
         self.cube_size = base_width + spherical * 0.1
 
         self._create_model()
         self._create_armature()
-        self._attach_bones_to_blocks()
         self.center()
         self._set_spherical(spherical)
