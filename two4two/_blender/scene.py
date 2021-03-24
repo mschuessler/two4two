@@ -2,7 +2,7 @@
 
 import os
 import sys
-from typing import Sequence, Tuple
+from typing import Sequence
 
 import bpy
 import imageio
@@ -11,8 +11,8 @@ from skimage import color
 
 from two4two import scene_parameters
 from two4two import utils
+from two4two._blender import blender_object
 from two4two._blender import butils
-from two4two._blender.blender_object import Two4TwoBlenderObject
 
 
 class Scene():
@@ -23,8 +23,8 @@ class Scene():
     """
 
     def _set_pose(self,
-                  bending: Sequence[float]):
-        self.obj.set_pose(bending)
+                  bending: float):
+        self.obj.set_pose(blender_object.BoneRotation.from_bending(bending))
         self.obj.center()
 
     def _set_rotation(self,
@@ -100,7 +100,7 @@ class Scene():
         blender_objects: Sequence[bpy.types.Object],
         path: str,
         restore: bool = True,
-    ) -> Sequence[Tuple[float, float, float]]:
+    ) -> Sequence[float]:
         """Renders the scene without shades.
 
         For each object, a unique color is used.
@@ -212,7 +212,7 @@ class Scene():
         butils.clear_all()
         self.parameters = parameters
 
-        self.obj = Two4TwoBlenderObject(
+        self.obj = blender_object.Two4TwoBlenderObject(
             parameters.obj_name,
             parameters.spherical,
             parameters.arm_position)
