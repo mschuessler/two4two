@@ -12,6 +12,8 @@ import two4two
 def render(tmp_path: Path, **kwargs: Dict[str, Any]):
     """Renders 3 images and checks #objects, shapes, and if parameters are returned correctly."""
     sticky = two4two.SceneParameters.default_sticky()
+
+    # setting the id ensures a determinisitic filename
     sticky.id = 'sticky'
 
     sticky_bended = sticky.clone()

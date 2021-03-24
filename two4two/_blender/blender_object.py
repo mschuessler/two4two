@@ -17,13 +17,20 @@ import two4two.utils
 class BoneRotation:
     r"""Specifies the rotation of the individual bones.
 
+    The object has a bone between each block. Except in the center between
+    ``spline_left_center`` and ``spline_right_center``. There, we add two bones
+    as this gives a unique center point to the object. The object is then
+    bended around that center.
+
+    Here is the bone layout. ``[]`` marks a joint:
+
     ```
          arm_left_top
-           \              center_left          /
+           \              center_left          /  --  arm_right_top
             \    left     |           right   /
              [] ------ [] -- [] -- [] ------ []
             /                   |             \
-           /                    center_right   \
+           /                    center_right   \ --  arm_right_bottom
           arm_left_bottom
     ```
     """
@@ -101,17 +108,24 @@ class Two4TwoBlenderObject():
             butils.object_mode()
 
     def _create_armature(self):
-        """Add bones."""
-        #
-        #
-        #     arm_left_top
-        #       \              center_left          /
-        #        \    left     |           right   /
-        #         [] ------ [] -- [] -- [] ------ []
-        #        /                   |             \
-        #       /                    center_right   \
-        #      arm_left_bottom
-        #
+        r"""Add bones.
+
+        We add a bone between each block. Except in the center between
+        ``spline_left_center`` and ``spline_right_center``. There, we
+        add two bones as this gives a unique center point to the object.
+        It is then bended around that center.
+
+        Here is the bone layout. ``[]`` marks a joint:
+        ```
+          arm_left_top
+            \              center_left          /  --  arm_right_top
+             \    left     |           right   /
+              [] ------ [] -- [] -- [] ------ []
+             /                   |             \
+            /                    center_right   \ --  arm_right_bottom
+           arm_left_bottom
+        ```
+        """
         blocks = self._get_object_locations()
 
         def block_offset(block1: str, block2: str) -> Vector:
@@ -147,7 +161,6 @@ class Two4TwoBlenderObject():
             bpy.ops.object.select_all(action='DESELECT')
             for name in self.blocks.keys():
                 if orientation in name:
-                    print(name)
                     butils.select(name)
             butils.select(f'skeleton_{orientation}')
             bpy.ops.object.parent_set(type='ARMATURE_AUTO')
@@ -203,21 +216,6 @@ class Two4TwoBlenderObject():
                  to_block='arm_left_bottom')
         attach_bones_to_blocks('left')
 
-    def _attach_bones_to_blocks(self):
-        """Combines bones with blocks."""
-
-        for skeleton_orientation in ('right',):  # 'left'):
-            print("skeleton_orientation")
-            print(skeleton_orientation)
-            butils.object_mode()
-            bpy.ops.object.select_all(action='DESELECT')
-            for name in self.blocks.keys():
-                if skeleton_orientation in name:
-                    print(name)
-                    butils.select(name)
-            butils.select(f'skeleton_{skeleton_orientation}')
-            bpy.ops.object.parent_set(type='ARMATURE_AUTO')
-
     def set_pose(self,
                  bending: BoneRotation,
                  bone_translation: BoneRotation = None):
@@ -225,8 +223,7 @@ class Two4TwoBlenderObject():
 
         Attrs:
             bending: Rotation of the individual bone segments.
-                Either as one float for all roations or a tuple of seven values.
-            bone_bend_2: Bending of the individual bone segments.
+            bone_translation: Bending of the individual bone segments.
                 (Attribute removed from SceneParameters but functionality remains implemented)
         """
 
