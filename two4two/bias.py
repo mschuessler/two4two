@@ -78,8 +78,8 @@ class Sampler:
     bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(mean=0, std=0.40, lower=0, upper=0.65),
-            'stretchy': utils.truncated_normal(mean=1, std=0.40, lower=0, upper=0.65)
+            'sticky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
+            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
     obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4,
