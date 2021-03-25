@@ -95,7 +95,8 @@ class SceneParameters:
 
     VALID_VALUES = {
         'spherical': (0, 1),
-        'bending': (- math.pi / 6, math.pi / 6),
+        'arm_position': (0, 1),
+        'bending': (- math.pi / 8, math.pi / 8),
         'obj_name': set(['sticky', 'stretchy']),
         'labeling_error': set([False, True]),
         'obj_rotation_roll': (- math.pi / 3, math.pi / 3),
