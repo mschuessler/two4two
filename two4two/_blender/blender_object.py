@@ -46,18 +46,24 @@ class BoneRotation:
     arm_left_bottom: float = 0.
 
     @staticmethod
-    def from_bending(bending: float) -> BoneRotation:
-        """Creates rotation for a single bending scalar."""
+    def from_bending(bending: float, bend_arms: bool = False) -> BoneRotation:
+        """Creates rotation for a single bending scalar.
+
+        Args:
+            bending: scalar bx which each bone should rotate (-2pi,+2pi)
+            bend_arms: flag wheter arm bones should be rotated
+
+        """
         return BoneRotation(
             center_right=bending / 2,
             right=bending,
-            arm_right_top=bending,
-            arm_right_bottom=bending,
+            arm_right_top=bending if bend_arms else 0,
+            arm_right_bottom=bending if bend_arms else 0,
             # switch sign for left
             center_left=-bending / 2,
             left=-bending,
-            arm_left_top=-bending,
-            arm_left_bottom=-bending,
+            arm_left_top=bending if bend_arms else 0,
+            arm_left_bottom=bending if bend_arms else 0,
         )
 
 
