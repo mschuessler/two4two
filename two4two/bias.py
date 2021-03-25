@@ -366,21 +366,6 @@ class ColorBiasedSampler(Sampler):
 
 
 @dataclasses.dataclass()
-class MediumVariationSampler(Sampler):
-    """An example implementation of Sampler with medium varation.
-    """
-
-    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
-    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    bending: Continouos = utils.truncated_normal(0, np.pi / 18, - np.pi / 6, np.pi / 6)
-    bg_color_map: str = 'binary'
-    obj_color_map: str = 'seismic'
-    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
-    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
-
-
-@dataclasses.dataclass()
 class HighVariationSampler(Sampler):
     """A sampler producing more challenging images.
 
@@ -395,19 +380,61 @@ class HighVariationSampler(Sampler):
 
 
 @dataclasses.dataclass()
-class HighVariationColorBiasedSampler(Sampler):
+class HighVariationColorBiasedSampler(HighVariationSampler):
     """A sampler producing more challenging images with a color bias that is depent on obj_name.
 
     This sampler allows for a higher variation in rotations and bending. Hence it creates a more
     challenging datset. This dataset is more challenging. So the bias is more likely to be used.
     """
 
-    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
-    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+        })
+
+
+@dataclasses.dataclass()
+class MediumVariationSampler(Sampler):
+    """An carefully crafted medium variation sampler.
+
+    Its aimed at strinking a balance between data varaition and classification difficulty providing
+    a good basis for experiemnts with biased data.
+    """
+    # obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+    # obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
+
+    bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    fliplr: Discrete = utils.discrete({True: 0., False: 1.})
+    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    bg_color: Continouos = scipy.stats.uniform(0.05, 0.90)
+    bg_color_map: str = 'coolwarm'
+    obj_color_map: str = 'coolwarm'
+
+
+@dataclasses.dataclass()
+class MediumVariationTripleBiasSampler(MediumVariationSampler):
+    """An carefully crafted biased medium variation sampler.
+
+    This sampler has a object and backround color bias as well as a spherical bias.
+    """
+
+    obj_color: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+        })
+
+    bg_color: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'sticky': scipy.stats.uniform(0.05, 0.75),
+            'stretchy': scipy.stats.uniform(0.20, 0.75),
+        })
+
+    spherical: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'sticky': utils.truncated_normal(0.80, 0.5, 0.1, 1.0),
+            'stretchy': utils.truncated_normal(0.20, 0.5, 0.0, 0.9)
         })
