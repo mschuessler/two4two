@@ -1,0 +1,35 @@
+[nobias]
+
+
+# Class of the sampler. Must be of the form "your.module.YourSampler".
+# The module must be importable from the current enviroment.
+sampler = 'two4two.bias.MediumVariationTripleBiasSampler'
+
+# Save dataset to this directory.
+output_dir = 'datasets/medium_variation_triple_bias'
+
+# Should be an existing output_dir be overwritten? [Default: false]
+force_overwrite = false
+
+# Number of concurrent processes.
+n_processes = 6
+
+# Should blender be downloaded? [Default: false]
+download_blender = true
+
+# Should the blender output be printed? [Default: false]
+debug = false
+
+# creates new dataset split names `train`.
+[nobias.train]
+n_samples = 60_000
+
+[nobias.test]
+n_samples = 10_000
+
+[nobias.validation]
+n_samples = 10_000
+
+# you could also a custom dataset split by
+# [nobias.my_split]
+# n_samples = 10_000
