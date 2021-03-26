@@ -11,6 +11,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 
 import two4two
+from two4two import scene_parameters
 from two4two import utils
 
 
@@ -101,8 +102,7 @@ class Two4Two(Dataset):
             attr_value = getattr(params, attr_name)
             if attr_name == 'obj_name':
                 label_names.append(attr_name)
-                arr.append(0 if attr_value == 'sticky'
-                           else 1)
+                arr.append(params.obj_name_as_int)
             elif utils.supports_iteration(attr_value):
                 for i, item in enumerate(attr_value):
                     label_names.append(f'{attr_name}_{i}')
@@ -111,6 +111,13 @@ class Two4Two(Dataset):
                 label_names.append(attr_name)
                 arr.append(attr_value)
         return label_names, torch.FloatTensor(arr)
+
+    def int_to_obj_name(self, label_int: int) -> str:
+        """Returns the ``obj_name`` encoded by the integer."""
+        return {
+            idx: name
+            for name, idx in scene_parameters.OBJ_NAME_TO_INT.items()
+        }[label_int]
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, ...]:
         param = self.params[idx]
