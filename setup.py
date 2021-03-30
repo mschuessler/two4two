@@ -42,12 +42,13 @@ setuptools.setup(
     ],
     extras_require={
         'dev': [
-            'pytest',
-            'pytest-cov',
             'flake8',
-            'flake8-import-order',
             'flake8-annotations',
             'flake8-docstrings',
+            'flake8-import-order',
+            'pdoc',
+            'pytest',
+            'pytest-cov',
             'torch',
             'torchvision',
         ],
