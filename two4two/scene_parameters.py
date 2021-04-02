@@ -14,6 +14,14 @@ import uuid
 from two4two import utils
 
 
+OBJ_NAME_TO_INT = {
+    'sticky': 0,
+    'stretchy': 1,
+}
+"""Mapping from SceneParameters.obj_name to an integer. Please use this
+encoding convention if you train a binary classifier."""
+
+
 @dataclasses.dataclass()
 class SceneParameters:
     """All parameters need to render a single image / scene.
@@ -290,6 +298,11 @@ class SceneParameters:
             False: self.obj_name,
             True: flip_obj_name[self.obj_name]
         }[self.labeling_error]
+
+    @property
+    def obj_name_as_int(self) -> int:
+        """Returns the integer which encodes the ``obj_name``."""
+        return OBJ_NAME_TO_INT[self.obj_name]
 
 
 def load_jsonl(path: str) -> List[SceneParameters]:
