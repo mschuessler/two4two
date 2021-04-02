@@ -376,7 +376,7 @@ class HighVariationSampler(Sampler):
     obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
     obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
     obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
+    bending: Continouos = scipy.stats.uniform(- np.pi / 8, np.pi / 4)
 
 
 @dataclasses.dataclass()
@@ -390,7 +390,7 @@ class HighVariationColorBiasedSampler(Sampler):
     obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
     obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
     obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    bending: Continouos = scipy.stats.uniform(- np.pi / 6, np.pi / 3)
+    bending: Continouos = scipy.stats.uniform(- np.pi / 8, np.pi / 4)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'sticky': utils.truncated_normal(1, 0.5, 0, 1),

@@ -26,16 +26,19 @@ def test_generic_sampler():
         two4two.Sampler._sample('ronny', test_dict)
 
 
-def test_custom_samplers():
+def test_samplers_valid():
     """Test if the custom samplers run."""
-    color_biased_sampler = two4two.ColorBiasedSampler()
-    color_biased_sampler.sample()
 
-    high_variation_sampler = two4two.HighVariationSampler()
-    high_variation_sampler.sample()
+    samplers = [
+        two4two.Sampler(),
+        two4two.ColorBiasedSampler(),
+        two4two.HighVariationSampler(),
+        two4two.HighVariationColorBiasedSampler()
+    ]
 
-    high_variation_color_bias_sampler = two4two.HighVariationColorBiasedSampler()
-    high_variation_color_bias_sampler.sample()
+    for sampler in samplers:
+        for _ in range(40):
+            sampler.sample()
 
 
 def test_resampeling():
