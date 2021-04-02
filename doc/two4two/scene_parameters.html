@@ -28,6 +28,9 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
+                    <a class="variable" href="#OBJ_NAME_TO_INT">OBJ_NAME_TO_INT</a>
+            </li>
+            <li>
                     <a class="class" href="#SceneParameters">SceneParameters</a>
                             <ul class="memberlist">
                         <li>
@@ -132,6 +135,9 @@
                         <li>
                                 <a class="variable" href="#SceneParameters.obj_name_with_label_error">obj_name_with_label_error</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#SceneParameters.obj_name_as_int">obj_name_as_int</a>
+                        </li>
                 </ul>
 
             </li>
@@ -175,6 +181,14 @@
 <span class="kn">import</span> <span class="nn">uuid</span>
 
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">utils</span>
+
+
+<span class="n">OBJ_NAME_TO_INT</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="sd">&quot;&quot;&quot;Mapping from SceneParameters.obj_name to an integer. Please use this</span>
+<span class="sd">encoding convention if you train a binary classifier.&quot;&quot;&quot;</span>
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
@@ -454,6 +468,11 @@
             <span class="kc">True</span><span class="p">:</span> <span class="n">flip_obj_name</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">]</span>
         <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">labeling_error</span><span class="p">]</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">obj_name_as_int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the integer which encodes the ``obj_name``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">OBJ_NAME_TO_INT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">]</span>
+
 
 <span class="k">def</span> <span class="nf">load_jsonl</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Loads SceneParameters from jsonl file.&quot;&quot;&quot;</span>
@@ -480,6 +499,18 @@
         </details>
 
             </section>
+                <section id="OBJ_NAME_TO_INT">
+                                <div class="attr variable"><a class="headerlink" href="#OBJ_NAME_TO_INT">#&nbsp;&nbsp</a>
+
+        <span class="name">OBJ_NAME_TO_INT</span><span class="default_value"> = {&#39;sticky&#39;: 0, &#39;stretchy&#39;: 1}</span>
+    </div>
+
+            <div class="docstring"><p>Mapping from <a href="#SceneParameters.obj_name">SceneParameters.obj_name</a> to an integer. Please use this
+encoding convention if you train a binary classifier.</p>
+</div>
+
+
+                </section>
                 <section id="SceneParameters">
                                 <div class="attr class">
         <a class="headerlink" href="#SceneParameters">#&nbsp;&nbsp</a>
@@ -766,6 +797,11 @@
             <span class="kc">False</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">,</span>
             <span class="kc">True</span><span class="p">:</span> <span class="n">flip_obj_name</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">]</span>
         <span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">labeling_error</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">obj_name_as_int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the integer which encodes the ``obj_name``.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">OBJ_NAME_TO_INT</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">]</span>
 </pre></div>
 
         </details>
@@ -1007,7 +1043,7 @@ subclass.</p>
                             <div id="SceneParameters.VALID_VALUES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#SceneParameters.VALID_VALUES">#&nbsp;&nbsp</a>
 
-        <span class="name">VALID_VALUES</span><span class="default_value"> = {&#39;spherical&#39;: (0, 1), &#39;arm_position&#39;: (0, 1), &#39;bending&#39;: (-0.39269908169872414, 0.39269908169872414), &#39;obj_name&#39;: {&#39;sticky&#39;, &#39;stretchy&#39;}, &#39;labeling_error&#39;: {False, True}, &#39;obj_rotation_roll&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_pitch&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_yaw&#39;: (-3.141592653589793, 3.141592653589793), &#39;fliplr&#39;: {False, True}, &#39;position_x&#39;: (-3.0, 3.0), &#39;position_y&#39;: (-3.0, 3.0), &#39;obj_color&#39;: (0, 1), &#39;bg_color&#39;: (0, 1)}</span>
+        <span class="name">VALID_VALUES</span><span class="default_value"> = {&#39;spherical&#39;: (0, 1), &#39;arm_position&#39;: (0, 1), &#39;bending&#39;: (-0.39269908169872414, 0.39269908169872414), &#39;obj_name&#39;: {&#39;stretchy&#39;, &#39;sticky&#39;}, &#39;labeling_error&#39;: {False, True}, &#39;obj_rotation_roll&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_pitch&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_yaw&#39;: (-3.141592653589793, 3.141592653589793), &#39;fliplr&#39;: {False, True}, &#39;position_x&#39;: (-3.0, 3.0), &#39;position_y&#39;: (-3.0, 3.0), &#39;obj_color&#39;: (0, 1), &#39;bg_color&#39;: (0, 1)}</span>
     </div>
 
     
@@ -1414,6 +1450,17 @@ The status can be obtained with  <code><a href="#SceneParameters.get_status">get
     </div>
 
             <div class="docstring"><p>Returns the object name taking into account the label error.</p>
+</div>
+
+
+                            </div>
+                            <div id="SceneParameters.obj_name_as_int" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#SceneParameters.obj_name_as_int">#&nbsp;&nbsp</a>
+
+        <span class="name">obj_name_as_int</span><span class="annotation">: int</span>
+    </div>
+
+            <div class="docstring"><p>Returns the integer which encodes the <code><a href="#SceneParameters.obj_name">obj_name</a></code>.</p>
 </div>
 
 
