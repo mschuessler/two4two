@@ -1,10 +1,12 @@
 """Dataloader for PyTorch."""
 
+import dataclasses
 import json
 import os
-from typing import Any, Sequence, Tuple
+from typing import Any, Callable, Dict, Sequence, Tuple
 
 import numpy as np
+import pandas as pd
 from PIL import Image
 import torch
 from torch.utils.data import Dataset
@@ -13,6 +15,20 @@ from torchvision import transforms
 import two4two
 from two4two import scene_parameters
 from two4two import utils
+import two4two.blender
+
+
+def _filter_attributes(param: two4two.SceneParameters) -> Dict[str, Any]:
+    """Transforms a SceneParameters object to a dict.
+
+    Filter the ``*_rbga``, ``resolution`` and ``_attributes_status`` attributes.
+    """
+    state = dataclasses.asdict(param)
+    del state['obj_color_rgba']
+    del state['bg_color_rgba']
+    del state['resolution']
+    del state['_attributes_status']
+    return state
 
 
 class Two4Two(Dataset):
@@ -77,6 +93,20 @@ class Two4Two(Dataset):
     def set_return_attributes(self, labels: Sequence[str]):
         """Set the labels to return."""
         self._return_attributes = labels
+
+    def get_dataframe(
+        self,
+        to_dict: Callable[[two4two.SceneParameters],
+                          Dict[str, Any]] = _filter_attributes
+    ) -> pd.DataFrame:
+        """Returns a pandas dataframe of all labels.
+
+        Args:
+            to_dict: Transforms a SceneParameters object to a dict. Default is
+                to filter the ``*_rbga``, ``resolution`` and ``_attributes_status``
+                attributes.
+        """
+        return pd.DataFrame(map(to_dict, self.params))
 
     def get_label_names(self) -> Sequence[str]:
         """Returns name of each label returned by ``self[idx]``."""

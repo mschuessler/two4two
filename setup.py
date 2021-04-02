@@ -36,9 +36,10 @@ setuptools.setup(
         'imageio',
         'matplotlib',
         'numpy',
+        'pandas',
         'scipy',
+        'toml',
         'tqdm',
-        'toml'
     ],
     extras_require={
         'dev': [
