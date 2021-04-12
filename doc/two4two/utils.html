@@ -60,6 +60,9 @@
             <li>
                     <a class="function" href="#import_class">import_class</a>
             </li>
+            <li>
+                    <a class="function" href="#get">get</a>
+            </li>
     </ul>
 
 
@@ -85,7 +88,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy.stats</span>
@@ -139,10 +142,14 @@
                <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Log Probability mass function.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>  <span class="c1"># a single k</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># a sequence of k&#39;s</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k_item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k_item</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">supports_iteration</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k_item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k_item</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>      <span class="c1"># type: ignore</span>
+        <span class="c1"># a single k</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Neither iterable nor in self.values: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
@@ -186,7 +193,8 @@
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="kc">False</span>
 
 
 <span class="k">def</span> <span class="nf">split_class</span><span class="p">(</span><span class="n">module_dot_class</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
@@ -199,9 +207,20 @@
 
 <span class="k">def</span> <span class="nf">import_class</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the class given as string.&quot;&quot;&quot;</span>
-    <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">)</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">cls</span>
+
+
+<span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">maybe_none</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">default</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns either the given value if not ``None`` or a default value.</span>
+
+<span class="sd">    Useful helper function to deconstruct Optional values in a typesafe way.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">maybe_none</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">maybe_none</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
 </pre></div>
 
         </details>
@@ -257,10 +276,14 @@
                <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Log Probability mass function.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>  <span class="c1"># a single k</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># a sequence of k&#39;s</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k_item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k_item</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">supports_iteration</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k_item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k_item</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>      <span class="c1"># type: ignore</span>
+        <span class="c1"># a single k</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Neither iterable nor in self.values: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">rvs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
             <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span>
@@ -376,10 +399,14 @@
                <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
                <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Log Probability mass function.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>  <span class="c1"># a single k</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># a sequence of k&#39;s</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k_item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k_item</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">supports_iteration</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k_item</span><span class="p">)</span> <span class="k">for</span> <span class="n">k_item</span> <span class="ow">in</span> <span class="n">k</span><span class="p">])</span>      <span class="c1"># type: ignore</span>
+        <span class="c1"># a single k</span>
+        <span class="k">elif</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rv_discrete</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Neither iterable nor in self.values: </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -452,7 +479,7 @@
     std: float = 1,
     lower: float = -3,
     upper: float = 3
-) -&gt; &lt;scipy.stats._continuous_distns.truncnorm_gen object at 0x7faa11b6c690&gt;</span>:
+) -&gt; &lt;scipy.stats._continuous_distns.truncnorm_gen object at 0x7f1bdf37a0d0&gt;</span>:
     </div>
 
                 <details>
@@ -507,7 +534,8 @@
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">True</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="kc">False</span>
 </pre></div>
 
         </details>
@@ -554,14 +582,44 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">import_class</span><span class="p">(</span><span class="n">module</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Returns the class given as string.&quot;&quot;&quot;</span>
-    <span class="n">module</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">)</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="bp">cls</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">cls_name</span><span class="p">)</span>
     <span class="k">return</span> <span class="bp">cls</span>
 </pre></div>
 
         </details>
 
             <div class="docstring"><p>Returns the class given as string.</p>
+</div>
+
+
+                </section>
+                <section id="get">
+                            <div class="attr function"><a class="headerlink" href="#get">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get</span><span class="signature">(maybe_none: Union[~T, NoneType], default: ~T) -&gt; ~T</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">maybe_none</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">default</span><span class="p">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Returns either the given value if not ``None`` or a default value.</span>
+
+<span class="sd">    Useful helper function to deconstruct Optional values in a typesafe way.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">maybe_none</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">maybe_none</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">default</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns either the given value if not <code>None</code> or a default value.</p>
+
+<p>Useful helper function to deconstruct Optional values in a typesafe way.</p>
 </div>
 
 
