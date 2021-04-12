@@ -29,6 +29,15 @@ def test_pytorch_dataloader(tmp_path: Path):
 
     dataset = two4two.pytorch.Two4Two(str(tmp_path), split='train')
 
+    df = dataset.get_dataframe()
+    assert df.obj_name[0] == sampled_params[0].obj_name
+    assert df.obj_name[1] == sampled_params[1].obj_name
+    assert "resolution" not in set(df.keys())
+
+    df = dataset.get_dataframe(to_dict=two4two.pytorch.all_attributes)
+    assert df.attribute_status_obj_name[0] == "sampled"
+    assert df.attribute_status_obj_name[1] == "sampled"
+
     # check dataset shapes
     assert len(dataset) == 2
     img, mask, labels = dataset[0]
@@ -53,19 +62,13 @@ def test_pytorch_dataloader(tmp_path: Path):
     assert labels.shape == (2, 1,)
 
     dataset.set_return_attributes([
-        'obj_name', 'bone_rotation', 'bg_color_scalar', 'spherical'])
+        'obj_name', 'bending', 'bg_color', 'spherical'])
 
     label_names = dataset.get_label_names()
     expected_label_names = [
         'obj_name',
-        'bone_rotation_0',
-        'bone_rotation_1',
-        'bone_rotation_2',
-        'bone_rotation_3',
-        'bone_rotation_4',
-        'bone_rotation_5',
-        'bone_rotation_6',
-        'bg_color_scalar',
+        'bending',
+        'bg_color',
         'spherical',
     ]
     assert label_names == expected_label_names

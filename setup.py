@@ -22,7 +22,7 @@ setuptools.setup(
     },
     entry_points={
         'console_scripts': [
-            'two4two_create_dataset=two4two.cli_tool:main',
+            'two4two_render_dataset=two4two.cli_tool:render_dataset',
         ],
     },
     classifiers=[
@@ -36,17 +36,20 @@ setuptools.setup(
         'imageio',
         'matplotlib',
         'numpy',
+        'pandas',
         'scipy',
+        'toml',
         'tqdm',
     ],
     extras_require={
         'dev': [
-            'pytest',
-            'pytest-cov',
             'flake8',
-            'flake8-import-order',
             'flake8-annotations',
             'flake8-docstrings',
+            'flake8-import-order',
+            'pdoc',
+            'pytest',
+            'pytest-cov',
             'torch',
             'torchvision',
         ],

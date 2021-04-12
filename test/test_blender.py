@@ -11,8 +11,20 @@ import two4two
 
 def render(tmp_path: Path, **kwargs: Dict[str, Any]):
     """Renders 3 images and checks #objects, shapes, and if parameters are returned correctly."""
-    sampler = two4two.Sampler()
-    sampled_params = [sampler.sample() for _ in range(3)]
+    sticky = two4two.SceneParameters.default_sticky()
+
+    # setting the id ensures a determinisitic filename
+    sticky.id = 'sticky'
+
+    sticky_bended = sticky.clone()
+    sticky_bended.id = 'sticky_bended'
+    sticky_bended.bending = 0.25
+
+    sampled_params = [
+        sticky,
+        sticky_bended,
+    ]
+
     i = 0
     for (img, mask, param) in two4two.render(
         sampled_params,
@@ -26,7 +38,7 @@ def render(tmp_path: Path, **kwargs: Dict[str, Any]):
     assert i == len(sampled_params)
 
 
-def test_blender_rending(tmp_path: Path):
+def test_blender_rendering(tmp_path: Path):
     """Tests the rendering using the local blender version."""
     print("test temp dir: ", tmp_path)
     np.random.seed(242)
@@ -35,8 +47,15 @@ def test_blender_rending(tmp_path: Path):
         n_processes=1,
         chunk_size=1,
         output_dir=str(tmp_path),
-        download_blender=True
+        download_blender=True,
+        save_blender_file=True,
+        print_output=False,
+        print_cmd=True,
     )
+    assert tmp_path.glob("*.png")
+    assert tmp_path.glob("*.blender")
+
+    two4two.blender.render_single(two4two.SceneParameters())
 
 
 def test_blender_rending_tmp_dir(tmp_path: Path):

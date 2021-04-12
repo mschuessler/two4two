@@ -2,7 +2,7 @@
 
 import os
 import sys
-from typing import Sequence, Tuple
+from typing import Sequence
 
 import bpy
 import imageio
@@ -11,8 +11,8 @@ from skimage import color
 
 from two4two import scene_parameters
 from two4two import utils
+from two4two._blender import blender_object
 from two4two._blender import butils
-from two4two._blender.blender_object import Two4TwoBlenderObject
 
 
 class Scene():
@@ -23,17 +23,20 @@ class Scene():
     """
 
     def _set_pose(self,
-                  bond_bend: Sequence[float],
-                  bone_rotation: Sequence[float]):
-        self.obj.set_pose(bond_bend, bone_rotation)
+                  bending: float):
+        self.obj.set_pose(blender_object.BoneRotation.from_bending(bending))
         self.obj.center()
 
     def _set_rotation(self,
-                      incline: float,
-                      rotation: float,
+                      yaw: float,
+                      roll: float,
+                      pitch: float,
                       ):
-        self.obj.rotate(incline, 'Y')
-        self.obj.rotate(rotation, 'Z')
+        # TODO(martin) add link to image when #89 is done
+
+        self.obj.rotate(roll, 'Y')
+        self.obj.rotate(pitch, 'Z')
+        self.obj.rotate(yaw, 'X')
         self.obj.center()
 
     def _set_position(self, x: float, y: float):
@@ -97,7 +100,7 @@ class Scene():
         blender_objects: Sequence[bpy.types.Object],
         path: str,
         restore: bool = True,
-    ) -> Sequence[Tuple[float, float, float]]:
+    ) -> Sequence[float]:
         """Renders the scene without shades.
 
         For each object, a unique color is used.
@@ -199,32 +202,38 @@ class Scene():
             if self.parameters.fliplr:
                 self._fliplr_image(mask_filename)
 
+    def save_blender_file(self, filename: str):
+        """Saves the current blender state to the given filename."""
+        bpy.ops.wm.save_as_mainfile(filepath=filename)
+
     def __init__(self,
                  parameters: scene_parameters.SceneParameters,
                  ):
         butils.clear_all()
         self.parameters = parameters
 
-        self.obj = Two4TwoBlenderObject(
+        self.obj = blender_object.Two4TwoBlenderObject(
             parameters.obj_name,
             parameters.spherical,
             parameters.arm_position)
-        self.obj.add_material(parameters.obj_color)
+        self.obj.add_material(parameters.obj_color_rgba)
 
         blend_dir = os.path.dirname(bpy.data.filepath)
         if blend_dir not in sys.path:
             sys.path.append(blend_dir)
 
-        self._set_pose(parameters.bone_bend,
-                       parameters.bone_rotation)
+        self._set_pose(parameters.bending)
+
         self._set_rotation(
-            parameters.obj_incline,
-            parameters.obj_rotation,
+            parameters.obj_rotation_yaw,
+            parameters.obj_rotation_roll,
+            parameters.obj_rotation_pitch,
         )
-        x, y = parameters.position
+        x = parameters.position_x
+        y = parameters.position_y
         self._set_position(x, y)
 
-        self._setup_scene(parameters.bg_color)
+        self._setup_scene(parameters.bg_color_rgba)
 
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'

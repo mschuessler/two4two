@@ -27,8 +27,11 @@ def _download_blender(blender_dir: str):
     subprocess.check_output(args)
 
 
-def _ensure_blender_available(blender_dir: str, download_blender: bool):
+def ensure_blender_available(blender_dir: Optional[str] = None,
+                             download_blender: bool = False):
     """Ensures blender is available in the given directory."""
+    blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
+
     blender_binary = os.path.join(blender_dir, "blender_bin")
     found_blender = os.path.exists(blender_binary)
 
@@ -114,6 +117,32 @@ def _get_finished_processes(
     return finised_processes
 
 
+SEGMENTATION_INT_TO_NAME: Dict[int, str] = {
+    0: 'background',
+    1: 'arm_left_top',
+    2: 'arm_left_bottom',
+    3: 'spine_left',
+    4: 'spine_left_center',
+    5: 'spine_right_center',
+    6: 'spine_right',
+    7: 'arm_right_top',
+    8: 'arm_right_bottom',
+}
+
+
+SEGMENTATION_NAME_TO_INT: Dict[str, int] = {
+    'background': 0,
+    'arm_left_top': 1,
+    'arm_left_bottom': 2,
+    'spine_left': 3,
+    'spine_left_center': 4,
+    'spine_right_center': 5,
+    'spine_right': 6,
+    'arm_right_top': 7,
+    'arm_right_bottom': 8,
+}
+
+
 def render(
     params: Sequence[scene_parameters.SceneParameters],
     n_processes: int = 0,
@@ -123,8 +152,15 @@ def render(
     download_blender: bool = False,
     print_output: bool = False,
     print_cmd: bool = False,
-) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
+    save_blender_file: bool = False
+) -> Iterator[Tuple[np.ndarray, np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
+
+    This function yields tuples of (image, mask, scene parameters). The order is
+    not preserved. Each block of the object is encoded as a unique integer value
+    in the mask. See ``SEGMENTATION_NAME_TO_INT``. For example, the left most
+    spine is encoded as ``3``.
+
 
     Args:
         params: List of scence parameters.
@@ -137,12 +173,14 @@ def render(
         blender_dir: blender directory to use. Default ``~/.cache/two4two``.
         print_output: Print the output of blender.
         print_cmd: Print executed subcommand (useful for debugging).
+        save_blender_file: If ``True``, the blender file will be saved to
+            "{params.id}.blender".
 
     Raises:
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
 
     Yields:
-        tuples of (image, scene parameters).
+        tuples of (image, mask, scene parameters).
     """
 
     def process_chunk():
@@ -158,6 +196,7 @@ def render(
             render_script,
             parameter_file,
             output_dir,
+            str(save_blender_file),
         ]
         if print_cmd:
             print("Command to execute Blender:")
@@ -176,7 +215,7 @@ def render(
 
     blender_dir = blender_dir or os.path.join(os.environ['HOME'], '.cache', 'two4two')
 
-    _ensure_blender_available(blender_dir, download_blender)
+    ensure_blender_available(blender_dir, download_blender)
 
     package_directory = os.path.dirname(__file__)
     render_script = os.path.join(package_directory,
@@ -214,3 +253,43 @@ def render(
     finally:
         if use_tmp_dir:
             shutil.rmtree(output_dir)
+
+
+def render_single(
+    param: scene_parameters.SceneParameters,
+    blender_dir: Optional[str] = None,
+    download_blender: bool = False,
+    print_output: bool = False,
+    print_cmd: bool = False,
+    save_blender_file: bool = False
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Convienience function. Renders a single images with Blender using the given SceneParameters.
+
+    For rendering more than one image use ``blender.render`` which will be more efficent.
+    Args:
+        param: The scence parameters describing the image.
+        output_dir: Save rendered images to this directory. If ``None``, the images
+            will not be saves permanently.
+        download_blender: flag to automatically downloads blender.
+        blender_dir: blender directory to use. Default ``~/.cache/two4two``.
+        print_output: Print the output of blender.
+        print_cmd: Print executed subcommand (useful for debugging).
+        save_blender_file: If ``True``, the blender file will be saved to
+            "{params.id}.blender".
+
+    Raises:
+        FileNotFoundError: if no blender installation is found in ``blender_dir``.
+
+    Yields:
+        tuple of (rendered image, segmentation mask of image).
+    """
+    result = list(render([param],
+                         n_processes=1,
+                         chunk_size=1,
+                         blender_dir=blender_dir,
+                         download_blender=download_blender,
+                         print_output=print_output,
+                         print_cmd=print_cmd,
+                         save_blender_file=save_blender_file))
+
+    return (result[0][0], result[0][1])
