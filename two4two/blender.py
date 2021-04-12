@@ -117,6 +117,32 @@ def _get_finished_processes(
     return finised_processes
 
 
+SEGMENTATION_INT_TO_NAME: Dict[int, str] = {
+    0: 'background',
+    1: 'arm_left_top',
+    2: 'arm_left_bottom',
+    3: 'spine_left',
+    4: 'spine_left_center',
+    5: 'spine_right_center',
+    6: 'spine_right',
+    7: 'arm_right_top',
+    8: 'arm_right_bottom',
+}
+
+
+SEGMENTATION_NAME_TO_INT: Dict[str, int] = {
+    'background': 0,
+    'arm_left_top': 1,
+    'arm_left_bottom': 2,
+    'spine_left': 3,
+    'spine_left_center': 4,
+    'spine_right_center': 5,
+    'spine_right': 6,
+    'arm_right_top': 7,
+    'arm_right_bottom': 8,
+}
+
+
 def render(
     params: Sequence[scene_parameters.SceneParameters],
     n_processes: int = 0,
@@ -129,6 +155,12 @@ def render(
     save_blender_file: bool = False
 ) -> Iterator[Tuple[np.ndarray, np.ndarray, scene_parameters.SceneParameters]]:
     """Renders the given parameters to images using Blender.
+
+    This function yields tuples of (image, mask, scene parameters). The order is
+    not preserved. Each block of the object is encoded as a unique integer value
+    in the mask. See ``SEGMENTATION_NAME_TO_INT``. For example, the left most
+    spine is encoded as ``3``.
+
 
     Args:
         params: List of scence parameters.
@@ -148,7 +180,7 @@ def render(
         FileNotFoundError: if no blender installation is found in ``blender_dir``.
 
     Yields:
-        tuples of (image, scene parameters).
+        tuples of (image, mask, scene parameters).
     """
 
     def process_chunk():

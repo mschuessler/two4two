@@ -18,7 +18,7 @@ class BoneRotation:
     r"""Specifies the rotation of the individual bones.
 
     The object has a bone between each block. Except in the center between
-    ``spline_left_center`` and ``spline_right_center``. There, we add two bones
+    ``spine_left_center`` and ``spine_right_center``. There, we add two bones
     as this gives a unique center point to the object. The object is then
     bended around that center.
 
@@ -82,10 +82,10 @@ class Two4TwoBlenderObject():
         return {
             'arm_left_top': Vector((0., -1.5, 1.)),
             'arm_left_bottom': Vector((0., -1.5, -1.)),
-            'spline_left': Vector((0., -1., 0)),
-            'spline_left_center': Vector((0., 0., 0.)),
-            'spline_right_center': Vector((0., 1., 0.)),
-            'spline_right': Vector((0., 2., 0.)),
+            'spine_left': Vector((0., -1., 0)),
+            'spine_left_center': Vector((0., 0., 0.)),
+            'spine_right_center': Vector((0., 1., 0.)),
+            'spine_right': Vector((0., 2., 0.)),
             'arm_right_top': Vector((0., arm_pos, 1.)),
             'arm_right_bottom': Vector((0., arm_pos, -1.)),
         }
@@ -96,7 +96,7 @@ class Two4TwoBlenderObject():
         Overview how the individual blocks are named:
 
         [arm_left_top]                                                          [arm_right_top]
-               [spline_left]  [spline_left_center]  [spline_right_center]   [spline_right]
+               [spine_left]  [spine_left_center]  [spine_right_center]   [spine_right]
         [arm_left_bottom]                                                       [arm_right_bottom]
 
         """
@@ -117,7 +117,7 @@ class Two4TwoBlenderObject():
         r"""Add bones.
 
         We add a bone between each block. Except in the center between
-        ``spline_left_center`` and ``spline_right_center``. There, we
+        ``spine_left_center`` and ``spine_right_center``. There, we
         add two bones as this gives a unique center point to the object.
         It is then bended around that center.
 
@@ -171,7 +171,7 @@ class Two4TwoBlenderObject():
             butils.select(f'skeleton_{orientation}')
             bpy.ops.object.parent_set(type='ARMATURE_AUTO')
 
-        obj_center = (blocks['spline_right_center'] + blocks['spline_left_center']) / 2
+        obj_center = (blocks['spine_right_center'] + blocks['spine_left_center']) / 2
 
         bpy.ops.object.armature_add(enter_editmode=True,
                                     radius=0.5,
@@ -182,17 +182,17 @@ class Two4TwoBlenderObject():
 
         select('center_right', 'tail')
         add_bone('right',
-                 from_block='spline_right_center',
-                 to_block='spline_right')
+                 from_block='spine_right_center',
+                 to_block='spine_right')
 
         select('right', 'tail')
         add_bone('arm_right_top',
-                 from_block='spline_right',
+                 from_block='spine_right',
                  to_block='arm_right_top')
 
         select('right', 'tail')
         add_bone('arm_right_bottom',
-                 from_block='spline_right',
+                 from_block='spine_right',
                  to_block='arm_right_bottom')
 
         butils.object_mode()
@@ -208,17 +208,17 @@ class Two4TwoBlenderObject():
 
         select('center_left', 'tail')
         add_bone('left',
-                 from_block='spline_left_center',
-                 to_block='spline_left')
+                 from_block='spine_left_center',
+                 to_block='spine_left')
 
         select('left', 'tail')
         add_bone('arm_left_top',
-                 from_block='spline_left',
+                 from_block='spine_left',
                  to_block='arm_left_top')
 
         select('left', 'tail')
         add_bone('arm_left_bottom',
-                 from_block='spline_left',
+                 from_block='spine_left',
                  to_block='arm_left_bottom')
         attach_bones_to_blocks('left')
 

@@ -13,6 +13,7 @@ from torchvision import transforms
 import two4two
 from two4two import scene_parameters
 from two4two import utils
+import two4two.blender
 
 
 class Two4Two(Dataset):
@@ -118,6 +119,14 @@ class Two4Two(Dataset):
             idx: name
             for name, idx in scene_parameters.OBJ_NAME_TO_INT.items()
         }[label_int]
+
+    def segmentation_int_to_label(self, index: int) -> str:
+        """Return the label of the segmentation mask."""
+        return two4two.blender.SEGMENTATION_INT_TO_NAME[index]
+
+    def segmentation_label_to_int(self, label: str) -> int:
+        """Return the index of the segmentation label."""
+        return two4two.blender.SEGMENTATION_NAME_TO_INT[label]
 
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, ...]:
         param = self.params[idx]
