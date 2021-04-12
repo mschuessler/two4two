@@ -18,7 +18,7 @@ from two4two import utils
 import two4two.blender
 
 
-def _filter_attributes(param: two4two.SceneParameters) -> Dict[str, Any]:
+def filter_attributes(param: two4two.SceneParameters) -> Dict[str, Any]:
     """Transforms a SceneParameters object to a dict.
 
     Filter the ``*_rbga``, ``resolution`` and ``_attributes_status`` attributes.
@@ -27,6 +27,20 @@ def _filter_attributes(param: two4two.SceneParameters) -> Dict[str, Any]:
     del state['obj_color_rgba']
     del state['bg_color_rgba']
     del state['resolution']
+    del state['_attributes_status']
+    return state
+
+
+def all_attributes(param: two4two.SceneParameters) -> Dict[str, Any]:
+    """Transforms a SceneParameters object to a dict.
+
+    The attribute status is encoded in the members
+    ``"attributes_status_{attr_name}"``, for example
+    ``attribute_status_obj_name`` for the object name.
+    """
+    state = dataclasses.asdict(param)
+    for attr, attr_state in state['_attributes_status'].items():
+        state[f'attribute_status_{attr}'] = attr_state
     del state['_attributes_status']
     return state
 
@@ -97,13 +111,14 @@ class Two4Two(Dataset):
     def get_dataframe(
         self,
         to_dict: Callable[[two4two.SceneParameters],
-                          Dict[str, Any]] = _filter_attributes
+                          Dict[str, Any]] = filter_attributes
     ) -> pd.DataFrame:
         """Returns a pandas dataframe of all labels.
 
         Args:
             to_dict: Transforms a SceneParameters object to a dict. Default is
                 to filter the ``*_rbga``, ``resolution`` and ``_attributes_status``
+                attributes. Use the function ``all_attributes`` to return all
                 attributes.
         """
         return pd.DataFrame(map(to_dict, self.params))
