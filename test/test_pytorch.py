@@ -29,6 +29,15 @@ def test_pytorch_dataloader(tmp_path: Path):
 
     dataset = two4two.pytorch.Two4Two(str(tmp_path), split='train')
 
+    df = dataset.get_dataframe()
+    assert df.obj_name[0] == sampled_params[0].obj_name
+    assert df.obj_name[1] == sampled_params[1].obj_name
+    assert "resolution" not in set(df.keys())
+
+    df = dataset.get_dataframe(to_dict=two4two.pytorch.all_attributes)
+    assert df.attribute_status_obj_name[0] == "sampled"
+    assert df.attribute_status_obj_name[1] == "sampled"
+
     # check dataset shapes
     assert len(dataset) == 2
     img, mask, labels = dataset[0]
