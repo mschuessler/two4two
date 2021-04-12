@@ -28,6 +28,9 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         # install module to make entrypoints available
         pip install .
+    - name: Print Installed dependencies
+      run: |
+        pip freeze
     - name: Test with pytest
       run: |
         ./run_test.sh
