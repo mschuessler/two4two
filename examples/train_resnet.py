@@ -8,7 +8,9 @@ import tensorflow as tf
 import tensorflow.keras as keras
 from tensorflow.keras import layers
 
-data_dir = os.path.join("datasets", "high_variation")
+dataset_name = "medVarTriple"
+
+data_dir = os.path.join("datasets", dataset_name)
 data_dir = pathlib.Path(data_dir)
 
 train_dir = os.path.join(data_dir, "train")
@@ -30,7 +32,7 @@ valid_generator = datagen.flow_from_dataframe(dataframe=valid_df, directory=vali
 STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
 STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
 
-checkpoint_filepath = os.path.join("models", "resnet50_highVariation")
+checkpoint_filepath = os.path.join("models", "ResNet" + dataset_name)
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_filepath,
     save_weights_only=True,
@@ -38,7 +40,7 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     mode='max',
     save_best_only=True)
 
-strategy = tf.distribute.MirroredStrategy()
+strategy = tf.distribute.OneDeviceStrategy("device:GPU:0") # tf.distribute.MirroredStrategy()
 with strategy.scope():
     base_model = keras.applications.resnet50.ResNet50(
         weights=None, pooling='avg', include_top=False, input_shape=(128, 128, 3))
