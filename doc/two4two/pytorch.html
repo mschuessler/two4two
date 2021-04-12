@@ -28,6 +28,12 @@
                     <h2>API Documentation</h2>
                         <ul class="memberlist">
             <li>
+                    <a class="function" href="#filter_attributes">filter_attributes</a>
+            </li>
+            <li>
+                    <a class="function" href="#all_attributes">all_attributes</a>
+            </li>
+            <li>
                     <a class="class" href="#Two4Two">Two4Two</a>
                             <ul class="memberlist">
                         <li>
@@ -37,16 +43,13 @@
                                 <a class="function" href="#Two4Two.set_return_attributes">set_return_attributes</a>
                         </li>
                         <li>
+                                <a class="function" href="#Two4Two.get_dataframe">get_dataframe</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Two4Two.get_label_names">get_label_names</a>
                         </li>
                         <li>
                                 <a class="function" href="#Two4Two.int_to_obj_name">int_to_obj_name</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Two4Two.segmentation_int_to_label">segmentation_int_to_label</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#Two4Two.segmentation_label_to_int">segmentation_label_to_int</a>
                         </li>
                 </ul>
 
@@ -73,11 +76,13 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="sd">&quot;&quot;&quot;Dataloader for PyTorch.&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span>
@@ -87,6 +92,33 @@
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">scene_parameters</span>
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">import</span> <span class="nn">two4two.blender</span>
+
+
+<span class="k">def</span> <span class="nf">filter_attributes</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Transforms a SceneParameters object to a dict.</span>
+
+<span class="sd">    Filter the ``*_rbga``, ``resolution`` and ``_attributes_status`` attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;obj_color_rgba&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;bg_color_rgba&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_attributes_status&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">state</span>
+
+
+<span class="k">def</span> <span class="nf">all_attributes</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Transforms a SceneParameters object to a dict.</span>
+
+<span class="sd">    The attribute status is encoded in the members</span>
+<span class="sd">    ``&quot;attributes_status_{attr_name}&quot;``, for example</span>
+<span class="sd">    ``attribute_status_obj_name`` for the object name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">attr_state</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_attributes_status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">state</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;attribute_status_</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_state</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_attributes_status&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">state</span>
 
 
 <span class="k">class</span> <span class="nc">Two4Two</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
@@ -152,6 +184,21 @@
         <span class="sd">&quot;&quot;&quot;Set the labels to return.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_return_attributes</span> <span class="o">=</span> <span class="n">labels</span>
 
+    <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dict</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">],</span>
+                          <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">filter_attributes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a pandas dataframe of all labels.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            to_dict: Transforms a SceneParameters object to a dict. Default is</span>
+<span class="sd">                to filter the ``*_rbga``, ``resolution`` and ``_attributes_status``</span>
+<span class="sd">                attributes. Use the function ``all_attributes`` to return all</span>
+<span class="sd">                attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">to_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))</span>
+
     <span class="k">def</span> <span class="nf">get_label_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Returns name of each label returned by ``self[idx]``.&quot;&quot;&quot;</span>
         <span class="n">label_names</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scene_parameters_to_flat_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -193,14 +240,6 @@
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">scene_parameters</span><span class="o">.</span><span class="n">OBJ_NAME_TO_INT</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}[</span><span class="n">label_int</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">segmentation_int_to_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the label of the segmentation mask.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_INT_TO_NAME</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">segmentation_label_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the index of the segmentation label.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_NAME_TO_INT</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">filename</span>
@@ -225,6 +264,73 @@
         </details>
 
             </section>
+                <section id="filter_attributes">
+                            <div class="attr function"><a class="headerlink" href="#filter_attributes">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">filter_attributes</span><span class="signature">(param: <a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>) -&gt; Dict[str, Any]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">filter_attributes</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Transforms a SceneParameters object to a dict.</span>
+
+<span class="sd">    Filter the ``*_rbga``, ``resolution`` and ``_attributes_status`` attributes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;obj_color_rgba&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;bg_color_rgba&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;resolution&#39;</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_attributes_status&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">state</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Transforms a SceneParameters object to a dict.</p>
+
+<p>Filter the <code>*_rbga</code>, <code>resolution</code> and <code>_attributes_status</code> attributes.</p>
+</div>
+
+
+                </section>
+                <section id="all_attributes">
+                            <div class="attr function"><a class="headerlink" href="#all_attributes">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">all_attributes</span><span class="signature">(param: <a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>) -&gt; Dict[str, Any]</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">all_attributes</span><span class="p">(</span><span class="n">param</span><span class="p">:</span> <span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;Transforms a SceneParameters object to a dict.</span>
+
+<span class="sd">    The attribute status is encoded in the members</span>
+<span class="sd">    ``&quot;attributes_status_{attr_name}&quot;``, for example</span>
+<span class="sd">    ``attribute_status_obj_name`` for the object name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">attr_state</span> <span class="ow">in</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_attributes_status&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">state</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;attribute_status_</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">attr_state</span>
+    <span class="k">del</span> <span class="n">state</span><span class="p">[</span><span class="s1">&#39;_attributes_status&#39;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">state</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Transforms a SceneParameters object to a dict.</p>
+
+<p>The attribute status is encoded in the members
+<code>"attributes_status_{attr_name}"</code>, for example
+<code>attribute_status_obj_name</code> for the object name.</p>
+</div>
+
+
+                </section>
                 <section id="Two4Two">
                                 <div class="attr class">
         <a class="headerlink" href="#Two4Two">#&nbsp;&nbsp</a>
@@ -299,6 +405,21 @@
         <span class="sd">&quot;&quot;&quot;Set the labels to return.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_return_attributes</span> <span class="o">=</span> <span class="n">labels</span>
 
+    <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dict</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">],</span>
+                          <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">filter_attributes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a pandas dataframe of all labels.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            to_dict: Transforms a SceneParameters object to a dict. Default is</span>
+<span class="sd">                to filter the ``*_rbga``, ``resolution`` and ``_attributes_status``</span>
+<span class="sd">                attributes. Use the function ``all_attributes`` to return all</span>
+<span class="sd">                attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">to_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))</span>
+
     <span class="k">def</span> <span class="nf">get_label_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Returns name of each label returned by ``self[idx]``.&quot;&quot;&quot;</span>
         <span class="n">label_names</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scene_parameters_to_flat_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -339,14 +460,6 @@
             <span class="n">idx</span><span class="p">:</span> <span class="n">name</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">scene_parameters</span><span class="o">.</span><span class="n">OBJ_NAME_TO_INT</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}[</span><span class="n">label_int</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">segmentation_int_to_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the label of the segmentation mask.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_INT_TO_NAME</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">segmentation_label_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the index of the segmentation label.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_NAME_TO_INT</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
@@ -475,6 +588,51 @@ labels. See <code><a href="#Two4Two.get_label_names">get_label_names</a></code> 
 
 
                             </div>
+                            <div id="Two4Two.get_dataframe" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Two4Two.get_dataframe">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">get_dataframe</span><span class="signature">(
+    self,
+    to_dict: Callable[[<a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>], Dict[str, Any]] = &lt;function filter_attributes&gt;
+) -&gt; pandas.core.frame.DataFrame</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_dataframe</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">to_dict</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">],</span>
+                          <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="n">filter_attributes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a pandas dataframe of all labels.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            to_dict: Transforms a SceneParameters object to a dict. Default is</span>
+<span class="sd">                to filter the ``*_rbga``, ``resolution`` and ``_attributes_status``</span>
+<span class="sd">                attributes. Use the function ``all_attributes`` to return all</span>
+<span class="sd">                attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">to_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">))</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns a pandas dataframe of all labels.</p>
+
+<h6 id="args">Args</h6>
+
+<ul>
+<li><strong>to_dict:</strong>  Transforms a SceneParameters object to a dict. Default is
+to filter the <code>*_rbga</code>, <code>resolution</code> and <code>_attributes_status</code>
+attributes. Use the function <code><a href="#all_attributes">all_attributes</a></code> to return all
+attributes.</li>
+</ul>
+</div>
+
+
+                            </div>
                             <div id="Two4Two.get_label_names" class="classattr">
                                         <div class="attr function"><a class="headerlink" href="#Two4Two.get_label_names">#&nbsp;&nbsp</a>
 
@@ -519,50 +677,6 @@ labels. See <code><a href="#Two4Two.get_label_names">get_label_names</a></code> 
         </details>
 
             <div class="docstring"><p>Returns the <code>obj_name</code> encoded by the integer.</p>
-</div>
-
-
-                            </div>
-                            <div id="Two4Two.segmentation_int_to_label" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Two4Two.segmentation_int_to_label">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">segmentation_int_to_label</span><span class="signature">(self, index: int) -&gt; str</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">segmentation_int_to_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the label of the segmentation mask.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_INT_TO_NAME</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Return the label of the segmentation mask.</p>
-</div>
-
-
-                            </div>
-                            <div id="Two4Two.segmentation_label_to_int" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Two4Two.segmentation_label_to_int">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">segmentation_label_to_int</span><span class="signature">(self, label: str) -&gt; int</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">segmentation_label_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Return the index of the segmentation label.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_NAME_TO_INT</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Return the index of the segmentation label.</p>
 </div>
 
 
