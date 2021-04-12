@@ -75,7 +75,6 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">scene_parameters</span>
-<span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">utils</span>
 
 
 <span class="k">def</span> <span class="nf">_download_blender</span><span class="p">(</span><span class="n">blender_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
@@ -113,7 +112,7 @@
 <span class="k">def</span> <span class="nf">_load_images_from_param_file</span><span class="p">(</span>
     <span class="n">param_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">delete</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scene_parameters</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">scene_parameters</span><span class="o">.</span><span class="n">SceneParameters</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Yields tuples of image and scene parameters.</span>
 
 <span class="sd">    Args:</span>
@@ -292,7 +291,9 @@
 
     <span class="n">use_tmp_dir</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="ow">is</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">use_tmp_dir</span><span class="p">:</span>
+            <span class="n">output_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+
         <span class="n">parameter_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;parameters.jsonl&#39;</span><span class="p">)</span>
 
         <span class="c1"># dump parameters</span>
@@ -307,15 +308,15 @@
         <span class="k">while</span> <span class="n">next_chunk</span> <span class="o">&lt;</span> <span class="n">num_of_chunks</span> <span class="ow">or</span> <span class="n">processes</span><span class="p">:</span>
             <span class="n">finished_chunks</span> <span class="o">=</span> <span class="n">_get_finished_processes</span><span class="p">(</span><span class="n">processes</span><span class="p">,</span> <span class="n">print_output</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">finished_chunks</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">_load_images_from_param_file</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="n">use_tmp_dir</span><span class="p">):</span>
-                    <span class="k">yield</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">param</span>
+                <span class="k">for</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">_load_images_from_param_file</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="n">use_tmp_dir</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">params</span>
                 <span class="k">del</span> <span class="n">processes</span><span class="p">[</span><span class="n">chunk</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_processes</span> <span class="ow">and</span> <span class="n">next_chunk</span> <span class="o">&lt;</span> <span class="n">num_of_chunks</span><span class="p">:</span>
                 <span class="n">process_chunk</span><span class="p">()</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">use_tmp_dir</span><span class="p">:</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">render_single</span><span class="p">(</span>
@@ -521,7 +522,9 @@
 
     <span class="n">use_tmp_dir</span> <span class="o">=</span> <span class="n">output_dir</span> <span class="ow">is</span> <span class="kc">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">use_tmp_dir</span><span class="p">:</span>
+            <span class="n">output_dir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">()</span>
+
         <span class="n">parameter_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;parameters.jsonl&#39;</span><span class="p">)</span>
 
         <span class="c1"># dump parameters</span>
@@ -536,15 +539,15 @@
         <span class="k">while</span> <span class="n">next_chunk</span> <span class="o">&lt;</span> <span class="n">num_of_chunks</span> <span class="ow">or</span> <span class="n">processes</span><span class="p">:</span>
             <span class="n">finished_chunks</span> <span class="o">=</span> <span class="n">_get_finished_processes</span><span class="p">(</span><span class="n">processes</span><span class="p">,</span> <span class="n">print_output</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">finished_chunks</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">_load_images_from_param_file</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="n">use_tmp_dir</span><span class="p">):</span>
-                    <span class="k">yield</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">param</span>
+                <span class="k">for</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">_load_images_from_param_file</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="n">use_tmp_dir</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">img</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">params</span>
                 <span class="k">del</span> <span class="n">processes</span><span class="p">[</span><span class="n">chunk</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">n_processes</span> <span class="ow">and</span> <span class="n">next_chunk</span> <span class="o">&lt;</span> <span class="n">num_of_chunks</span><span class="p">:</span>
                 <span class="n">process_chunk</span><span class="p">()</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">use_tmp_dir</span><span class="p">:</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
 </pre></div>
 
         </details>
