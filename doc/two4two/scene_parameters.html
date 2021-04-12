@@ -94,7 +94,7 @@
                                 <a class="variable" href="#SceneParameters.VALID_VALUES">VALID_VALUES</a>
                         </li>
                         <li>
-                                <a class="function" href="#SceneParameters.default_sticky">default_sticky</a>
+                                <a class="function" href="#SceneParameters.default_peaky">default_peaky</a>
                         </li>
                         <li>
                                 <a class="function" href="#SceneParameters.default_stretchy">default_stretchy</a>
@@ -145,7 +145,7 @@
                     <a class="function" href="#load_jsonl">load_jsonl</a>
             </li>
             <li>
-                    <a class="function" href="#split_sticky_stretchy">split_sticky_stretchy</a>
+                    <a class="function" href="#split_peaky_stretchy">split_peaky_stretchy</a>
             </li>
     </ul>
 
@@ -184,7 +184,7 @@
 
 
 <span class="n">OBJ_NAME_TO_INT</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
     <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="sd">&quot;&quot;&quot;Mapping from SceneParameters.obj_name to an integer. Please use this</span>
@@ -206,7 +206,7 @@
 <span class="sd">    subclass.</span>
 
 <span class="sd">    Attrs:</span>
-<span class="sd">        obj_name: Object name (either ``&quot;sticky&quot;`` or ``&quot;stretchy&quot;``).</span>
+<span class="sd">        obj_name: Object name (either ``&quot;peaky&quot;`` or ``&quot;stretchy&quot;``).</span>
 <span class="sd">        labeling_error: If ``True``, the ``obj_name_with_label_error``, will</span>
 <span class="sd">            return the flipped obj_name. The ``obj_name`` attribute itself will</span>
 <span class="sd">            not change.</span>
@@ -231,7 +231,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: once #38 is done. describe the coordinate system in full detail.</span>
-    <span class="n">obj_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;sticky&#39;</span>
+    <span class="n">obj_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;peaky&#39;</span>
     <span class="n">labeling_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
     <span class="n">bending</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -274,7 +274,7 @@
         <span class="s1">&#39;spherical&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="s1">&#39;arm_position&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="s1">&#39;bending&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">),</span>
-        <span class="s1">&#39;obj_name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;sticky&#39;</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">]),</span>
+        <span class="s1">&#39;obj_name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;peaky&#39;</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">]),</span>
         <span class="s1">&#39;labeling_error&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]),</span>
         <span class="s1">&#39;obj_rotation_roll&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
         <span class="s1">&#39;obj_rotation_pitch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
@@ -287,8 +287,8 @@
     <span class="p">}</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">default_sticky</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates SceneParameters with default values for sticky.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">default_peaky</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates SceneParameters with default values for peaky.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
@@ -460,8 +460,8 @@
     <span class="k">def</span> <span class="nf">obj_name_with_label_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the object name taking into account the label error.&quot;&quot;&quot;</span>
         <span class="n">flip_obj_name</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="s1">&#39;sticky&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="s1">&#39;peaky&#39;</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="kc">False</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">,</span>
@@ -481,18 +481,19 @@
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
 
 
-<span class="k">def</span> <span class="nf">split_sticky_stretchy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-                          <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a tuple of SceneParameters split by their type (sticky or stretchy).</span>
+<span class="k">def</span> <span class="nf">split_peaky_stretchy</span><span class="p">(</span>
+    <span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
+    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tuple of SceneParameters split by their type (peaky or stretchy).</span>
 
 <span class="sd">    Attrs:</span>
-<span class="sd">        params: List of SceneParfameters to split by ``sticky`` and ``stretchy``</span>
+<span class="sd">        params: List of SceneParfameters to split by ``peaky`` and ``stretchy``</span>
 <span class="sd">        num_samples: exact number of SceneParameters to select per class. None means all availabel.</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">==</span> <span class="s1">&#39;sticky&#39;</span><span class="p">][:</span><span class="n">num_samples</span><span class="p">],</span>
+    <span class="k">return</span> <span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">==</span> <span class="s1">&#39;peaky&#39;</span><span class="p">][:</span><span class="n">num_samples</span><span class="p">],</span>
             <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">==</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">][:</span><span class="n">num_samples</span><span class="p">])</span>
 </pre></div>
 
@@ -502,7 +503,7 @@
                 <section id="OBJ_NAME_TO_INT">
                                 <div class="attr variable"><a class="headerlink" href="#OBJ_NAME_TO_INT">#&nbsp;&nbsp</a>
 
-        <span class="name">OBJ_NAME_TO_INT</span><span class="default_value"> = {&#39;sticky&#39;: 0, &#39;stretchy&#39;: 1}</span>
+        <span class="name">OBJ_NAME_TO_INT</span><span class="default_value"> = {&#39;peaky&#39;: 0, &#39;stretchy&#39;: 1}</span>
     </div>
 
             <div class="docstring"><p>Mapping from <a href="#SceneParameters.obj_name">SceneParameters.obj_name</a> to an integer. Please use this
@@ -536,7 +537,7 @@ encoding convention if you train a binary classifier.</p>
 <span class="sd">    subclass.</span>
 
 <span class="sd">    Attrs:</span>
-<span class="sd">        obj_name: Object name (either ``&quot;sticky&quot;`` or ``&quot;stretchy&quot;``).</span>
+<span class="sd">        obj_name: Object name (either ``&quot;peaky&quot;`` or ``&quot;stretchy&quot;``).</span>
 <span class="sd">        labeling_error: If ``True``, the ``obj_name_with_label_error``, will</span>
 <span class="sd">            return the flipped obj_name. The ``obj_name`` attribute itself will</span>
 <span class="sd">            not change.</span>
@@ -561,7 +562,7 @@ encoding convention if you train a binary classifier.</p>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: once #38 is done. describe the coordinate system in full detail.</span>
-    <span class="n">obj_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;sticky&#39;</span>
+    <span class="n">obj_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;peaky&#39;</span>
     <span class="n">labeling_error</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span>
     <span class="n">bending</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -604,7 +605,7 @@ encoding convention if you train a binary classifier.</p>
         <span class="s1">&#39;spherical&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="s1">&#39;arm_position&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="s1">&#39;bending&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">),</span>
-        <span class="s1">&#39;obj_name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;sticky&#39;</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">]),</span>
+        <span class="s1">&#39;obj_name&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;peaky&#39;</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">]),</span>
         <span class="s1">&#39;labeling_error&#39;</span><span class="p">:</span> <span class="nb">set</span><span class="p">([</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]),</span>
         <span class="s1">&#39;obj_rotation_roll&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
         <span class="s1">&#39;obj_rotation_pitch&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span>
@@ -617,8 +618,8 @@ encoding convention if you train a binary classifier.</p>
     <span class="p">}</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">default_sticky</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates SceneParameters with default values for sticky.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">default_peaky</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates SceneParameters with default values for peaky.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 
     <span class="nd">@classmethod</span>
@@ -790,8 +791,8 @@ encoding convention if you train a binary classifier.</p>
     <span class="k">def</span> <span class="nf">obj_name_with_label_error</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns the object name taking into account the label error.&quot;&quot;&quot;</span>
         <span class="n">flip_obj_name</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="s1">&#39;sticky&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="s1">&#39;peaky&#39;</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="k">return</span> <span class="p">{</span>
             <span class="kc">False</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">,</span>
@@ -821,7 +822,7 @@ subclass.</p>
 <h6 id="attrs">Attrs</h6>
 
 <blockquote>
-  <p>obj_name: Object name (either <code>"sticky"</code> or <code>"stretchy"</code>).
+  <p>obj_name: Object name (either <code>"peaky"</code> or <code>"stretchy"</code>).
   labeling_error: If <code>True</code>, the <code><a href="#SceneParameters.obj_name_with_label_error">obj_name_with_label_error</a></code>, will
       return the flipped obj_name. The <code><a href="#SceneParameters.obj_name">obj_name</a></code> attribute itself will
       not change.
@@ -852,7 +853,7 @@ subclass.</p>
 
         
             <span class="name">SceneParameters</span><span class="signature">(
-    obj_name: str = &#39;sticky&#39;,
+    obj_name: str = &#39;peaky&#39;,
     labeling_error: bool = False,
     spherical: float = 0.5,
     bending: float = 0.0,
@@ -881,7 +882,7 @@ subclass.</p>
                             <div id="SceneParameters.obj_name" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#SceneParameters.obj_name">#&nbsp;&nbsp</a>
 
-        <span class="name">obj_name</span><span class="annotation">: str</span><span class="default_value"> = &#39;sticky&#39;</span>
+        <span class="name">obj_name</span><span class="annotation">: str</span><span class="default_value"> = &#39;peaky&#39;</span>
     </div>
 
     
@@ -1043,32 +1044,32 @@ subclass.</p>
                             <div id="SceneParameters.VALID_VALUES" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#SceneParameters.VALID_VALUES">#&nbsp;&nbsp</a>
 
-        <span class="name">VALID_VALUES</span><span class="default_value"> = {&#39;spherical&#39;: (0, 1), &#39;arm_position&#39;: (0, 1), &#39;bending&#39;: (-0.39269908169872414, 0.39269908169872414), &#39;obj_name&#39;: {&#39;sticky&#39;, &#39;stretchy&#39;}, &#39;labeling_error&#39;: {False, True}, &#39;obj_rotation_roll&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_pitch&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_yaw&#39;: (-3.141592653589793, 3.141592653589793), &#39;fliplr&#39;: {False, True}, &#39;position_x&#39;: (-3.0, 3.0), &#39;position_y&#39;: (-3.0, 3.0), &#39;obj_color&#39;: (0, 1), &#39;bg_color&#39;: (0, 1)}</span>
+        <span class="name">VALID_VALUES</span><span class="default_value"> = {&#39;spherical&#39;: (0, 1), &#39;arm_position&#39;: (0, 1), &#39;bending&#39;: (-0.39269908169872414, 0.39269908169872414), &#39;obj_name&#39;: {&#39;peaky&#39;, &#39;stretchy&#39;}, &#39;labeling_error&#39;: {False, True}, &#39;obj_rotation_roll&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_pitch&#39;: (-1.0471975511965976, 1.0471975511965976), &#39;obj_rotation_yaw&#39;: (-3.141592653589793, 3.141592653589793), &#39;fliplr&#39;: {False, True}, &#39;position_x&#39;: (-3.0, 3.0), &#39;position_y&#39;: (-3.0, 3.0), &#39;obj_color&#39;: (0, 1), &#39;bg_color&#39;: (0, 1)}</span>
     </div>
 
     
 
                             </div>
-                            <div id="SceneParameters.default_sticky" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#SceneParameters.default_sticky">#&nbsp;&nbsp</a>
+                            <div id="SceneParameters.default_peaky" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SceneParameters.default_peaky">#&nbsp;&nbsp</a>
 
                 <div class="decorator">@classmethod</div>
 
             <span class="def">def</span>
-            <span class="name">default_sticky</span><span class="signature">(cls) -&gt; <a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a></span>:
+            <span class="name">default_peaky</span><span class="signature">(cls) -&gt; <a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a></span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">default_sticky</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Creates SceneParameters with default values for sticky.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">default_peaky</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Creates SceneParameters with default values for peaky.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Creates SceneParameters with default values for sticky.</p>
+            <div class="docstring"><p>Creates SceneParameters with default values for peaky.</p>
 </div>
 
 
@@ -1490,12 +1491,12 @@ The status can be obtained with  <code><a href="#SceneParameters.get_status">get
 
 
                 </section>
-                <section id="split_sticky_stretchy">
-                            <div class="attr function"><a class="headerlink" href="#split_sticky_stretchy">#&nbsp;&nbsp</a>
+                <section id="split_peaky_stretchy">
+                            <div class="attr function"><a class="headerlink" href="#split_peaky_stretchy">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">split_sticky_stretchy</span><span class="signature">(
+            <span class="name">split_peaky_stretchy</span><span class="signature">(
     params: List[<a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a>],
     num_samples: int = None
 ) -&gt; Tuple[Sequence[<a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a>], Sequence[<a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a>]]</span>:
@@ -1503,29 +1504,30 @@ The status can be obtained with  <code><a href="#SceneParameters.get_status">get
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_sticky_stretchy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-                          <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;Returns a tuple of SceneParameters split by their type (sticky or stretchy).</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_peaky_stretchy</span><span class="p">(</span>
+    <span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
+    <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
+    <span class="sd">&quot;&quot;&quot;Returns a tuple of SceneParameters split by their type (peaky or stretchy).</span>
 
 <span class="sd">    Attrs:</span>
-<span class="sd">        params: List of SceneParfameters to split by ``sticky`` and ``stretchy``</span>
+<span class="sd">        params: List of SceneParfameters to split by ``peaky`` and ``stretchy``</span>
 <span class="sd">        num_samples: exact number of SceneParameters to select per class. None means all availabel.</span>
 
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">==</span> <span class="s1">&#39;sticky&#39;</span><span class="p">][:</span><span class="n">num_samples</span><span class="p">],</span>
+    <span class="k">return</span> <span class="p">([</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">==</span> <span class="s1">&#39;peaky&#39;</span><span class="p">][:</span><span class="n">num_samples</span><span class="p">],</span>
             <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">==</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">][:</span><span class="n">num_samples</span><span class="p">])</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Returns a tuple of SceneParameters split by their type (sticky or stretchy).</p>
+            <div class="docstring"><p>Returns a tuple of SceneParameters split by their type (peaky or stretchy).</p>
 
 <h6 id="attrs">Attrs</h6>
 
 <blockquote>
-  <p>params: List of SceneParfameters to split by <code>sticky</code> and <code>stretchy</code>
+  <p>params: List of SceneParfameters to split by <code>peaky</code> and <code>stretchy</code>
   num_samples: exact number of SceneParameters to select per class. None means all availabel.</p>
 </blockquote>
 </div>
