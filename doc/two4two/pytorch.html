@@ -51,6 +51,12 @@
                         <li>
                                 <a class="function" href="#Two4Two.int_to_obj_name">int_to_obj_name</a>
                         </li>
+                        <li>
+                                <a class="function" href="#Two4Two.segmentation_int_to_label">segmentation_int_to_label</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#Two4Two.segmentation_label_to_int">segmentation_label_to_int</a>
+                        </li>
                 </ul>
 
             </li>
@@ -239,6 +245,14 @@
             <span class="n">idx</span><span class="p">:</span> <span class="n">name</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">scene_parameters</span><span class="o">.</span><span class="n">OBJ_NAME_TO_INT</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}[</span><span class="n">label_int</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">segmentation_int_to_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the label of the segmentation mask.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_INT_TO_NAME</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">segmentation_label_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the index of the segmentation label.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_NAME_TO_INT</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
@@ -461,6 +475,14 @@
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">scene_parameters</span><span class="o">.</span><span class="n">OBJ_NAME_TO_INT</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">}[</span><span class="n">label_int</span><span class="p">]</span>
 
+    <span class="k">def</span> <span class="nf">segmentation_int_to_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the label of the segmentation mask.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_INT_TO_NAME</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">segmentation_label_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the index of the segmentation label.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_NAME_TO_INT</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
         <span class="n">fname</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">filename</span>
@@ -677,6 +699,50 @@ attributes.</li>
         </details>
 
             <div class="docstring"><p>Returns the <code>obj_name</code> encoded by the integer.</p>
+</div>
+
+
+                            </div>
+                            <div id="Two4Two.segmentation_int_to_label" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Two4Two.segmentation_int_to_label">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">segmentation_int_to_label</span><span class="signature">(self, index: int) -&gt; str</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">segmentation_int_to_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the label of the segmentation mask.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_INT_TO_NAME</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Return the label of the segmentation mask.</p>
+</div>
+
+
+                            </div>
+                            <div id="Two4Two.segmentation_label_to_int" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Two4Two.segmentation_label_to_int">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">segmentation_label_to_int</span><span class="signature">(self, label: str) -&gt; int</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">segmentation_label_to_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Return the index of the segmentation label.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">SEGMENTATION_NAME_TO_INT</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Return the index of the segmentation label.</p>
 </div>
 
 
