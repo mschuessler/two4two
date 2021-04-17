@@ -1,4 +1,4 @@
-"""module for the blender object of Sticky and Stretechy."""
+"""module for the blender object of Peaky and Stretechy."""
 
 from __future__ import annotations
 
@@ -68,10 +68,10 @@ class BoneRotation:
 
 
 class Two4TwoBlenderObject():
-    """Object that represents either a Sticky or Stretchy.
+    """Object that represents either a Peaky or Stretchy.
 
     Args:
-        obj_name: Object name (either ``"sticky"`` or ``"stretchy"``).
+        obj_name: Object name (either ``"peaky"`` or ``"stretchy"``).
         spherical: For ``1``,  spherical objects. For ``0``, cubes.
             Can have values in-between.
         arm_position: Absolute arm positions.
@@ -371,7 +371,7 @@ class Two4TwoBlenderObject():
                  spherical: float = 0,
                  arm_position: float = 0):
 
-        # Object Type. 'sticky' or 'stretchy'
+        # Object Type. 'peaky' or 'stretchy'
         self.obj_name = obj_name
 
         self.arm_position = arm_position

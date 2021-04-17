@@ -11,18 +11,18 @@ import two4two
 
 def render(tmp_path: Path, **kwargs: Dict[str, Any]):
     """Renders 3 images and checks #objects, shapes, and if parameters are returned correctly."""
-    sticky = two4two.SceneParameters.default_sticky()
+    peaky = two4two.SceneParameters.default_peaky()
 
     # setting the id ensures a determinisitic filename
-    sticky.id = 'sticky'
+    peaky.id = 'peaky'
 
-    sticky_bended = sticky.clone()
-    sticky_bended.id = 'sticky_bended'
-    sticky_bended.bending = 0.25
+    peaky_bended = peaky.clone()
+    peaky_bended.id = 'peaky_bended'
+    peaky_bended.bending = 0.25
 
     sampled_params = [
-        sticky,
-        sticky_bended,
+        peaky,
+        peaky_bended,
     ]
 
     i = 0
