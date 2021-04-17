@@ -47,6 +47,7 @@ setuptools.setup(
             'flake8-annotations',
             'flake8-docstrings',
             'flake8-import-order',
+            'mypy',
             'pdoc',
             'pytest',
             'pytest-cov',

@@ -129,7 +129,7 @@ class Sampler:
         return params
 
     @staticmethod
-    def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
+    def _sample(obj_name: Optional[str], dist: Distribution, size: int = 1) -> Any:
         """Samples values from the distributon according to its type.
 
         The default number of values sampled is one, which can be changed with flag size.
@@ -148,10 +148,15 @@ class Sampler:
             return tuple([Sampler._sample(obj_name, dist) for i in range(0, size)])
 
         if isinstance(dist, dict):
-            dist = dist[obj_name]
+            # Rare edge case: If a dictionary was passed without the obj_name key
+            # then the first distribution from the dictionary is used.
+            if obj_name is None:
+                dist = next(iter(dist.values()))
+            else:
+                dist = dist[obj_name]
 
         if hasattr(dist, 'rvs'):
-            value = dist.rvs()
+            value = dist.rvs()  # type: ignore
         elif callable(dist):
             value = dist()
         else:
@@ -166,13 +171,15 @@ class Sampler:
                 value = value[0]
 
         if isinstance(value, np.ndarray):
-            value = utils.to_python_scalar(value)
+            value = utils.numpy_to_python_scalar(value)
 
         return value
 
     def _sample_name(self) -> str:
         """Convienience function. Returns a sampled obj_name."""
-        return self._sample(None, self.obj_name)
+        # obj_name is set to none, because the sampleing of the name should be, per definitiion,
+        # idenpendet of the obj_name
+        return self._sample(obj_name=None, dist=self.obj_name)
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
@@ -310,7 +317,7 @@ class Sampler:
         params.arm_position = float(self._sample(obj_name, self.arm_position))
         params.mark_sampled('arm_position')
 
-    def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
+    def _object_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.obj_color_map)
 
     def sample_color(self, params: SceneParameters, intervention: bool = False):
@@ -332,7 +339,7 @@ class Sampler:
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.obj_color = float(self._sample(obj_name, self.obj_color))
-        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))
+        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))  # type: ignore
         params.mark_sampled('obj_color')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
@@ -347,7 +354,7 @@ class Sampler:
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.bg_color = float(self._sample(obj_name, self.bg_color))
-        params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))
+        params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))  # type: ignore
         params.mark_sampled('bg_color')
 
 

@@ -8,7 +8,7 @@ import importlib
 import json
 import math
 import pprint
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, ClassVar, Dict, List, Optional, Tuple, Union
 import uuid
 
 from two4two import utils
@@ -66,7 +66,7 @@ class SceneParameters:
     labeling_error: bool = False
     spherical: float = 0.5
     bending: float = 0.0
-    obj_rotation_roll: int = 0.0
+    obj_rotation_roll: float = 0.0
     obj_rotation_pitch: float = 0.0
     obj_rotation_yaw: float = 0.0
     fliplr: bool = False
@@ -101,9 +101,14 @@ class SceneParameters:
             'obj_color': 'default'
         })
 
-    VALID_VALUES = {
-        'spherical': (0, 1),
-        'arm_position': (0, 1),
+    VALID_VALUES: ClassVar[dict[
+        str, Union[
+            tuple[float, float],
+            set[bool],
+            set[str],
+        ]]] = {
+        'spherical': (0., 1.),
+        'arm_position': (0., 1.),
         'bending': (- math.pi / 8, math.pi / 8),
         'obj_name': set(['peaky', 'stretchy']),
         'labeling_error': set([False, True]),
@@ -113,8 +118,8 @@ class SceneParameters:
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
-        'obj_color': (0, 1),
-        'bg_color': (0, 1),
+        'obj_color': (0., 1.),
+        'bg_color': (0., 1.),
     }
 
     @classmethod
@@ -218,7 +223,7 @@ class SceneParameters:
 
         return clone
 
-    def is_clone_of(self, original: Optional[SceneParameters] = None) -> bool:
+    def is_clone_of(self, original: SceneParameters) -> bool:
         """Returns True if this parameters have been cloned form the given orignal.
 
         Args:
@@ -312,10 +317,10 @@ def load_jsonl(path: str) -> List[SceneParameters]:
                 for line in f.readlines()]
 
 
-def split_peaky_stretchy(
-    params: List[SceneParameters],
-    num_samples: int = None
-) -> Tuple[Sequence[SceneParameters], Sequence[SceneParameters]]:
+def split_peaky_stretchy(params: List[SceneParameters],
+                         num_samples: int = None
+                         ) -> Tuple[List[SceneParameters],
+                                    List[SceneParameters]]:
     """Returns a tuple of SceneParameters split by their type (peaky or stretchy).
 
     Attrs:

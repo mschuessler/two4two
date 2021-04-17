@@ -1,7 +1,7 @@
 """visulization function for rendered scenes."""
 
 import math
-from typing import Sequence, Tuple
+from typing import List, Sequence, Tuple
 
 import matplotlib as mlp
 import matplotlib.pyplot as plt
@@ -12,7 +12,7 @@ from two4two import scene_parameters
 
 
 def render_grid(
-    params: Sequence[scene_parameters.SceneParameters],
+    params: List[scene_parameters.SceneParameters],
     num_cols_per_class: int = 3,
     equal_class_distribution: bool = True,
     # see #75 download_blender: bool = False
