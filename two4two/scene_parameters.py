@@ -317,10 +317,10 @@ def load_jsonl(path: str) -> List[SceneParameters]:
                 for line in f.readlines()]
 
 
-def split_sticky_stretchy(params: List[SceneParameters],
-                          num_samples: int = None
-                          ) -> Tuple[List[SceneParameters],
-                                     List[SceneParameters]]:
+def split_peaky_stretchy(params: List[SceneParameters],
+                         num_samples: int = None
+                         ) -> Tuple[List[SceneParameters],
+                                    List[SceneParameters]]:
     """Returns a tuple of SceneParameters split by their type (peaky or stretchy).
 
     Attrs:
