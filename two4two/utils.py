@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import importlib
-from typing import Any, Dict, Sequence, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 import numpy as np
 import scipy.stats
@@ -57,10 +57,14 @@ class discrete():
                **kwargs: Dict[str, Any]
                ) -> Sequence[float]:
         """Log Probability mass function."""
-        if k in self.values:  # a single k
-            return self.rv_discrete.logpmf(self.values.index(k))
-        else:  # a sequence of k's
-            return self.rv_discrete.logpmf([self.values.index(k_item) for k_item in k])
+        if supports_iteration(k):
+            return self.rv_discrete.logpmf(
+                [self.values.index(k_item) for k_item in k])      # type: ignore
+        # a single k
+        elif k in self.values:  # type: ignore
+            return self.rv_discrete.logpmf(self.values.index(k))  # type: ignore
+        else:
+            raise ValueError(f'Neither iterable nor in self.values: {k}')
 
     def rvs(self,
             *args: Sequence[Any],
@@ -104,7 +108,8 @@ def supports_iteration(value: Union[Any, Sequence[Any]]) -> bool:
         for _ in value:
             return True
     except TypeError:
-        return False
+        pass
+    return False
 
 
 def split_class(module_dot_class: str) -> Tuple[str, str]:
@@ -117,6 +122,17 @@ def split_class(module_dot_class: str) -> Tuple[str, str]:
 
 def import_class(module: str, cls_name: str) -> Type:
     """Returns the class given as string."""
-    module = importlib.import_module(module)
-    cls = getattr(module, cls_name)
+    mod = importlib.import_module(module)
+    cls = getattr(mod, cls_name)
     return cls
+
+
+def get(maybe_none: Optional[T], default: T) -> T:
+    """Returns either the given value if not ``None`` or a default value.
+
+    Useful helper function to deconstruct Optional values in a typesafe way.
+    """
+    if maybe_none is not None:
+        return maybe_none
+    else:
+        return default

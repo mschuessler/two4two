@@ -11,6 +11,7 @@ import imageio
 import numpy as np
 
 from two4two import scene_parameters
+from two4two import utils
 
 
 def _download_blender(blender_dir: str):
@@ -48,7 +49,7 @@ def ensure_blender_available(blender_dir: Optional[str] = None,
 def _load_images_from_param_file(
     param_filename: str,
     delete: bool,
-) -> Iterator[Tuple[np.ndarray, scene_parameters.SceneParameters]]:
+) -> Iterator[Tuple[np.ndarray, np.ndarray, scene_parameters.SceneParameters]]:
     """Yields tuples of image and scene parameters.
 
     Args:
@@ -227,9 +228,7 @@ def render(
 
     use_tmp_dir = output_dir is None
     try:
-        if use_tmp_dir:
-            output_dir = tempfile.mkdtemp()
-
+        output_dir = utils.get(output_dir, tempfile.mkdtemp())
         parameter_file = os.path.join(output_dir, 'parameters.jsonl')
 
         # dump parameters
@@ -244,15 +243,15 @@ def render(
         while next_chunk < num_of_chunks or processes:
             finished_chunks = _get_finished_processes(processes, print_output)
             for chunk in finished_chunks:
-                for img, mask, params in _load_images_from_param_file(chunk, delete=use_tmp_dir):
-                    yield img, mask, params
+                for img, mask, param in _load_images_from_param_file(chunk, delete=use_tmp_dir):
+                    yield img, mask, param
                 del processes[chunk]
 
             if len(processes) < n_processes and next_chunk < num_of_chunks:
                 process_chunk()
     finally:
         if use_tmp_dir:
-            shutil.rmtree(output_dir)
+            shutil.rmtree(output_dir)  # type: ignore
 
 
 def render_single(

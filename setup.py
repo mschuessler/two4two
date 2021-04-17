@@ -6,15 +6,15 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="two4two-laserschwelle",
+    name="two4two",
     version="0.0.4",
-    author="Philipp Weiss, Leon Sixt, Martin Schuessler",
+    author="Martin Schuessler, Leon Sixt, Philipp Weiss",
     author_email="dev@mschuessler.de",
     description="Generate biased image data to train and test classifiers.",
-    license='GPLv2+',
+    license='MIT',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/laserschwelle/two4two",
+    url="https://github.com/mschuessler/two4two",
     packages=setuptools.find_packages(),
     package_data={
         "": ["*.sh"],
@@ -47,6 +47,7 @@ setuptools.setup(
             'flake8-annotations',
             'flake8-docstrings',
             'flake8-import-order',
+            'mypy',
             'pdoc',
             'pytest',
             'pytest-cov',

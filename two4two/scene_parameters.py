@@ -8,14 +8,14 @@ import importlib
 import json
 import math
 import pprint
-from typing import Any, Dict, List, Optional, Sequence, Tuple
+from typing import Any, ClassVar, Dict, List, Optional, Tuple, Union
 import uuid
 
 from two4two import utils
 
 
 OBJ_NAME_TO_INT = {
-    'sticky': 0,
+    'peaky': 0,
     'stretchy': 1,
 }
 """Mapping from SceneParameters.obj_name to an integer. Please use this
@@ -37,7 +37,7 @@ class SceneParameters:
     subclass.
 
     Attrs:
-        obj_name: Object name (either ``"sticky"`` or ``"stretchy"``).
+        obj_name: Object name (either ``"peaky"`` or ``"stretchy"``).
         labeling_error: If ``True``, the ``obj_name_with_label_error``, will
             return the flipped obj_name. The ``obj_name`` attribute itself will
             not change.
@@ -62,11 +62,11 @@ class SceneParameters:
 
     """
     # TODO: once #38 is done. describe the coordinate system in full detail.
-    obj_name: str = 'sticky'
+    obj_name: str = 'peaky'
     labeling_error: bool = False
     spherical: float = 0.5
     bending: float = 0.0
-    obj_rotation_roll: int = 0.0
+    obj_rotation_roll: float = 0.0
     obj_rotation_pitch: float = 0.0
     obj_rotation_yaw: float = 0.0
     fliplr: bool = False
@@ -101,11 +101,16 @@ class SceneParameters:
             'obj_color': 'default'
         })
 
-    VALID_VALUES = {
-        'spherical': (0, 1),
-        'arm_position': (0, 1),
+    VALID_VALUES: ClassVar[dict[
+        str, Union[
+            tuple[float, float],
+            set[bool],
+            set[str],
+        ]]] = {
+        'spherical': (0., 1.),
+        'arm_position': (0., 1.),
         'bending': (- math.pi / 8, math.pi / 8),
-        'obj_name': set(['sticky', 'stretchy']),
+        'obj_name': set(['peaky', 'stretchy']),
         'labeling_error': set([False, True]),
         'obj_rotation_roll': (- math.pi / 3, math.pi / 3),
         'obj_rotation_pitch': (- math.pi / 3, math.pi / 3),
@@ -113,13 +118,13 @@ class SceneParameters:
         'fliplr': set([True, False]),
         'position_x': (-3.0, 3.0),
         'position_y': (-3.0, 3.0),
-        'obj_color': (0, 1),
-        'bg_color': (0, 1),
+        'obj_color': (0., 1.),
+        'bg_color': (0., 1.),
     }
 
     @classmethod
-    def default_sticky(cls) -> SceneParameters:
-        """Creates SceneParameters with default values for sticky."""
+    def default_peaky(cls) -> SceneParameters:
+        """Creates SceneParameters with default values for peaky."""
         return cls()
 
     @classmethod
@@ -218,7 +223,7 @@ class SceneParameters:
 
         return clone
 
-    def is_clone_of(self, original: Optional[SceneParameters] = None) -> bool:
+    def is_clone_of(self, original: SceneParameters) -> bool:
         """Returns True if this parameters have been cloned form the given orignal.
 
         Args:
@@ -291,8 +296,8 @@ class SceneParameters:
     def obj_name_with_label_error(self) -> str:
         """Returns the object name taking into account the label error."""
         flip_obj_name = {
-            'sticky': 'stretchy',
-            'stretchy': 'sticky',
+            'peaky': 'stretchy',
+            'stretchy': 'peaky',
         }
         return {
             False: self.obj_name,
@@ -312,16 +317,17 @@ def load_jsonl(path: str) -> List[SceneParameters]:
                 for line in f.readlines()]
 
 
-def split_sticky_stretchy(params: List[SceneParameters],
-                          num_samples: int = None
-                          ) -> Tuple[Sequence[SceneParameters], Sequence[SceneParameters]]:
-    """Returns a tuple of SceneParameters split by their type (sticky or stretchy).
+def split_peaky_stretchy(params: List[SceneParameters],
+                         num_samples: int = None
+                         ) -> Tuple[List[SceneParameters],
+                                    List[SceneParameters]]:
+    """Returns a tuple of SceneParameters split by their type (peaky or stretchy).
 
     Attrs:
-        params: List of SceneParfameters to split by ``sticky`` and ``stretchy``
+        params: List of SceneParfameters to split by ``peaky`` and ``stretchy``
         num_samples: exact number of SceneParameters to select per class. None means all availabel.
 
 
     """
-    return ([p for p in params if p.obj_name == 'sticky'][:num_samples],
+    return ([p for p in params if p.obj_name == 'peaky'][:num_samples],
             [p for p in params if p.obj_name == 'stretchy'][:num_samples])

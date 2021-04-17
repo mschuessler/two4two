@@ -15,10 +15,10 @@ def test_generic_sampler():
     sampler = two4two.Sampler()
     scipy_trunc_normal = utils.truncated_normal(0, 0.5, 0, 1)
     py_uniform = random.random
-    test_dict = {'sticky': scipy_trunc_normal, 'stretchy': py_uniform, 'ignore': None}
+    test_dict = {'peaky': scipy_trunc_normal, 'stretchy': py_uniform, 'ignore': None}
 
-    assert isinstance(sampler._sample('sticky', scipy_trunc_normal), numbers.Number)
-    assert isinstance(sampler._sample('sticky', test_dict), numbers.Number)
+    assert isinstance(sampler._sample('peaky', scipy_trunc_normal), numbers.Number)
+    assert isinstance(sampler._sample('peaky', test_dict), numbers.Number)
     assert isinstance(sampler._sample('stretchy', test_dict), numbers.Number)
     assert isinstance(sampler._sample('stretchy', test_dict, size=5), tuple)
 

@@ -39,11 +39,14 @@ python -m pytest -v -s test/  \
     "$@"
 pytest_ret=$?
 
+./mypy.sh
+mypy_ret=$?
+
 ./run_flake8.sh
 flake_ret=$?
 
 # if one is non-zero the sum is non-zero
-exit_code=$((flake_ret + pytest_ret))
+exit_code=$((flake_ret + pytest_ret + mypy_ret))
 
 Color_Off='\033[0m'
 Red='\033[0;31m'

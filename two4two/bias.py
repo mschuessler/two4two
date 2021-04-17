@@ -33,10 +33,10 @@ class Sampler:
 
     Distribution can be: * scipy-distribution from ``scipy.stats`` * callable functions returning a
     single value * a single (default) value. * a dictionary of all before-mentioned types containing
-    the keys ``sticky``and ``stretchy``.
+    the keys ``peaky``and ``stretchy``.
 
     These dictionaries are the easiest way to implement a bias. If you want an attribute to be
-    sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to
+    sampled diffrently based on wheter it shows a peaky or stretchy, it is usually sufficient to
     change these dictionaries. See ``ColorBiasedSampler`` as an example.
 
     To implement more complex biases, you can inherit this class and modify how individual
@@ -47,7 +47,7 @@ class Sampler:
     controll an attribute sometimes. That means that we set the attribute to a specific value
     independent of the usual dependencies. If the intervention flag is true, the parameter should be
     sampled independent of any other attribute. For example, if the object color (obj_color)
-    depends on the Sticky/Stretchy variable, it would need to be sampled independent
+    depends on the Peaky/Stretchy variable, it would need to be sampled independent
     if intervention = True.
 
     Since the default sampler implementation in this class is only dependent upon obj_name, so it is
@@ -73,12 +73,12 @@ class Sampler:
         bg_color: distribution of ``SceneParameters.bg_color``.
     """
 
-    obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
+    obj_name: Discrete = utils.discrete({'peaky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
     bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
+            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
             'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
@@ -129,7 +129,7 @@ class Sampler:
         return params
 
     @staticmethod
-    def _sample(obj_name: str, dist: Distribution, size: int = 1) -> Any:
+    def _sample(obj_name: Optional[str], dist: Distribution, size: int = 1) -> Any:
         """Samples values from the distributon according to its type.
 
         The default number of values sampled is one, which can be changed with flag size.
@@ -138,7 +138,7 @@ class Sampler:
         * scipy-distribution from ``scipy.stats``
         * callable functions returning a single value
         * a single (default) value.
-        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+        * a dictionary of all before-mentioned types containing the keys ``peaky``and ``stretchy``.
 
         Will unpack np.ndarray, list, or tuple with a single element returned by distribution.
 
@@ -148,10 +148,15 @@ class Sampler:
             return tuple([Sampler._sample(obj_name, dist) for i in range(0, size)])
 
         if isinstance(dist, dict):
-            dist = dist[obj_name]
+            # Rare edge case: If a dictionary was passed without the obj_name key
+            # then the first distribution from the dictionary is used.
+            if obj_name is None:
+                dist = next(iter(dist.values()))
+            else:
+                dist = dist[obj_name]
 
         if hasattr(dist, 'rvs'):
-            value = dist.rvs()
+            value = dist.rvs()  # type: ignore
         elif callable(dist):
             value = dist()
         else:
@@ -166,13 +171,15 @@ class Sampler:
                 value = value[0]
 
         if isinstance(value, np.ndarray):
-            value = utils.to_python_scalar(value)
+            value = utils.numpy_to_python_scalar(value)
 
         return value
 
     def _sample_name(self) -> str:
         """Convienience function. Returns a sampled obj_name."""
-        return self._sample(None, self.obj_name)
+        # obj_name is set to none, because the sampleing of the name should be, per definitiion,
+        # idenpendet of the obj_name
+        return self._sample(obj_name=None, dist=self.obj_name)
 
     def sample_obj_name(self, params: SceneParameters):
         """Samples the ``obj_name``."""
@@ -310,7 +317,7 @@ class Sampler:
         params.arm_position = float(self._sample(obj_name, self.arm_position))
         params.mark_sampled('arm_position')
 
-    def _object_cmap(self, params: SceneParameters) -> utils.ColorGenerator:
+    def _object_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
         return plt.get_cmap(self.obj_color_map)
 
     def sample_color(self, params: SceneParameters, intervention: bool = False):
@@ -332,7 +339,7 @@ class Sampler:
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.obj_color = float(self._sample(obj_name, self.obj_color))
-        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))
+        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))  # type: ignore
         params.mark_sampled('obj_color')
 
     def _bg_cmap(self, params: SceneParameters) -> mpl.colors.Colormap:
@@ -347,7 +354,7 @@ class Sampler:
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.bg_color = float(self._sample(obj_name, self.bg_color))
-        params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))
+        params.bg_color_rgba = tuple(self._bg_cmap(params)(params.bg_color))  # type: ignore
         params.mark_sampled('bg_color')
 
 
@@ -360,7 +367,7 @@ class ColorBiasedSampler(Sampler):
 
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
         })
 
@@ -393,6 +400,6 @@ class HighVariationColorBiasedSampler(Sampler):
     bending: Continouos = scipy.stats.uniform(- np.pi / 8, np.pi / 4)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
         })

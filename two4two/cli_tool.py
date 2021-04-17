@@ -69,11 +69,11 @@ def render_dataset_split(args: RenderSplitArgs):
         shutil.rmtree(args.output_dir)
     os.makedirs(args.output_dir, exist_ok=False)
 
-    with open(os.path.join(args.output_dir, 'sampler.pickle'), 'wb') as f:
-        pickle.dump(sampler, f)
+    with open(os.path.join(args.output_dir, 'sampler.pickle'), 'wb') as f_pickle:
+        pickle.dump(sampler, f_pickle)
 
-    with open(os.path.join(args.output_dir, 'args.json'), 'w') as f:
-        json.dump(dataclasses.asdict(args), f)
+    with open(os.path.join(args.output_dir, 'args.json'), 'w') as f_json:
+        json.dump(dataclasses.asdict(args), f_json)
 
     print(f"Rendering {len(params)} images...")
     for _ in tqdm.tqdm(two4two.render(

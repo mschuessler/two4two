@@ -1,7 +1,7 @@
 """Tests for blender.py."""
 
 from pathlib import Path
-from typing import Any, Dict
+from typing import Optional
 
 import numpy as np
 import pytest
@@ -9,26 +9,43 @@ import pytest
 import two4two
 
 
-def render(tmp_path: Path, **kwargs: Dict[str, Any]):
+def render(
+    tmp_path: Path,
+    n_processes: int = 0,
+    chunk_size: int = 100,
+    output_dir: Optional[str] = None,
+    blender_dir: Optional[str] = None,
+    download_blender: bool = False,
+    print_output: bool = False,
+    print_cmd: bool = False,
+    save_blender_file: bool = False
+):
     """Renders 3 images and checks #objects, shapes, and if parameters are returned correctly."""
-    sticky = two4two.SceneParameters.default_sticky()
+    peaky = two4two.SceneParameters.default_peaky()
 
     # setting the id ensures a determinisitic filename
-    sticky.id = 'sticky'
+    peaky.id = 'peaky'
 
-    sticky_bended = sticky.clone()
-    sticky_bended.id = 'sticky_bended'
-    sticky_bended.bending = 0.25
+    peaky_bended = peaky.clone()
+    peaky_bended.id = 'peaky_bended'
+    peaky_bended.bending = 0.25
 
     sampled_params = [
-        sticky,
-        sticky_bended,
+        peaky,
+        peaky_bended,
     ]
 
     i = 0
     for (img, mask, param) in two4two.render(
         sampled_params,
-        **kwargs
+        n_processes=n_processes,
+        chunk_size=chunk_size,
+        output_dir=output_dir,
+        blender_dir=blender_dir,
+        download_blender=download_blender,
+        print_output=print_output,
+        print_cmd=print_cmd,
+        save_blender_file=save_blender_file,
     ):
         # should be 9 unique objects including background
         assert (np.unique(mask) == np.arange(9)).all()
