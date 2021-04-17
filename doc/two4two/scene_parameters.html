@@ -145,7 +145,7 @@
                     <a class="function" href="#load_jsonl">load_jsonl</a>
             </li>
             <li>
-                    <a class="function" href="#split_sticky_stretchy">split_sticky_stretchy</a>
+                    <a class="function" href="#split_peaky_stretchy">split_peaky_stretchy</a>
             </li>
     </ul>
 
@@ -486,10 +486,10 @@
                 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
 
 
-<span class="k">def</span> <span class="nf">split_sticky_stretchy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-                          <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-                                     <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
+<span class="k">def</span> <span class="nf">split_peaky_stretchy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
+                         <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
+                                    <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Returns a tuple of SceneParameters split by their type (peaky or stretchy).</span>
 
 <span class="sd">    Attrs:</span>
@@ -1498,12 +1498,12 @@ The status can be obtained with  <code><a href="#SceneParameters.get_status">get
 
 
                 </section>
-                <section id="split_sticky_stretchy">
-                            <div class="attr function"><a class="headerlink" href="#split_sticky_stretchy">#&nbsp;&nbsp</a>
+                <section id="split_peaky_stretchy">
+                            <div class="attr function"><a class="headerlink" href="#split_peaky_stretchy">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">split_sticky_stretchy</span><span class="signature">(
+            <span class="name">split_peaky_stretchy</span><span class="signature">(
     params: List[<a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a>],
     num_samples: int = None
 ) -&gt; Tuple[List[<a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a>], List[<a href="#SceneParameters">two4two.scene_parameters.SceneParameters</a>]]</span>:
@@ -1511,10 +1511,10 @@ The status can be obtained with  <code><a href="#SceneParameters.get_status">get
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_sticky_stretchy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-                          <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
-                          <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-                                     <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">split_peaky_stretchy</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
+                         <span class="n">num_samples</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span>
+                         <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
+                                    <span class="n">List</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;Returns a tuple of SceneParameters split by their type (peaky or stretchy).</span>
 
 <span class="sd">    Attrs:</span>
