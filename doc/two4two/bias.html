@@ -244,10 +244,10 @@
 
 <span class="sd">    Distribution can be: * scipy-distribution from ``scipy.stats`` * callable functions returning a</span>
 <span class="sd">    single value * a single (default) value. * a dictionary of all before-mentioned types containing</span>
-<span class="sd">    the keys ``peaky``and ``stretchy``.</span>
+<span class="sd">    the keys ``sticky``and ``stretchy``.</span>
 
 <span class="sd">    These dictionaries are the easiest way to implement a bias. If you want an attribute to be</span>
-<span class="sd">    sampled diffrently based on wheter it shows a peaky or stretchy, it is usually sufficient to</span>
+<span class="sd">    sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to</span>
 <span class="sd">    change these dictionaries. See ``ColorBiasedSampler`` as an example.</span>
 
 <span class="sd">    To implement more complex biases, you can inherit this class and modify how individual</span>
@@ -258,7 +258,7 @@
 <span class="sd">    controll an attribute sometimes. That means that we set the attribute to a specific value</span>
 <span class="sd">    independent of the usual dependencies. If the intervention flag is true, the parameter should be</span>
 <span class="sd">    sampled independent of any other attribute. For example, if the object color (obj_color)</span>
-<span class="sd">    depends on the Peaky/Stretchy variable, it would need to be sampled independent</span>
+<span class="sd">    depends on the Sticky/Stretchy variable, it would need to be sampled independent</span>
 <span class="sd">    if intervention = True.</span>
 
 <span class="sd">    Since the default sampler implementation in this class is only dependent upon obj_name, so it is</span>
@@ -284,12 +284,12 @@
 <span class="sd">        bg_color: distribution of ``SceneParameters.bg_color``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
+    <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
     <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
             <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">})</span>
     <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
@@ -340,7 +340,7 @@
         <span class="k">return</span> <span class="n">params</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">dist</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Samples values from the distributon according to its type.</span>
 
 <span class="sd">        The default number of values sampled is one, which can be changed with flag size.</span>
@@ -349,7 +349,7 @@
 <span class="sd">        * scipy-distribution from ``scipy.stats``</span>
 <span class="sd">        * callable functions returning a single value</span>
 <span class="sd">        * a single (default) value.</span>
-<span class="sd">        * a dictionary of all before-mentioned types containing the keys ``peaky``and ``stretchy``.</span>
+<span class="sd">        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.</span>
 
 <span class="sd">        Will unpack np.ndarray, list, or tuple with a single element returned by distribution.</span>
 
@@ -359,10 +359,15 @@
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">Sampler</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">)])</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span>
+            <span class="c1"># Rare edge case: If a dictionary was passed without the obj_name key</span>
+            <span class="c1"># then the first distribution from the dictionary is used.</span>
+            <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="s1">&#39;rvs&#39;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">dist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -377,13 +382,15 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_python_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">numpy_to_python_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_sample_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convienience function. Returns a sampled obj_name.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">)</span>
+        <span class="c1"># obj_name is set to none, because the sampleing of the name should be, per definitiion,</span>
+        <span class="c1"># idenpendet of the obj_name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sample_obj_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Samples the ``obj_name``.&quot;&quot;&quot;</span>
@@ -521,7 +528,7 @@
         <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_position</span><span class="p">))</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;arm_position&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_object_cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">ColorGenerator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_object_cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Colormap</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_color_map</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sample_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -543,7 +550,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
         <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_bg_cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Colormap</span><span class="p">:</span>
@@ -558,7 +565,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
         <span class="n">params</span><span class="o">.</span><span class="n">bg_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">bg_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bg_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">bg_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bg_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;bg_color&#39;</span><span class="p">)</span>
 
 
@@ -571,7 +578,7 @@
 
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
             <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">})</span>
 
@@ -604,7 +611,7 @@
     <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
             <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">})</span>
 </pre></div>
@@ -632,10 +639,10 @@
 
 <span class="sd">    Distribution can be: * scipy-distribution from ``scipy.stats`` * callable functions returning a</span>
 <span class="sd">    single value * a single (default) value. * a dictionary of all before-mentioned types containing</span>
-<span class="sd">    the keys ``peaky``and ``stretchy``.</span>
+<span class="sd">    the keys ``sticky``and ``stretchy``.</span>
 
 <span class="sd">    These dictionaries are the easiest way to implement a bias. If you want an attribute to be</span>
-<span class="sd">    sampled diffrently based on wheter it shows a peaky or stretchy, it is usually sufficient to</span>
+<span class="sd">    sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to</span>
 <span class="sd">    change these dictionaries. See ``ColorBiasedSampler`` as an example.</span>
 
 <span class="sd">    To implement more complex biases, you can inherit this class and modify how individual</span>
@@ -646,7 +653,7 @@
 <span class="sd">    controll an attribute sometimes. That means that we set the attribute to a specific value</span>
 <span class="sd">    independent of the usual dependencies. If the intervention flag is true, the parameter should be</span>
 <span class="sd">    sampled independent of any other attribute. For example, if the object color (obj_color)</span>
-<span class="sd">    depends on the Peaky/Stretchy variable, it would need to be sampled independent</span>
+<span class="sd">    depends on the Sticky/Stretchy variable, it would need to be sampled independent</span>
 <span class="sd">    if intervention = True.</span>
 
 <span class="sd">    Since the default sampler implementation in this class is only dependent upon obj_name, so it is</span>
@@ -672,12 +679,12 @@
 <span class="sd">        bg_color: distribution of ``SceneParameters.bg_color``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
+    <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
     <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
             <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">})</span>
     <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
@@ -728,7 +735,7 @@
         <span class="k">return</span> <span class="n">params</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">dist</span><span class="p">:</span> <span class="n">Distribution</span><span class="p">,</span> <span class="n">size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Samples values from the distributon according to its type.</span>
 
 <span class="sd">        The default number of values sampled is one, which can be changed with flag size.</span>
@@ -737,7 +744,7 @@
 <span class="sd">        * scipy-distribution from ``scipy.stats``</span>
 <span class="sd">        * callable functions returning a single value</span>
 <span class="sd">        * a single (default) value.</span>
-<span class="sd">        * a dictionary of all before-mentioned types containing the keys ``peaky``and ``stretchy``.</span>
+<span class="sd">        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.</span>
 
 <span class="sd">        Will unpack np.ndarray, list, or tuple with a single element returned by distribution.</span>
 
@@ -747,10 +754,15 @@
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">Sampler</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="n">dist</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">size</span><span class="p">)])</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span>
+            <span class="c1"># Rare edge case: If a dictionary was passed without the obj_name key</span>
+            <span class="c1"># then the first distribution from the dictionary is used.</span>
+            <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">obj_name</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">dist</span><span class="p">,</span> <span class="s1">&#39;rvs&#39;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">dist</span><span class="o">.</span><span class="n">rvs</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
         <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">dist</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">dist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -765,13 +777,15 @@
                 <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">to_python_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">numpy_to_python_scalar</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">value</span>
 
     <span class="k">def</span> <span class="nf">_sample_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convienience function. Returns a sampled obj_name.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">)</span>
+        <span class="c1"># obj_name is set to none, because the sampleing of the name should be, per definitiion,</span>
+        <span class="c1"># idenpendet of the obj_name</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sample_obj_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Samples the ``obj_name``.&quot;&quot;&quot;</span>
@@ -909,7 +923,7 @@
         <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">arm_position</span><span class="p">))</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;arm_position&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_object_cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">utils</span><span class="o">.</span><span class="n">ColorGenerator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_object_cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Colormap</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">obj_color_map</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sample_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -931,7 +945,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
         <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_bg_cmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Colormap</span><span class="p">:</span>
@@ -946,7 +960,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
         <span class="n">params</span><span class="o">.</span><span class="n">bg_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">bg_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bg_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">bg_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bg_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;bg_color&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -960,10 +974,10 @@ drawn.</p>
 
 <p>Distribution can be: * scipy-distribution from <code>scipy.stats</code> * callable functions returning a
 single value * a single (default) value. * a dictionary of all before-mentioned types containing
-the keys <code>peaky</code>and <code>stretchy</code>.</p>
+the keys <code>sticky</code>and <code>stretchy</code>.</p>
 
 <p>These dictionaries are the easiest way to implement a bias. If you want an attribute to be
-sampled diffrently based on wheter it shows a peaky or stretchy, it is usually sufficient to
+sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to
 change these dictionaries. See <code><a href="#ColorBiasedSampler">ColorBiasedSampler</a></code> as an example.</p>
 
 <p>To implement more complex biases, you can inherit this class and modify how individual
@@ -974,7 +988,7 @@ interventional sampling, because in addition to sampling new parameters, we also
 controll an attribute sometimes. That means that we set the attribute to a specific value
 independent of the usual dependencies. If the intervention flag is true, the parameter should be
 sampled independent of any other attribute. For example, if the object color (obj_color)
-depends on the Peaky/Stretchy variable, it would need to be sampled independent
+depends on the Sticky/Stretchy variable, it would need to be sampled independent
 if intervention = True.</p>
 
 <p>Since the default sampler implementation in this class is only dependent upon obj_name, so it is
@@ -1799,7 +1813,7 @@ the sampling of the attribute might be dependent on the label
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
         <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -1840,7 +1854,7 @@ the sampling of the attribute might be dependent on the label
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
         <span class="n">params</span><span class="o">.</span><span class="n">bg_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">bg_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bg_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">bg_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bg_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">bg_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
         <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;bg_color&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -1878,7 +1892,7 @@ the sampling of the attribute might be dependent on the label
 
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
             <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">})</span>
 </pre></div>
@@ -2124,7 +2138,7 @@ challenging datset.</p>
     <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s1">&#39;sticky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
             <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
         <span class="p">})</span>
 </pre></div>
