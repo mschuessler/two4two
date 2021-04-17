@@ -40,12 +40,12 @@ pip install .[example_notebooks_data_generation,example_notebooks_model_training
 ´´´
 
 ## Classes
-The two classes for classifcation are *sticky* and *stretchy*.
+The two classes for classifcation are *peaky* and *stretchy*.
 Both objects are build from 8 blocks that can have different shapes.
 Either cubes, spheres or something in between.
-A sticky object made from cubes looks like this:
+A peaky object made from cubes looks like this:
 
-![Sticky cubes](./examples/sample_examples/sticky_cubes.png)
+![Peaky cubes](./examples/sample_examples/peaky_cubes.png)
 
 A stretchy object made from spheres looks like this:
 
@@ -54,31 +54,31 @@ A stretchy object made from spheres looks like this:
 The shapes can also morph from spherical to cube like.
 Here is an example for something in between:
 
-![Sticky intermediate](./examples/sample_examples/sticky_intermediate.png)
+![Peaky intermediate](./examples/sample_examples/peaky_intermediate.png)
 
 These objects can be put into a random pose.
 
-![Sticky pose](./examples/sample_examples/sticky_pose.png)
+![Peaky pose](./examples/sample_examples/peaky_pose.png)
 
 You can change color of both object and background.
 
-![Sticky color](./examples/sample_examples/sticky_color.png)
+![Peaky color](./examples/sample_examples/peaky_color.png)
 
 To blur the difference between the two classes the position of the class-defining set of arms can be randomly shifted.
 By choosing a distribution for this the separation between the classes can be adjusted.
-The following three pictures are a sticky object with arm shift 0.
+The following three pictures are a peaky object with arm shift 0.
 
-![Sticky shift 0](./examples/sample_examples/sticky_shift_0.png)
+![Peaky shift 0](./examples/sample_examples/peaky_shift_0.png)
 
 Arm shift 0.5.
 This is equal to a stretchy object with shift 0.5.
 
-![Sticky shift 0.5](./examples/sample_examples/sticky_shift_05.png)
+![Peaky shift 0.5](./examples/sample_examples/peaky_shift_05.png)
 
 And finally shift 1.
 This is equal to a stretchy object with shift 0.
 
-![Sticky shift 1](./examples/sample_examples/sticky_shift_1.png)
+![Peaky shift 1](./examples/sample_examples/peaky_shift_1.png)
 
 Further parameters that can be adjusted: Object rotation (2 axis), a random flip and the position within the frame.
 Documentation obviously needs to be improved further.

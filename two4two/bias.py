@@ -33,10 +33,10 @@ class Sampler:
 
     Distribution can be: * scipy-distribution from ``scipy.stats`` * callable functions returning a
     single value * a single (default) value. * a dictionary of all before-mentioned types containing
-    the keys ``sticky``and ``stretchy``.
+    the keys ``peaky``and ``stretchy``.
 
     These dictionaries are the easiest way to implement a bias. If you want an attribute to be
-    sampled diffrently based on wheter it shows a sticky or stretchy, it is usually sufficient to
+    sampled diffrently based on wheter it shows a peaky or stretchy, it is usually sufficient to
     change these dictionaries. See ``ColorBiasedSampler`` as an example.
 
     To implement more complex biases, you can inherit this class and modify how individual
@@ -47,7 +47,7 @@ class Sampler:
     controll an attribute sometimes. That means that we set the attribute to a specific value
     independent of the usual dependencies. If the intervention flag is true, the parameter should be
     sampled independent of any other attribute. For example, if the object color (obj_color)
-    depends on the Sticky/Stretchy variable, it would need to be sampled independent
+    depends on the Peaky/Stretchy variable, it would need to be sampled independent
     if intervention = True.
 
     Since the default sampler implementation in this class is only dependent upon obj_name, so it is
@@ -73,12 +73,12 @@ class Sampler:
         bg_color: distribution of ``SceneParameters.bg_color``.
     """
 
-    obj_name: Discrete = utils.discrete({'sticky': 0.5, 'stretchy': 0.5})
+    obj_name: Discrete = utils.discrete({'peaky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
     bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
+            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
             'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
         })
     labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
@@ -138,7 +138,7 @@ class Sampler:
         * scipy-distribution from ``scipy.stats``
         * callable functions returning a single value
         * a single (default) value.
-        * a dictionary of all before-mentioned types containing the keys ``sticky``and ``stretchy``.
+        * a dictionary of all before-mentioned types containing the keys ``peaky``and ``stretchy``.
 
         Will unpack np.ndarray, list, or tuple with a single element returned by distribution.
 
@@ -367,7 +367,7 @@ class ColorBiasedSampler(Sampler):
 
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
         })
 
@@ -400,6 +400,6 @@ class HighVariationColorBiasedSampler(Sampler):
     bending: Continouos = scipy.stats.uniform(- np.pi / 8, np.pi / 4)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'sticky': utils.truncated_normal(1, 0.5, 0, 1),
+            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
         })
