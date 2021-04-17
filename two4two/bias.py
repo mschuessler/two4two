@@ -147,9 +147,13 @@ class Sampler:
         if size > 1:
             return tuple([Sampler._sample(obj_name, dist) for i in range(0, size)])
 
-        if isinstance(dist, dict) and obj_name is not None:
-            dist = dist[obj_name]
-        # TODO(martin): what if obj_name is ``None``?
+        if isinstance(dist, dict):
+            # Rare edge case: If a dictionary was passed without the obj_name key
+            # then the first distribution from the dictionary is used.
+            if obj_name is None:
+                dist = next(iter(dist.values()))
+            else:
+                dist = dist[obj_name]
 
         if hasattr(dist, 'rvs'):
             value = dist.rvs()  # type: ignore
@@ -173,7 +177,8 @@ class Sampler:
 
     def _sample_name(self) -> str:
         """Convienience function. Returns a sampled obj_name."""
-        # TODO(martin): is this correct?
+        # obj_name is set to none, because the sampleing of the name should be, per definitiion,
+        # idenpendet of the obj_name
         return self._sample(obj_name=None, dist=self.obj_name)
 
     def sample_obj_name(self, params: SceneParameters):
