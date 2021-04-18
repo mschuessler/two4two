@@ -185,6 +185,7 @@ class SceneParameters:
         state = copy.copy(state)
         module = state.pop('__module__')
         cls_name = state.pop('__name__')
+        state.pop('label')
 
         module = importlib.import_module(module)
         cls = getattr(module, cls_name)
@@ -193,6 +194,7 @@ class SceneParameters:
     def state_dict(self) -> Dict[str, Any]:
         """Returns the object as python dict."""
         state = dataclasses.asdict(self)
+        state['label'] = self.obj_name_with_label_error
         state['__module__'] = type(self).__module__
         state['__name__'] = type(self).__qualname__
         return state
