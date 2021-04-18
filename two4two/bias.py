@@ -118,12 +118,12 @@ class Sampler:
             params.obj_name = obj_name
 
         self.sample_labeling_error(params)
+        self.sample_arm_position(params)
         self.sample_spherical(params)
         self.sample_bending(params)
         self.sample_rotation(params)
         self.sample_fliplr(params)
         self.sample_position(params)
-        self.sample_arm_position(params)
         self.sample_color(params)
         params.check_values()
         return params
@@ -402,4 +402,85 @@ class HighVariationColorBiasedSampler(Sampler):
         default_factory=lambda: {
             'peaky': utils.truncated_normal(1, 0.5, 0, 1),
             'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+        })
+
+
+@dataclasses.dataclass()
+class MedVarSampler(Sampler):
+    """A sampler producing slightly more challenging images with an asthetically pleasing colormap.
+
+    This sampler allows for a slightly higher variation in rotations and bending. Hence it creates a
+    more challenging datset. Hence any bias added to this dataset is more likely to be used.
+    """
+
+    bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
+    arm_position: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.60),
+            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.40, upper=1.0)
+        })
+    labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
+    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    bg_color: Continouos = scipy.stats.uniform(0.05, 0.90)
+    bg_color_map: str = 'coolwarm'
+    obj_color_map: str = 'coolwarm'
+
+
+@dataclasses.dataclass()
+class MedVarSpherSampler(MedVarSampler):
+    """A sampler based on MedVar but with a Spherical bias.
+
+    more documentation needed ...
+    """
+
+    spherical: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'peaky': utils.truncated_normal(1., 0.1, 0.7, 1.0),
+            'stretchy': utils.truncated_normal(0., 0.1, 0.0, 0.3)
+        })
+
+
+@dataclasses.dataclass()
+class MedVarColorSampler(MedVarSampler):
+    """A sampler based on MedVar but with a Color bias.
+
+    more documentation needed ...
+    """
+
+    obj_color: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
+            'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+            'peaky_edge': utils.truncated_normal(1, 0.1, 0.7, 1),
+            'stretchy_edge': utils.truncated_normal(0, 0.1, 0, 3),
+        })
+
+    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_color`` and ``obj_color_rgba``.
+
+        Attrs:
+            params: SceneParameters for which the obj_color is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        if params.arm_position > 0.4 and params.arm_position < 0.6:
+            obj_name = obj_name + "_edge"
+        params.obj_color = float(self._sample(obj_name, self.obj_color))
+        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))  # type: ignore
+        params.mark_sampled('obj_color')
+
+
+@dataclasses.dataclass()
+class MedVarSpherColorSampler(MedVarColorSampler):
+    """A sampler based on MedVar but with a Spherical and a color bias.
+
+    more documentation needed ...
+    """
+
+    spherical: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'peaky': utils.truncated_normal(1., 0.1, 0.7, 1.0),
+            'stretchy': utils.truncated_normal(0., 0.1, 0.0, 0.3)
         })

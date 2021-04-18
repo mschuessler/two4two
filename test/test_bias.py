@@ -33,7 +33,11 @@ def test_samplers_valid():
         two4two.Sampler(),
         two4two.ColorBiasedSampler(),
         two4two.HighVariationSampler(),
-        two4two.HighVariationColorBiasedSampler()
+        two4two.HighVariationColorBiasedSampler(),
+        two4two.MedVarSampler(),
+        two4two.MedVarSpherSampler(),
+        two4two.MedVarColorSampler(),
+        two4two.MedVarSpherColorSampler()
     ]
 
     for sampler in samplers:

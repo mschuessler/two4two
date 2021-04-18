@@ -5,6 +5,10 @@ __pdoc__ = {
 }
 
 from two4two.bias import (
+    MedVarSampler,
+    MedVarSpherSampler,
+    MedVarColorSampler,
+    MedVarSpherColorSampler,
     ColorBiasedSampler,
     HighVariationColorBiasedSampler,
     HighVariationSampler,
