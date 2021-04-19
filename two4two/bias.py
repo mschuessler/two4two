@@ -435,11 +435,21 @@ class MedVarSpherSampler(MedVarSampler):
     more documentation needed ...
     """
 
-    spherical: Continouos = dataclasses.field(
-        default_factory=lambda: {
-            'peaky': utils.truncated_normal(1., 0.1, 0.7, 1.0),
-            'stretchy': utils.truncated_normal(0., 0.1, 0.0, 0.3)
-        })
+    def sample_spherical(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``spherical``..
+
+        Attrs:
+            params: SceneParameters for which the spherical attribute is sampled and updated.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        obj_name = self._sample_name() if intervention else params.obj_name
+        params.spherical = self._sample(obj_name, self.spherical)
+        while(params.arm_position < 0.4 and params.spherical > 0.5):
+            params.spherical = self._sample(obj_name, self.spherical)
+
+        while(params.arm_position > 0.6 and params.spherical < 0.5):
+            params.spherical = self._sample(obj_name, self.spherical)
+        params.mark_sampled('spherical')
 
 
 @dataclasses.dataclass()
