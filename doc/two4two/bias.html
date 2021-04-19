@@ -259,7 +259,7 @@
                                 <a class="function" href="#MedVarSpherColorSampler.__init__">MedVarSpherColorSampler</a>
                         </li>
                         <li>
-                                <a class="variable" href="#MedVarSpherColorSampler.spherical">spherical</a>
+                                <a class="function" href="#MedVarSpherColorSampler.sample_spherical">sample_spherical</a>
                         </li>
                 </ul>
 
@@ -775,11 +775,21 @@
 <span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-        <span class="p">})</span>
+    <span class="k">def</span> <span class="nf">sample_spherical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Samples the ``spherical``..</span>
+
+<span class="sd">        Attrs:</span>
+<span class="sd">            params: SceneParameters for which the spherical attribute is sampled and updated.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.4</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.6</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2951,11 +2961,21 @@ more challenging datset. Hence any bias added to this dataset is more likely to 
 <span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
-        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-        <span class="p">})</span>
+    <span class="k">def</span> <span class="nf">sample_spherical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Samples the ``spherical``..</span>
+
+<span class="sd">        Attrs:</span>
+<span class="sd">            params: SceneParameters for which the spherical attribute is sampled and updated.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.4</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.6</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2972,7 +2992,7 @@ more challenging datset. Hence any bias added to this dataset is more likely to 
         
             <span class="name">MedVarSpherColorSampler</span><span class="signature">(
     obj_name: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    spherical: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
+    spherical: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bending: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     arm_position: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
     labeling_error: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
@@ -2993,13 +3013,49 @@ more challenging datset. Hence any bias added to this dataset is more likely to 
     
 
                             </div>
-                            <div id="MedVarSpherColorSampler.spherical" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#MedVarSpherColorSampler.spherical">#&nbsp;&nbsp</a>
+                            <div id="MedVarSpherColorSampler.sample_spherical" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MedVarSpherColorSampler.sample_spherical">#&nbsp;&nbsp</a>
 
-        <span class="name">spherical</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+        
+            <span class="def">def</span>
+            <span class="name">sample_spherical</span><span class="signature">(
+    self,
+    params: <a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>,
+    intervention: bool = False
+)</span>:
     </div>
 
-    
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sample_spherical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Samples the ``spherical``..</span>
+
+<span class="sd">        Attrs:</span>
+<span class="sd">            params: SceneParameters for which the spherical attribute is sampled and updated.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+        <span class="k">while</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.4</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+
+        <span class="k">while</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.6</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">params</span><span class="o">.</span><span class="n">spherical</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">spherical</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;spherical&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Samples the <code><a href="#MedVarSpherColorSampler.spherical">spherical</a></code>..</p>
+
+<h6 id="attrs">Attrs</h6>
+
+<blockquote>
+  <p>params: SceneParameters for which the spherical attribute is sampled and updated.
+  intervention: Flag whether interventional sampling is applied. Details: see class docu.</p>
+</blockquote>
+</div>
+
 
                             </div>
                             <div class="inherited">
@@ -3024,13 +3080,13 @@ more challenging datset. Hence any bias added to this dataset is more likely to 
             </div>
             <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="MedVarSpherColorSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
+                <dd id="MedVarSpherColorSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
                 <dd id="MedVarSpherColorSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
                 <dd id="MedVarSpherColorSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
                 <dd id="MedVarSpherColorSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
                 <dd id="MedVarSpherColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
-                <dd id="MedVarSpherColorSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_bending" class="function"><a href="#Sampler.sample_bending">sample_bending</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_rotation" class="function"><a href="#Sampler.sample_rotation">sample_rotation</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_obj_rotation_roll" class="function"><a href="#Sampler.sample_obj_rotation_roll">sample_obj_rotation_roll</a></dd>
