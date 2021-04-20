@@ -416,8 +416,8 @@ class MedVarSampler(Sampler):
     bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.60),
-            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.40, upper=1.0)
+            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
+            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
         })
     labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
     obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
@@ -444,10 +444,10 @@ class MedVarSpherSampler(MedVarSampler):
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.spherical = self._sample(obj_name, self.spherical)
-        while(params.arm_position < 0.4 and params.spherical > 0.5):
+        while(params.arm_position < 0.45 and params.spherical > 0.5):
             params.spherical = self._sample(obj_name, self.spherical)
 
-        while(params.arm_position > 0.6 and params.spherical < 0.5):
+        while(params.arm_position > 0.55 and params.spherical < 0.5):
             params.spherical = self._sample(obj_name, self.spherical)
         params.mark_sampled('spherical')
 
@@ -475,7 +475,7 @@ class MedVarColorSampler(MedVarSampler):
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
         obj_name = self._sample_name() if intervention else params.obj_name
-        if params.arm_position > 0.4 and params.arm_position < 0.6:
+        if params.arm_position > 0.45 and params.arm_position < 0.55:
             obj_name = obj_name + "_edge"
         params.obj_color = float(self._sample(obj_name, self.obj_color))
         params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))  # type: ignore
@@ -498,9 +498,9 @@ class MedVarSpherColorSampler(MedVarColorSampler):
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.spherical = self._sample(obj_name, self.spherical)
-        while(params.arm_position < 0.4 and params.spherical > 0.5):
+        while(params.arm_position < 0.45 and params.spherical > 0.5):
             params.spherical = self._sample(obj_name, self.spherical)
 
-        while(params.arm_position > 0.6 and params.spherical < 0.5):
+        while(params.arm_position > 0.55 and params.spherical < 0.5):
             params.spherical = self._sample(obj_name, self.spherical)
         params.mark_sampled('spherical')
