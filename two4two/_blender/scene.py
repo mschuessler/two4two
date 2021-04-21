@@ -238,6 +238,6 @@ class Scene():
         res_x, res_y = parameters.resolution
         bpy.context.scene.render.engine = 'CYCLES'
         # bpy.context.scene.use_nodes = True
-        bpy.context.scene.cycles.device = 'GPU'
+        # bpy.context.scene.cycles.device = 'GPU'
         bpy.context.scene.render.resolution_x = res_x
         bpy.context.scene.render.resolution_y = res_y
