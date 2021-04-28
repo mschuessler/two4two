@@ -437,6 +437,7 @@ class MedVarSpherSampler(MedVarSampler):
 
     def sample_spherical(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``spherical``..
+
         Attrs:
             params: SceneParameters for which the spherical attribute is sampled and updated.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
