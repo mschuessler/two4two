@@ -1,13 +1,15 @@
-import torch
-import numpy as np
-from torchvision import datasets, models, transforms
-import matplotlib.pyplot as plt
-import time
-import os
 import json
 import optparse
+import os
+import time
+
+
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from skimage import io
+import torch
+from torchvision import models, transforms
 
 
 def create_log_path(opt):
@@ -32,9 +34,6 @@ def test_model(opt, model, dataloader, criterion):
 
     model.eval()
 
-    starttime = time.time()
-
-    loss_epoch = 0
     epoch_acc = 0
 
     running_loss = 0.0
@@ -206,7 +205,7 @@ class Two4TwoDataset(torch.utils.data.Dataset):
 
         image = self.transform(transforms.ToPILImage()(image))
 
-        sample = (image/255., label)
+        sample = (image / 255., label)
 
         return sample
 
