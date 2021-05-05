@@ -431,8 +431,8 @@ class MedVarSampler(Sampler):
     bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
-            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
+            'peaky': utils.truncated_normal(mean=0.5, std=0.20, lower=0, upper=0.52),
+            'stretchy': utils.truncated_normal(mean=0.5, std=0.20, lower=0.48, upper=1.0)
         })
     labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
     obj_rotation_yaw: Continouos = scipy.stats.uniform(- 1 / 3 * np.pi, 2 / 3 * np.pi)
