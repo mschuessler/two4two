@@ -524,6 +524,13 @@ class MedVarSpherColorSampler(MedVarColorSampler, MedVarSpherSampler):
     pass
 
 
+@dataclasses.dataclass()
+class MedVarNoArmsSampler(MedVarColorSampler):
+    def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``arm_position``.
 
         Attrs:
+            params: SceneParameters for which the arm_position is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
+        super().sample_arm_position(params, intervention=True)
