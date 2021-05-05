@@ -435,7 +435,7 @@ class MedVarSampler(Sampler):
             'stretchy': utils.truncated_normal(mean=0.5, std=0.20, lower=0.48, upper=1.0)
         })
     labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
-    obj_rotation_yaw: Continouos = scipy.stats.uniform(- 1 / 3 * np.pi, 2 / 3 * np.pi)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
     position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
     position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
     bg_color: Continouos = scipy.stats.uniform(0.05, 0.90)
