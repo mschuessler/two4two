@@ -118,12 +118,12 @@ class Sampler:
             params.obj_name = obj_name
 
         self.sample_labeling_error(params)
+        self.sample_arm_position(params)
         self.sample_spherical(params)
         self.sample_bending(params)
         self.sample_rotation(params)
         self.sample_fliplr(params)
         self.sample_position(params)
-        self.sample_arm_position(params)
         self.sample_color(params)
         params.check_values()
         return params
