@@ -500,14 +500,6 @@ class MedVarColorSampler(MedVarSampler):
     more documentation needed ...
     """
 
-    obj_color: Continouos = dataclasses.field(
-        default_factory=lambda: {
-            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
-            'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
-            'peaky_edge': utils.truncated_normal(1, 0.1, 0.7, 1),
-            'stretchy_edge': utils.truncated_normal(0, 0.1, 0, 3),
-        })
-
     def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``obj_color`` and ``obj_color_rgba``.
 
