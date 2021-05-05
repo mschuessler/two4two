@@ -516,57 +516,14 @@ class MedVarColorSampler(MedVarSampler):
 
 
 @dataclasses.dataclass()
-class MedVarSpherColorSampler(MedVarColorSampler):
+class MedVarSpherColorSampler(MedVarColorSampler, MedVarSpherSampler):
     """A sampler based on MedVar but with a Spherical and a color bias.
 
     more documentation needed ...
     """
+    pass
 
-    def sample_spherical(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``spherical``..
 
-        Attrs:
-            params: SceneParameters for which the spherical attribute is sampled and updated.
-            intervention: Flag whether interventional sampling is applied. Details: see class docu.
-        """
-        obj_name = self._sample_name() if intervention else params.obj_name
-        params.spherical = self._sample(obj_name, self.spherical)
-        while(params.arm_position < 0.45 and params.spherical > 0.5):
-            params.spherical = self._sample(obj_name, self.spherical)
-
-        while(params.arm_position > 0.55 and params.spherical < 0.5):
-            params.spherical = self._sample(obj_name, self.spherical)
-        params.mark_sampled('spherical')
-
-    def sample(self, obj_name: Optional[str] = None) -> SceneParameters:
-        """Returns a new SceneParameters with random values.
-
-        If you create your own biased sampled dataset by inheriting from this class,
-        you might want to change the order of how attributes are set.
-        For example, if you want that ``obj_rotation_pitch`` should depend on the
-        ``arm_position``then you should also sample the ``arm_position`` first.
-        However, it is highly recommended to sample the object name first, as
-        the sampling of the attribute might be dependent on the label
-        (see the explanation of distributions in class description)
 
         Attrs:
-            obj_name: Overides the sampled obj_name with the given namen. Usally only useful for
-                manual sampling. Not recommeded when samplign larger sets.
         """
-        params = SceneParameters()
-        self.sample_obj_name(params)
-        # The name flag allows to overide the sampling result. The sampling is still executed to
-        # trigger any custom functionality that might be implented in subclasses.
-        if obj_name and params.obj_name != obj_name:
-            params.obj_name = obj_name
-
-        self.sample_labeling_error(params)
-        self.sample_bending(params)
-        self.sample_rotation(params)
-        self.sample_fliplr(params)
-        self.sample_position(params)
-        self.sample_arm_position(params)
-        self.sample_spherical(params)
-        self.sample_color(params)
-        params.check_values()
-        return params
