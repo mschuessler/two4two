@@ -442,6 +442,29 @@ class MedVarSampler(Sampler):
     bg_color_map: str = 'coolwarm'
     obj_color_map: str = 'coolwarm'
 
+    obj_color: Continouos = dataclasses.field(
+        default_factory=lambda: {
+            'peaky': utils.truncated_normal(1, 0.5, 0, 1),
+            'stretchy': utils.truncated_normal(0, 0.5, 0, 1),
+            'peaky_edge': utils.truncated_normal(1, 0.1, 0.7, 1),
+            'stretchy_edge': utils.truncated_normal(0, 0.1, 0, 0.3),
+        })
+
+    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_color`` and ``obj_color_rgba``.
+
+        Attrs:
+            params: SceneParameters for which the obj_color is sampled and updated in place.
+            intervention: Flag whether interventional sampling is applied. Details: see class docu.
+        """
+        # sample obj_color randomly
+        obj_name = self._sample_name()
+        if params.arm_position > 0.45 and params.arm_position < 0.55:
+            obj_name = obj_name + "_edge"
+        params.obj_color = float(self._sample(obj_name, self.obj_color))
+        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))  # type: ignore
+        params.mark_sampled('obj_color')
+
 
 @dataclasses.dataclass()
 class MedVarSpherSampler(MedVarSampler):
