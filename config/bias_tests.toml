@@ -1,0 +1,73 @@
+[no_arms]
+sampler = 'two4two.bias.MedVarNoArmsSampler'
+output_dir = 'datasets/medvar_tests/no_arms'
+n_processes = 6
+
+[no_arms.train]
+n_samples = 100
+
+[no_arms.test]
+n_samples = 3_000
+
+[no_arms.validation]
+n_samples = 100
+
+[no_bias]
+sampler = 'two4two.bias.MedVarSampler'
+output_dir = 'datasets/medvar_tests/no_bias'
+n_processes = 6
+
+[no_bias.train]
+n_samples = 100
+
+[no_bias.test]
+n_samples = 3_000
+
+[no_bias.validation]
+n_samples = 100
+
+
+[spherical_bias]
+sampler = 'two4two.bias.MedVarSpherSampler'
+output_dir = 'datasets/medvar_tests/spherical_bias'
+n_processes = 6
+
+[spherical_bias.train]
+n_samples = 100
+
+[spherical_bias.test]
+n_samples = 3_000
+
+[spherical_bias.validation]
+n_samples = 100
+
+
+[color_bias]
+sampler = 'two4two.bias.MedVarColorSampler'
+output_dir = 'datasets/medvar_tests/color_bias'
+n_processes = 6
+
+[color_bias.train]
+n_samples = 100
+
+[color_bias.test]
+n_samples = 3_000
+
+[color_bias.validation]
+n_samples = 100
+
+
+[spherical_color_bias]
+sampler = 'two4two.bias.MedVarSpherColorSampler'
+output_dir = 'datasets/medvar_tests/spherical_color_bias'
+n_processes = 6
+
+[spherical_color_bias.train]
+n_samples = 100
+
+[spherical_color_bias.test]
+n_samples = 3_000
+
+[spherical_color_bias.validation]
+n_samples = 100
+

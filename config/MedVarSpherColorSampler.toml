@@ -6,7 +6,7 @@
 sampler = 'two4two.bias.MedVarSpherColorSampler'
 
 # Save dataset to this directory.
-output_dir = 'datasets/spherical_color_bias'
+output_dir = 'datasets/medvar_spherical_color_bias'
 
 # Should be an existing output_dir be overwritten? [Default: false]
 force_overwrite = false
@@ -22,14 +22,10 @@ debug = false
 
 # creates new dataset split names `train`.
 [nobias.train]
-n_samples = 60_000
+n_samples = 80_000
 
 [nobias.test]
-n_samples = 10_000
+n_samples = 5_000
 
 [nobias.validation]
-n_samples = 10_000
-
-# you could also a custom dataset split by
-# [nobias.my_split]
-# n_samples = 10_000
+n_samples = 5_000
