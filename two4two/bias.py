@@ -526,6 +526,10 @@ class MedVarSpherColorSampler(MedVarColorSampler, MedVarSpherSampler):
 
 @dataclasses.dataclass()
 class MedVarNoArmsSampler(MedVarColorSampler):
+    """A sampler based on MedVar with spherical and color bias but no arm information.
+
+    more documentation needed ...
+    """
     def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``arm_position``.
 
