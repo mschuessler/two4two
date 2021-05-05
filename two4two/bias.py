@@ -175,6 +175,21 @@ class Sampler:
 
         return value
 
+    @staticmethod
+    def _sample_truncated(
+        obj_name: Optional[str],
+        dist: Distribution,
+        size: int = 1,
+        min: float = float(-np.inf),
+        max: float = float(np.inf),
+    ) -> Any:
+        assert size == 1
+
+        value = Sampler._sample(obj_name, dist, size)
+        while not (min <= value <= max):
+            value = Sampler._sample(obj_name, dist, size)
+        return value
+
     def _sample_name(self) -> str:
         """Convienience function. Returns a sampled obj_name."""
         # obj_name is set to none, because the sampleing of the name should be, per definitiion,
@@ -444,11 +459,14 @@ class MedVarSpherSampler(MedVarSampler):
         """
         obj_name = self._sample_name() if intervention else params.obj_name
         params.spherical = self._sample(obj_name, self.spherical)
-        while(params.arm_position < 0.45 and params.spherical > 0.5):
-            params.spherical = self._sample(obj_name, self.spherical)
 
-        while(params.arm_position > 0.55 and params.spherical < 0.5):
-            params.spherical = self._sample(obj_name, self.spherical)
+        if params.arm_position < 0.45:
+            params.spherical = self._sample_truncated(
+                obj_name, self.spherical, max=0.5)
+
+        if params.arm_position > 0.55:
+            params.spherical = self._sample_truncated(
+                obj_name, self.spherical, min=0.5)
         params.mark_sampled('spherical')
 
 
