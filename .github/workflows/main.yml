@@ -20,7 +20,7 @@ jobs:
     - uses: actions/cache@v2
       with:
         path: ${{ env.pythonLocation }}
-        key: ${{ matrix.platform }}-${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('requirements.txt') }}
+        key: ${{ matrix.platform }}-cache-v2-${{ env.pythonLocation }}-${{ hashFiles('setup.py') }}-${{ hashFiles('requirements.txt') }}
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip

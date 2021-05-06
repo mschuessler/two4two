@@ -1,0 +1,31 @@
+[nobias]
+
+
+# Class of the sampler. Must be of the form "your.module.YourSampler".
+# The module must be importable from the current enviroment.
+sampler = 'two4two.bias.MedVarSpherColorSampler'
+
+# Save dataset to this directory.
+output_dir = 'datasets/medvar_spherical_color_bias'
+
+# Should be an existing output_dir be overwritten? [Default: false]
+force_overwrite = false
+
+# Number of concurrent processes.
+n_processes = 6
+
+# Should blender be downloaded? [Default: false]
+download_blender = false
+
+# Should the blender output be printed? [Default: false]
+debug = false
+
+# creates new dataset split names `train`.
+[nobias.train]
+n_samples = 80_000
+
+[nobias.test]
+n_samples = 5_000
+
+[nobias.validation]
+n_samples = 5_000
