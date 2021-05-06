@@ -53,6 +53,17 @@ To install the **installation including all requirements for generating your own
 pip install .[example_notebooks_data_generation]
 ´´´
 
+To generate the default dataset on your own use the following comands
+```
+two4two_render_dataset config/color_spher_bias.toml
+´´´
+
+To train a model on the data you just generated install the required dependencies and execute the training script.
+```
+pip install .[example_notebooks_model_training]
+python two4two/examples/train_lenet.py spherical_color_bias
+´´´
+
 ## Training Models on two4two
 For training your own models you have two choices:
 1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets)
