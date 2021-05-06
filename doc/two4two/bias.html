@@ -133,24 +133,6 @@
 
             </li>
             <li>
-                    <a class="class" href="#SimpleColorMapSampler">SimpleColorMapSampler</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#SimpleColorMapSampler.__init__">SimpleColorMapSampler</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#SimpleColorMapSampler.bg_color">bg_color</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#SimpleColorMapSampler.bg_color_map">bg_color_map</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#SimpleColorMapSampler.obj_color_map">obj_color_map</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
                     <a class="class" href="#ColorBiasedSampler">ColorBiasedSampler</a>
                             <ul class="memberlist">
                         <li>
@@ -190,22 +172,19 @@
                                 <a class="function" href="#HighVariationColorBiasedSampler.__init__">HighVariationColorBiasedSampler</a>
                         </li>
                         <li>
+                                <a class="variable" href="#HighVariationColorBiasedSampler.obj_rotation_roll">obj_rotation_roll</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#HighVariationColorBiasedSampler.obj_rotation_yaw">obj_rotation_yaw</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#HighVariationColorBiasedSampler.obj_rotation_pitch">obj_rotation_pitch</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#HighVariationColorBiasedSampler.bending">bending</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#HighVariationColorBiasedSampler.obj_color">obj_color</a>
-                        </li>
-                </ul>
-
-            </li>
-            <li>
-                    <a class="class" href="#MedVarColorSampler">MedVarColorSampler</a>
-                            <ul class="memberlist">
-                        <li>
-                                <a class="function" href="#MedVarColorSampler.__init__">MedVarColorSampler</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#MedVarColorSampler.obj_color">obj_color</a>
-                        </li>
-                        <li>
-                                <a class="function" href="#MedVarColorSampler.sample_obj_color">sample_obj_color</a>
                         </li>
                 </ul>
 
@@ -215,6 +194,36 @@
                             <ul class="memberlist">
                         <li>
                                 <a class="function" href="#MedVarSampler.__init__">MedVarSampler</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.bending">bending</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.arm_position">arm_position</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.labeling_error">labeling_error</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.obj_rotation_yaw">obj_rotation_yaw</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.position_x">position_x</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.position_y">position_y</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.bg_color">bg_color</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.bg_color_map">bg_color_map</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.obj_color_map">obj_color_map</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#MedVarSampler.obj_color">obj_color</a>
                         </li>
                         <li>
                                 <a class="function" href="#MedVarSampler.sample_obj_color">sample_obj_color</a>
@@ -230,6 +239,18 @@
                         </li>
                         <li>
                                 <a class="function" href="#MedVarSpherSampler.sample_spherical">sample_spherical</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="class" href="#MedVarColorSampler">MedVarColorSampler</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#MedVarColorSampler.__init__">MedVarColorSampler</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#MedVarColorSampler.sample_obj_color">sample_obj_color</a>
                         </li>
                 </ul>
 
@@ -352,25 +373,25 @@
 
     <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">})</span>
-    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
     <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                            <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                             <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
-    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">fliplr</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
-    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
-    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
-    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
-    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
-    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
+    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">)</span>
+    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
+    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seismic&#39;</span>
 
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values.</span>
@@ -394,7 +415,6 @@
         <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">!=</span> <span class="n">obj_name</span><span class="p">:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -652,19 +672,7 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">SimpleColorMapSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An Sampler with a simpler colormap.</span>
-
-<span class="sd">    This colormap allows for very simple experiements with human subjects. The simple colormap makes</span>
-<span class="sd">    color biases easier to spot.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">)</span>
-    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
-    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seismic&#39;</span>
-
-
-<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">ColorBiasedSampler</span><span class="p">(</span><span class="n">SimpleColorMapSampler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ColorBiasedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An example implementation of a color-biased SceneParameterSample.</span>
 
 <span class="sd">    The color is sampled from a conditional distribution that is dependent on the object type.</span>
@@ -692,12 +700,17 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">HighVariationSampler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler producing more challenging images with a color bias that is depent on obj_name.</span>
 
 <span class="sd">    This sampler allows for a higher variation in rotations and bending. Hence it creates a more</span>
 <span class="sd">    challenging datset. This dataset is more challenging. So the bias is more likely to be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -706,13 +719,26 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">MedVarColorSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sampler with a more sophisticated color bias.</span>
+<span class="k">class</span> <span class="nc">MedVarSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A sampler producing slightly more challenging images with an asthetically pleasing colormap.</span>
 
-<span class="sd">    The sample introduces a color bias only for the challenging cases where the arm position is hard</span>
-<span class="sd">    to distinguish. Therefore, the bias is not evident in every image but informative enough to bias</span>
-<span class="sd">    a model.</span>
+<span class="sd">    This sampler allows for a slightly higher variation in rotations and bending. Hence it creates a</span>
+<span class="sd">    more challenging datset. Hence any bias added to this dataset is more likely to be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.20</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.20</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="p">})</span>
+    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
+    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
+    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
 
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
@@ -729,7 +755,8 @@
 <span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
 <span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="c1"># sample obj_color randomly</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
             <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
         <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
@@ -738,31 +765,10 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">MedVarSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sampler with a custom obj_color sampler that has no bias.</span>
-
-<span class="sd">    This sampler is the base class for ``MedVarColorSampler&#39;&#39; it uses interventional sampleing to</span>
-<span class="sd">    avoid introducing a bias.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="nf">sample_obj_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Samples the ``obj_color`` and ``obj_color_rgba``.</span>
-
-<span class="sd">        Attrs:</span>
-<span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
-<span class="sd">            intervention: Flag for interventional sampling. False will be ignored for this class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Since the color should be independent of the class we use interventional sampeling.</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sample_obj_color</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-
-<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">MedVarSpherSampler</span><span class="p">(</span><span class="n">MedVarSampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler based on MedVar but with a Spherical bias.</span>
 
-<span class="sd">    The sample introduces a spherical bias, but only for the cases that are not challing.</span>
-<span class="sd">    Since this bias is not informative for all cases another bias can be added that will be used by</span>
-<span class="sd">    the model if it provides information on the challenging cases.</span>
+<span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">sample_spherical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -786,10 +792,32 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">MedVarSpherColorSampler</span><span class="p">(</span><span class="n">MedVarColorSampler</span><span class="p">,</span> <span class="n">MedVarSpherSampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sampler that combines the biases of ``MedVarSpherSampler&#39;&#39; and ``MedVarColorSampler&#39;&#39;.</span>
+<span class="k">class</span> <span class="nc">MedVarColorSampler</span><span class="p">(</span><span class="n">MedVarSampler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A sampler based on MedVar but with a Color bias.</span>
 
-<span class="sd">    See the the other two classes for documentation.</span>
+<span class="sd">    more documentation needed ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">sample_obj_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Samples the ``obj_color`` and ``obj_color_rgba``.</span>
+
+<span class="sd">        Attrs:</span>
+<span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
+            <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
+<span class="k">class</span> <span class="nc">MedVarSpherColorSampler</span><span class="p">(</span><span class="n">MedVarColorSampler</span><span class="p">,</span> <span class="n">MedVarSpherSampler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A sampler based on MedVar but with a Spherical and a color bias.</span>
+
+<span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
@@ -798,8 +826,7 @@
 <span class="k">class</span> <span class="nc">MedVarNoArmsSampler</span><span class="p">(</span><span class="n">MedVarColorSampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler based on MedVar with spherical and color bias but no arm information.</span>
 
-<span class="sd">    This sampler uses interventional sampeling for the arm positon. The sampler is intended to</span>
-<span class="sd">    produce only validation and test data.</span>
+<span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">sample_arm_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Samples the ``arm_position``.</span>
@@ -876,25 +903,25 @@
 
     <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">})</span>
-    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
     <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                            <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                             <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
-    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">fliplr</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
-    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
-    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
-    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
-    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
-    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
+    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">)</span>
+    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
+    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seismic&#39;</span>
 
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values.</span>
@@ -918,7 +945,6 @@
         <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">!=</span> <span class="n">obj_name</span><span class="p">:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -1247,8 +1273,8 @@ the only attribute considered in the intervention.</p>
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;coolwarm&#39;,
-    obj_color_map: str = &#39;coolwarm&#39;
+    bg_color_map: str = &#39;binary&#39;,
+    obj_color_map: str = &#39;seismic&#39;
 )</span>
     </div>
 
@@ -1376,7 +1402,7 @@ the only attribute considered in the intervention.</p>
                             <div id="Sampler.bg_color_map" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Sampler.bg_color_map">#&nbsp;&nbsp</a>
 
-        <span class="name">bg_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;coolwarm&#39;</span>
+        <span class="name">bg_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;binary&#39;</span>
     </div>
 
     
@@ -1385,7 +1411,7 @@ the only attribute considered in the intervention.</p>
                             <div id="Sampler.obj_color_map" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Sampler.obj_color_map">#&nbsp;&nbsp</a>
 
-        <span class="name">obj_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;coolwarm&#39;</span>
+        <span class="name">obj_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;seismic&#39;</span>
     </div>
 
     
@@ -1426,7 +1452,6 @@ the only attribute considered in the intervention.</p>
         <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">!=</span> <span class="n">obj_name</span><span class="p">:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -2085,141 +2110,18 @@ the sampling of the attribute might be dependent on the label
 
                             </div>
                 </section>
-                <section id="SimpleColorMapSampler">
-                                <div class="attr class">
-        <a class="headerlink" href="#SimpleColorMapSampler">#&nbsp;&nbsp</a>
-
-        
-        <span class="def">class</span>
-        <span class="name">SimpleColorMapSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SimpleColorMapSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;An Sampler with a simpler colormap.</span>
-
-<span class="sd">    This colormap allows for very simple experiements with human subjects. The simple colormap makes</span>
-<span class="sd">    color biases easier to spot.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">)</span>
-    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
-    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seismic&#39;</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>An Sampler with a simpler colormap.</p>
-
-<p>This colormap allows for very simple experiements with human subjects. The simple colormap makes
-color biases easier to spot.</p>
-</div>
-
-
-                            <div id="SimpleColorMapSampler.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#SimpleColorMapSampler.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">SimpleColorMapSampler</span><span class="signature">(
-    obj_name: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    spherical: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bending: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    arm_position: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
-    labeling_error: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    obj_rotation_roll: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_rotation_pitch: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_rotation_yaw: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    fliplr: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    position_x: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;binary&#39;,
-    obj_color_map: str = &#39;seismic&#39;
-)</span>
-    </div>
-
-        
-    
-
-                            </div>
-                            <div id="SimpleColorMapSampler.bg_color" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#SimpleColorMapSampler.bg_color">#&nbsp;&nbsp</a>
-
-        <span class="name">bg_color</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="SimpleColorMapSampler.bg_color_map" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#SimpleColorMapSampler.bg_color_map">#&nbsp;&nbsp</a>
-
-        <span class="name">bg_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;binary&#39;</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="SimpleColorMapSampler.obj_color_map" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#SimpleColorMapSampler.obj_color_map">#&nbsp;&nbsp</a>
-
-        <span class="name">obj_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;seismic&#39;</span>
-    </div>
-
-    
-
-                            </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#Sampler">Sampler</a></dt>
-                                <dd id="SimpleColorMapSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
-                <dd id="SimpleColorMapSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
-                <dd id="SimpleColorMapSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
-                <dd id="SimpleColorMapSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
-                <dd id="SimpleColorMapSampler.labeling_error" class="variable"><a href="#Sampler.labeling_error">labeling_error</a></dd>
-                <dd id="SimpleColorMapSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
-                <dd id="SimpleColorMapSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="SimpleColorMapSampler.obj_rotation_yaw" class="variable"><a href="#Sampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
-                <dd id="SimpleColorMapSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
-                <dd id="SimpleColorMapSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
-                <dd id="SimpleColorMapSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
-                <dd id="SimpleColorMapSampler.obj_color" class="variable"><a href="#Sampler.obj_color">obj_color</a></dd>
-                <dd id="SimpleColorMapSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="SimpleColorMapSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
-                <dd id="SimpleColorMapSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
-                <dd id="SimpleColorMapSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
-                <dd id="SimpleColorMapSampler.sample_bending" class="function"><a href="#Sampler.sample_bending">sample_bending</a></dd>
-                <dd id="SimpleColorMapSampler.sample_rotation" class="function"><a href="#Sampler.sample_rotation">sample_rotation</a></dd>
-                <dd id="SimpleColorMapSampler.sample_obj_rotation_roll" class="function"><a href="#Sampler.sample_obj_rotation_roll">sample_obj_rotation_roll</a></dd>
-                <dd id="SimpleColorMapSampler.sample_obj_rotation_pitch" class="function"><a href="#Sampler.sample_obj_rotation_pitch">sample_obj_rotation_pitch</a></dd>
-                <dd id="SimpleColorMapSampler.sample_obj_rotation_yaw" class="function"><a href="#Sampler.sample_obj_rotation_yaw">sample_obj_rotation_yaw</a></dd>
-                <dd id="SimpleColorMapSampler.sample_fliplr" class="function"><a href="#Sampler.sample_fliplr">sample_fliplr</a></dd>
-                <dd id="SimpleColorMapSampler.sample_position" class="function"><a href="#Sampler.sample_position">sample_position</a></dd>
-                <dd id="SimpleColorMapSampler.sample_position_x" class="function"><a href="#Sampler.sample_position_x">sample_position_x</a></dd>
-                <dd id="SimpleColorMapSampler.sample_position_y" class="function"><a href="#Sampler.sample_position_y">sample_position_y</a></dd>
-                <dd id="SimpleColorMapSampler.sample_arm_position" class="function"><a href="#Sampler.sample_arm_position">sample_arm_position</a></dd>
-                <dd id="SimpleColorMapSampler.sample_color" class="function"><a href="#Sampler.sample_color">sample_color</a></dd>
-                <dd id="SimpleColorMapSampler.sample_obj_color" class="function"><a href="#Sampler.sample_obj_color">sample_obj_color</a></dd>
-                <dd id="SimpleColorMapSampler.sample_bg_color" class="function"><a href="#Sampler.sample_bg_color">sample_bg_color</a></dd>
-
-            </div>
-                                </dl>
-                            </div>
-                </section>
                 <section id="ColorBiasedSampler">
                                 <div class="attr class">
         <a class="headerlink" href="#ColorBiasedSampler">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">ColorBiasedSampler</span><wbr>(<span class="base"><a href="#SimpleColorMapSampler">SimpleColorMapSampler</a></span>):
+        <span class="name">ColorBiasedSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ColorBiasedSampler</span><span class="p">(</span><span class="n">SimpleColorMapSampler</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">ColorBiasedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;An example implementation of a color-biased SceneParameterSample.</span>
 
 <span class="sd">    The color is sampled from a conditional distribution that is dependent on the object type.</span>
@@ -2279,13 +2181,7 @@ color biases easier to spot.</p>
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#SimpleColorMapSampler">SimpleColorMapSampler</a></dt>
-                                <dd id="ColorBiasedSampler.bg_color" class="variable"><a href="#SimpleColorMapSampler.bg_color">bg_color</a></dd>
-                <dd id="ColorBiasedSampler.bg_color_map" class="variable"><a href="#SimpleColorMapSampler.bg_color_map">bg_color_map</a></dd>
-                <dd id="ColorBiasedSampler.obj_color_map" class="variable"><a href="#SimpleColorMapSampler.obj_color_map">obj_color_map</a></dd>
-
-            </div>
-            <div><dt><a href="#Sampler">Sampler</a></dt>
+                                    <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="ColorBiasedSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="ColorBiasedSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
                 <dd id="ColorBiasedSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
@@ -2297,6 +2193,9 @@ color biases easier to spot.</p>
                 <dd id="ColorBiasedSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
                 <dd id="ColorBiasedSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
                 <dd id="ColorBiasedSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
+                <dd id="ColorBiasedSampler.bg_color" class="variable"><a href="#Sampler.bg_color">bg_color</a></dd>
+                <dd id="ColorBiasedSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
+                <dd id="ColorBiasedSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="ColorBiasedSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
                 <dd id="ColorBiasedSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="ColorBiasedSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2370,8 +2269,8 @@ challenging datset.</p>
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;coolwarm&#39;,
-    obj_color_map: str = &#39;coolwarm&#39;
+    bg_color_map: str = &#39;binary&#39;,
+    obj_color_map: str = &#39;seismic&#39;
 )</span>
     </div>
 
@@ -2458,17 +2357,22 @@ challenging datset.</p>
 
         
         <span class="def">class</span>
-        <span class="name">HighVariationColorBiasedSampler</span><wbr>(<span class="base"><a href="#HighVariationSampler">HighVariationSampler</a></span>):
+        <span class="name">HighVariationColorBiasedSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">HighVariationSampler</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler producing more challenging images with a color bias that is depent on obj_name.</span>
 
 <span class="sd">    This sampler allows for a higher variation in rotations and bending. Hence it creates a more</span>
 <span class="sd">    challenging datset. This dataset is more challenging. So the bias is more likely to be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -2503,12 +2407,48 @@ challenging datset. This dataset is more challenging. So the bias is more likely
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;coolwarm&#39;,
-    obj_color_map: str = &#39;coolwarm&#39;
+    bg_color_map: str = &#39;binary&#39;,
+    obj_color_map: str = &#39;seismic&#39;
 )</span>
     </div>
 
         
+    
+
+                            </div>
+                            <div id="HighVariationColorBiasedSampler.obj_rotation_roll" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.obj_rotation_roll">#&nbsp;&nbsp</a>
+
+        <span class="name">obj_rotation_roll</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="HighVariationColorBiasedSampler.obj_rotation_yaw" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.obj_rotation_yaw">#&nbsp;&nbsp</a>
+
+        <span class="name">obj_rotation_yaw</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="HighVariationColorBiasedSampler.obj_rotation_pitch" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.obj_rotation_pitch">#&nbsp;&nbsp</a>
+
+        <span class="name">obj_rotation_pitch</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="HighVariationColorBiasedSampler.bending" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.bending">#&nbsp;&nbsp</a>
+
+        <span class="name">bending</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
     
 
                             </div>
@@ -2524,14 +2464,7 @@ challenging datset. This dataset is more challenging. So the bias is more likely
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#HighVariationSampler">HighVariationSampler</a></dt>
-                                <dd id="HighVariationColorBiasedSampler.obj_rotation_roll" class="variable"><a href="#HighVariationSampler.obj_rotation_roll">obj_rotation_roll</a></dd>
-                <dd id="HighVariationColorBiasedSampler.obj_rotation_yaw" class="variable"><a href="#HighVariationSampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
-                <dd id="HighVariationColorBiasedSampler.obj_rotation_pitch" class="variable"><a href="#HighVariationSampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="HighVariationColorBiasedSampler.bending" class="variable"><a href="#HighVariationSampler.bending">bending</a></dd>
-
-            </div>
-            <div><dt><a href="#Sampler">Sampler</a></dt>
+                                    <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="HighVariationColorBiasedSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="HighVariationColorBiasedSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
                 <dd id="HighVariationColorBiasedSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
@@ -2564,24 +2497,37 @@ challenging datset. This dataset is more challenging. So the bias is more likely
                                 </dl>
                             </div>
                 </section>
-                <section id="MedVarColorSampler">
+                <section id="MedVarSampler">
                                 <div class="attr class">
-        <a class="headerlink" href="#MedVarColorSampler">#&nbsp;&nbsp</a>
+        <a class="headerlink" href="#MedVarSampler">#&nbsp;&nbsp</a>
 
         
         <span class="def">class</span>
-        <span class="name">MedVarColorSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
+        <span class="name">MedVarSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarColorSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sampler with a more sophisticated color bias.</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A sampler producing slightly more challenging images with an asthetically pleasing colormap.</span>
 
-<span class="sd">    The sample introduces a color bias only for the challenging cases where the arm position is hard</span>
-<span class="sd">    to distinguish. Therefore, the bias is not evident in every image but informative enough to bias</span>
-<span class="sd">    a model.</span>
+<span class="sd">    This sampler allows for a slightly higher variation in rotations and bending. Hence it creates a</span>
+<span class="sd">    more challenging datset. Hence any bias added to this dataset is more likely to be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
+        <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.20</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.20</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="p">})</span>
+    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
+    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
+    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
 
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
@@ -2598,7 +2544,8 @@ challenging datset. This dataset is more challenging. So the bias is more likely
 <span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
 <span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="c1"># sample obj_color randomly</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
             <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
         <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
@@ -2608,19 +2555,18 @@ challenging datset. This dataset is more challenging. So the bias is more likely
 
         </details>
 
-            <div class="docstring"><p>A sampler with a more sophisticated color bias.</p>
+            <div class="docstring"><p>A sampler producing slightly more challenging images with an asthetically pleasing colormap.</p>
 
-<p>The sample introduces a color bias only for the challenging cases where the arm position is hard
-to distinguish. Therefore, the bias is not evident in every image but informative enough to bias
-a model.</p>
+<p>This sampler allows for a slightly higher variation in rotations and bending. Hence it creates a
+more challenging datset. Hence any bias added to this dataset is more likely to be used.</p>
 </div>
 
 
-                            <div id="MedVarColorSampler.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MedVarColorSampler.__init__">#&nbsp;&nbsp</a>
+                            <div id="MedVarSampler.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MedVarSampler.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">MedVarColorSampler</span><span class="signature">(
+            <span class="name">MedVarSampler</span><span class="signature">(
     obj_name: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
     spherical: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bending: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
@@ -2643,159 +2589,93 @@ a model.</p>
     
 
                             </div>
-                            <div id="MedVarColorSampler.obj_color" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#MedVarColorSampler.obj_color">#&nbsp;&nbsp</a>
+                            <div id="MedVarSampler.bending" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.bending">#&nbsp;&nbsp</a>
 
-        <span class="name">obj_color</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+        <span class="name">bending</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
     </div>
 
     
 
                             </div>
-                            <div id="MedVarColorSampler.sample_obj_color" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MedVarColorSampler.sample_obj_color">#&nbsp;&nbsp</a>
+                            <div id="MedVarSampler.arm_position" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.arm_position">#&nbsp;&nbsp</a>
 
-        
-            <span class="def">def</span>
-            <span class="name">sample_obj_color</span><span class="signature">(
-    self,
-    params: <a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>,
-    intervention: bool = False
-)</span>:
+        <span class="name">arm_position</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sample_obj_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Samples the ``obj_color`` and ``obj_color_rgba``.</span>
-
-<span class="sd">        Attrs:</span>
-<span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
-<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
-        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
-            <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Samples the <code><a href="#MedVarColorSampler.obj_color">obj_color</a></code> and <code>obj_color_rgba</code>.</p>
-
-<h6 id="attrs">Attrs</h6>
-
-<blockquote>
-  <p>params: SceneParameters for which the obj_color is sampled and updated in place.
-  intervention: Flag whether interventional sampling is applied. Details: see class docu.</p>
-</blockquote>
-</div>
-
+    
 
                             </div>
-                            <div class="inherited">
-                                <h5>Inherited Members</h5>
-                                <dl>
-                                    <div><dt><a href="#Sampler">Sampler</a></dt>
-                                <dd id="MedVarColorSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
-                <dd id="MedVarColorSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
-                <dd id="MedVarColorSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
-                <dd id="MedVarColorSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
-                <dd id="MedVarColorSampler.labeling_error" class="variable"><a href="#Sampler.labeling_error">labeling_error</a></dd>
-                <dd id="MedVarColorSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
-                <dd id="MedVarColorSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="MedVarColorSampler.obj_rotation_yaw" class="variable"><a href="#Sampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
-                <dd id="MedVarColorSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
-                <dd id="MedVarColorSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
-                <dd id="MedVarColorSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
-                <dd id="MedVarColorSampler.bg_color" class="variable"><a href="#Sampler.bg_color">bg_color</a></dd>
-                <dd id="MedVarColorSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
-                <dd id="MedVarColorSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
-                <dd id="MedVarColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="MedVarColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
-                <dd id="MedVarColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
-                <dd id="MedVarColorSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
-                <dd id="MedVarColorSampler.sample_bending" class="function"><a href="#Sampler.sample_bending">sample_bending</a></dd>
-                <dd id="MedVarColorSampler.sample_rotation" class="function"><a href="#Sampler.sample_rotation">sample_rotation</a></dd>
-                <dd id="MedVarColorSampler.sample_obj_rotation_roll" class="function"><a href="#Sampler.sample_obj_rotation_roll">sample_obj_rotation_roll</a></dd>
-                <dd id="MedVarColorSampler.sample_obj_rotation_pitch" class="function"><a href="#Sampler.sample_obj_rotation_pitch">sample_obj_rotation_pitch</a></dd>
-                <dd id="MedVarColorSampler.sample_obj_rotation_yaw" class="function"><a href="#Sampler.sample_obj_rotation_yaw">sample_obj_rotation_yaw</a></dd>
-                <dd id="MedVarColorSampler.sample_fliplr" class="function"><a href="#Sampler.sample_fliplr">sample_fliplr</a></dd>
-                <dd id="MedVarColorSampler.sample_position" class="function"><a href="#Sampler.sample_position">sample_position</a></dd>
-                <dd id="MedVarColorSampler.sample_position_x" class="function"><a href="#Sampler.sample_position_x">sample_position_x</a></dd>
-                <dd id="MedVarColorSampler.sample_position_y" class="function"><a href="#Sampler.sample_position_y">sample_position_y</a></dd>
-                <dd id="MedVarColorSampler.sample_arm_position" class="function"><a href="#Sampler.sample_arm_position">sample_arm_position</a></dd>
-                <dd id="MedVarColorSampler.sample_color" class="function"><a href="#Sampler.sample_color">sample_color</a></dd>
-                <dd id="MedVarColorSampler.sample_bg_color" class="function"><a href="#Sampler.sample_bg_color">sample_bg_color</a></dd>
+                            <div id="MedVarSampler.labeling_error" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.labeling_error">#&nbsp;&nbsp</a>
 
-            </div>
-                                </dl>
+        <span class="name">labeling_error</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]]</span><span class="default_value"> = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;</span>
+    </div>
+
+    
+
                             </div>
-                </section>
-                <section id="MedVarSampler">
-                                <div class="attr class">
-        <a class="headerlink" href="#MedVarSampler">#&nbsp;&nbsp</a>
+                            <div id="MedVarSampler.obj_rotation_yaw" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.obj_rotation_yaw">#&nbsp;&nbsp</a>
 
-        
-        <span class="def">class</span>
-        <span class="name">MedVarSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
+        <span class="name">obj_rotation_yaw</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
     </div>
 
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sampler with a custom obj_color sampler that has no bias.</span>
+    
 
-<span class="sd">    This sampler is the base class for ``MedVarColorSampler&#39;&#39; it uses interventional sampleing to</span>
-<span class="sd">    avoid introducing a bias.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+                            </div>
+                            <div id="MedVarSampler.position_x" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.position_x">#&nbsp;&nbsp</a>
 
-    <span class="k">def</span> <span class="nf">sample_obj_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Samples the ``obj_color`` and ``obj_color_rgba``.</span>
-
-<span class="sd">        Attrs:</span>
-<span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
-<span class="sd">            intervention: Flag for interventional sampling. False will be ignored for this class.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Since the color should be independent of the class we use interventional sampeling.</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sample_obj_color</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>A sampler with a custom obj_color sampler that has no bias.</p>
-
-<p>This sampler is the base class for ``MedVarColorSampler'' it uses interventional sampleing to
-avoid introducing a bias.</p>
-</div>
-
-
-                            <div id="MedVarSampler.__init__" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#MedVarSampler.__init__">#&nbsp;&nbsp</a>
-
-        
-            <span class="name">MedVarSampler</span><span class="signature">(
-    obj_name: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    spherical: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bending: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    arm_position: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
-    labeling_error: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    obj_rotation_roll: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_rotation_pitch: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_rotation_yaw: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    fliplr: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
-    position_x: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;coolwarm&#39;,
-    obj_color_map: str = &#39;coolwarm&#39;
-)</span>
+        <span class="name">position_x</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
     </div>
 
-        
+    
+
+                            </div>
+                            <div id="MedVarSampler.position_y" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.position_y">#&nbsp;&nbsp</a>
+
+        <span class="name">position_y</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MedVarSampler.bg_color" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.bg_color">#&nbsp;&nbsp</a>
+
+        <span class="name">bg_color</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MedVarSampler.bg_color_map" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.bg_color_map">#&nbsp;&nbsp</a>
+
+        <span class="name">bg_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;coolwarm&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MedVarSampler.obj_color_map" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.obj_color_map">#&nbsp;&nbsp</a>
+
+        <span class="name">obj_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;coolwarm&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="MedVarSampler.obj_color" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#MedVarSampler.obj_color">#&nbsp;&nbsp</a>
+
+        <span class="name">obj_color</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
+    </div>
+
     
 
                             </div>
@@ -2818,10 +2698,15 @@ avoid introducing a bias.</p>
 
 <span class="sd">        Attrs:</span>
 <span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
-<span class="sd">            intervention: Flag for interventional sampling. False will be ignored for this class.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># Since the color should be independent of the class we use interventional sampeling.</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">sample_obj_color</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># sample obj_color randomly</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
+            <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -2832,7 +2717,7 @@ avoid introducing a bias.</p>
 
 <blockquote>
   <p>params: SceneParameters for which the obj_color is sampled and updated in place.
-  intervention: Flag for interventional sampling. False will be ignored for this class.</p>
+  intervention: Flag whether interventional sampling is applied. Details: see class docu.</p>
 </blockquote>
 </div>
 
@@ -2844,19 +2729,9 @@ avoid introducing a bias.</p>
                                     <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="MedVarSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="MedVarSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
-                <dd id="MedVarSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
-                <dd id="MedVarSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
-                <dd id="MedVarSampler.labeling_error" class="variable"><a href="#Sampler.labeling_error">labeling_error</a></dd>
                 <dd id="MedVarSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
                 <dd id="MedVarSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="MedVarSampler.obj_rotation_yaw" class="variable"><a href="#Sampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
                 <dd id="MedVarSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
-                <dd id="MedVarSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
-                <dd id="MedVarSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
-                <dd id="MedVarSampler.obj_color" class="variable"><a href="#Sampler.obj_color">obj_color</a></dd>
-                <dd id="MedVarSampler.bg_color" class="variable"><a href="#Sampler.bg_color">bg_color</a></dd>
-                <dd id="MedVarSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
-                <dd id="MedVarSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
                 <dd id="MedVarSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2892,9 +2767,7 @@ avoid introducing a bias.</p>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarSpherSampler</span><span class="p">(</span><span class="n">MedVarSampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler based on MedVar but with a Spherical bias.</span>
 
-<span class="sd">    The sample introduces a spherical bias, but only for the cases that are not challing.</span>
-<span class="sd">    Since this bias is not informative for all cases another bias can be added that will be used by</span>
-<span class="sd">    the model if it provides information on the challenging cases.</span>
+<span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">sample_spherical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
@@ -2921,9 +2794,7 @@ avoid introducing a bias.</p>
 
             <div class="docstring"><p>A sampler based on MedVar but with a Spherical bias.</p>
 
-<p>The sample introduces a spherical bias, but only for the cases that are not challing.
-Since this bias is not informative for all cases another bias can be added that will be used by
-the model if it provides information on the challenging cases.</p>
+<p>more documentation needed ...</p>
 </div>
 
 
@@ -2943,7 +2814,7 @@ the model if it provides information on the challenging cases.</p>
     fliplr: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
     position_x: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bg_color_map: str = &#39;coolwarm&#39;,
     obj_color_map: str = &#39;coolwarm&#39;
@@ -3006,25 +2877,25 @@ the model if it provides information on the challenging cases.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#MedVarSampler">MedVarSampler</a></dt>
-                                <dd id="MedVarSpherSampler.sample_obj_color" class="function"><a href="#MedVarSampler.sample_obj_color">sample_obj_color</a></dd>
+                                <dd id="MedVarSpherSampler.bending" class="variable"><a href="#MedVarSampler.bending">bending</a></dd>
+                <dd id="MedVarSpherSampler.arm_position" class="variable"><a href="#MedVarSampler.arm_position">arm_position</a></dd>
+                <dd id="MedVarSpherSampler.labeling_error" class="variable"><a href="#MedVarSampler.labeling_error">labeling_error</a></dd>
+                <dd id="MedVarSpherSampler.obj_rotation_yaw" class="variable"><a href="#MedVarSampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
+                <dd id="MedVarSpherSampler.position_x" class="variable"><a href="#MedVarSampler.position_x">position_x</a></dd>
+                <dd id="MedVarSpherSampler.position_y" class="variable"><a href="#MedVarSampler.position_y">position_y</a></dd>
+                <dd id="MedVarSpherSampler.bg_color" class="variable"><a href="#MedVarSampler.bg_color">bg_color</a></dd>
+                <dd id="MedVarSpherSampler.bg_color_map" class="variable"><a href="#MedVarSampler.bg_color_map">bg_color_map</a></dd>
+                <dd id="MedVarSpherSampler.obj_color_map" class="variable"><a href="#MedVarSampler.obj_color_map">obj_color_map</a></dd>
+                <dd id="MedVarSpherSampler.obj_color" class="variable"><a href="#MedVarSampler.obj_color">obj_color</a></dd>
+                <dd id="MedVarSpherSampler.sample_obj_color" class="function"><a href="#MedVarSampler.sample_obj_color">sample_obj_color</a></dd>
 
             </div>
             <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="MedVarSpherSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="MedVarSpherSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
-                <dd id="MedVarSpherSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
-                <dd id="MedVarSpherSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
-                <dd id="MedVarSpherSampler.labeling_error" class="variable"><a href="#Sampler.labeling_error">labeling_error</a></dd>
                 <dd id="MedVarSpherSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
                 <dd id="MedVarSpherSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="MedVarSpherSampler.obj_rotation_yaw" class="variable"><a href="#Sampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
                 <dd id="MedVarSpherSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
-                <dd id="MedVarSpherSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
-                <dd id="MedVarSpherSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
-                <dd id="MedVarSpherSampler.obj_color" class="variable"><a href="#Sampler.obj_color">obj_color</a></dd>
-                <dd id="MedVarSpherSampler.bg_color" class="variable"><a href="#Sampler.bg_color">bg_color</a></dd>
-                <dd id="MedVarSpherSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
-                <dd id="MedVarSpherSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSpherSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
                 <dd id="MedVarSpherSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -3045,6 +2916,159 @@ the model if it provides information on the challenging cases.</p>
                                 </dl>
                             </div>
                 </section>
+                <section id="MedVarColorSampler">
+                                <div class="attr class">
+        <a class="headerlink" href="#MedVarColorSampler">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">MedVarColorSampler</span><wbr>(<span class="base"><a href="#MedVarSampler">MedVarSampler</a></span>):
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarColorSampler</span><span class="p">(</span><span class="n">MedVarSampler</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A sampler based on MedVar but with a Color bias.</span>
+
+<span class="sd">    more documentation needed ...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">sample_obj_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Samples the ``obj_color`` and ``obj_color_rgba``.</span>
+
+<span class="sd">        Attrs:</span>
+<span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
+            <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>A sampler based on MedVar but with a Color bias.</p>
+
+<p>more documentation needed ...</p>
+</div>
+
+
+                            <div id="MedVarColorSampler.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MedVarColorSampler.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">MedVarColorSampler</span><span class="signature">(
+    obj_name: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
+    spherical: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    bending: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    arm_position: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
+    labeling_error: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
+    obj_rotation_roll: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    obj_rotation_pitch: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    obj_rotation_yaw: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    fliplr: Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str, Dict[str, Union[scipy.stats._distn_infrastructure.rv_discrete, Callable[[], float], Callable[[], str], float, str]]] = &lt;<a href="utils.html#discrete">two4two.utils.discrete</a> object&gt;,
+    position_x: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
+    bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
+    bg_color_map: str = &#39;coolwarm&#39;,
+    obj_color_map: str = &#39;coolwarm&#39;
+)</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="MedVarColorSampler.sample_obj_color" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#MedVarColorSampler.sample_obj_color">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">sample_obj_color</span><span class="signature">(
+    self,
+    params: <a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>,
+    intervention: bool = False
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sample_obj_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Samples the ``obj_color`` and ``obj_color_rgba``.</span>
+
+<span class="sd">        Attrs:</span>
+<span class="sd">            params: SceneParameters for which the obj_color is sampled and updated in place.</span>
+<span class="sd">            intervention: Flag whether interventional sampling is applied. Details: see class docu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">obj_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample_name</span><span class="p">()</span> <span class="k">if</span> <span class="n">intervention</span> <span class="k">else</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&gt;</span> <span class="mf">0.45</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">arm_position</span> <span class="o">&lt;</span> <span class="mf">0.55</span><span class="p">:</span>
+            <span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span> <span class="o">+</span> <span class="s2">&quot;_edge&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">obj_color_rgba</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_object_cmap</span><span class="p">(</span><span class="n">params</span><span class="p">)(</span><span class="n">params</span><span class="o">.</span><span class="n">obj_color</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">mark_sampled</span><span class="p">(</span><span class="s1">&#39;obj_color&#39;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Samples the <code><a href="#MedVarColorSampler.obj_color">obj_color</a></code> and <code>obj_color_rgba</code>.</p>
+
+<h6 id="attrs">Attrs</h6>
+
+<blockquote>
+  <p>params: SceneParameters for which the obj_color is sampled and updated in place.
+  intervention: Flag whether interventional sampling is applied. Details: see class docu.</p>
+</blockquote>
+</div>
+
+
+                            </div>
+                            <div class="inherited">
+                                <h5>Inherited Members</h5>
+                                <dl>
+                                    <div><dt><a href="#MedVarSampler">MedVarSampler</a></dt>
+                                <dd id="MedVarColorSampler.bending" class="variable"><a href="#MedVarSampler.bending">bending</a></dd>
+                <dd id="MedVarColorSampler.arm_position" class="variable"><a href="#MedVarSampler.arm_position">arm_position</a></dd>
+                <dd id="MedVarColorSampler.labeling_error" class="variable"><a href="#MedVarSampler.labeling_error">labeling_error</a></dd>
+                <dd id="MedVarColorSampler.obj_rotation_yaw" class="variable"><a href="#MedVarSampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
+                <dd id="MedVarColorSampler.position_x" class="variable"><a href="#MedVarSampler.position_x">position_x</a></dd>
+                <dd id="MedVarColorSampler.position_y" class="variable"><a href="#MedVarSampler.position_y">position_y</a></dd>
+                <dd id="MedVarColorSampler.bg_color" class="variable"><a href="#MedVarSampler.bg_color">bg_color</a></dd>
+                <dd id="MedVarColorSampler.bg_color_map" class="variable"><a href="#MedVarSampler.bg_color_map">bg_color_map</a></dd>
+                <dd id="MedVarColorSampler.obj_color_map" class="variable"><a href="#MedVarSampler.obj_color_map">obj_color_map</a></dd>
+                <dd id="MedVarColorSampler.obj_color" class="variable"><a href="#MedVarSampler.obj_color">obj_color</a></dd>
+
+            </div>
+            <div><dt><a href="#Sampler">Sampler</a></dt>
+                                <dd id="MedVarColorSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
+                <dd id="MedVarColorSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
+                <dd id="MedVarColorSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
+                <dd id="MedVarColorSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
+                <dd id="MedVarColorSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
+                <dd id="MedVarColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="MedVarColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
+                <dd id="MedVarColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
+                <dd id="MedVarColorSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
+                <dd id="MedVarColorSampler.sample_bending" class="function"><a href="#Sampler.sample_bending">sample_bending</a></dd>
+                <dd id="MedVarColorSampler.sample_rotation" class="function"><a href="#Sampler.sample_rotation">sample_rotation</a></dd>
+                <dd id="MedVarColorSampler.sample_obj_rotation_roll" class="function"><a href="#Sampler.sample_obj_rotation_roll">sample_obj_rotation_roll</a></dd>
+                <dd id="MedVarColorSampler.sample_obj_rotation_pitch" class="function"><a href="#Sampler.sample_obj_rotation_pitch">sample_obj_rotation_pitch</a></dd>
+                <dd id="MedVarColorSampler.sample_obj_rotation_yaw" class="function"><a href="#Sampler.sample_obj_rotation_yaw">sample_obj_rotation_yaw</a></dd>
+                <dd id="MedVarColorSampler.sample_fliplr" class="function"><a href="#Sampler.sample_fliplr">sample_fliplr</a></dd>
+                <dd id="MedVarColorSampler.sample_position" class="function"><a href="#Sampler.sample_position">sample_position</a></dd>
+                <dd id="MedVarColorSampler.sample_position_x" class="function"><a href="#Sampler.sample_position_x">sample_position_x</a></dd>
+                <dd id="MedVarColorSampler.sample_position_y" class="function"><a href="#Sampler.sample_position_y">sample_position_y</a></dd>
+                <dd id="MedVarColorSampler.sample_arm_position" class="function"><a href="#Sampler.sample_arm_position">sample_arm_position</a></dd>
+                <dd id="MedVarColorSampler.sample_color" class="function"><a href="#Sampler.sample_color">sample_color</a></dd>
+                <dd id="MedVarColorSampler.sample_bg_color" class="function"><a href="#Sampler.sample_bg_color">sample_bg_color</a></dd>
+
+            </div>
+                                </dl>
+                            </div>
+                </section>
                 <section id="MedVarSpherColorSampler">
                                 <div class="attr class">
         <a class="headerlink" href="#MedVarSpherColorSampler">#&nbsp;&nbsp</a>
@@ -3057,18 +3081,18 @@ the model if it provides information on the challenging cases.</p>
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarSpherColorSampler</span><span class="p">(</span><span class="n">MedVarColorSampler</span><span class="p">,</span> <span class="n">MedVarSpherSampler</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;A sampler that combines the biases of ``MedVarSpherSampler&#39;&#39; and ``MedVarColorSampler&#39;&#39;.</span>
+    <span class="sd">&quot;&quot;&quot;A sampler based on MedVar but with a Spherical and a color bias.</span>
 
-<span class="sd">    See the the other two classes for documentation.</span>
+<span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>A sampler that combines the biases of <code>MedVarSpherSampler'' and</code>MedVarColorSampler''.</p>
+            <div class="docstring"><p>A sampler based on MedVar but with a Spherical and a color bias.</p>
 
-<p>See the the other two classes for documentation.</p>
+<p>more documentation needed ...</p>
 </div>
 
 
@@ -3103,29 +3127,32 @@ the model if it provides information on the challenging cases.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#MedVarColorSampler">MedVarColorSampler</a></dt>
-                                <dd id="MedVarSpherColorSampler.obj_color" class="variable"><a href="#MedVarColorSampler.obj_color">obj_color</a></dd>
-                <dd id="MedVarSpherColorSampler.sample_obj_color" class="function"><a href="#MedVarColorSampler.sample_obj_color">sample_obj_color</a></dd>
+                                <dd id="MedVarSpherColorSampler.sample_obj_color" class="function"><a href="#MedVarColorSampler.sample_obj_color">sample_obj_color</a></dd>
 
             </div>
             <div><dt><a href="#MedVarSpherSampler">MedVarSpherSampler</a></dt>
                                 <dd id="MedVarSpherColorSampler.sample_spherical" class="function"><a href="#MedVarSpherSampler.sample_spherical">sample_spherical</a></dd>
 
             </div>
+            <div><dt><a href="#MedVarSampler">MedVarSampler</a></dt>
+                                <dd id="MedVarSpherColorSampler.bending" class="variable"><a href="#MedVarSampler.bending">bending</a></dd>
+                <dd id="MedVarSpherColorSampler.arm_position" class="variable"><a href="#MedVarSampler.arm_position">arm_position</a></dd>
+                <dd id="MedVarSpherColorSampler.labeling_error" class="variable"><a href="#MedVarSampler.labeling_error">labeling_error</a></dd>
+                <dd id="MedVarSpherColorSampler.obj_rotation_yaw" class="variable"><a href="#MedVarSampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
+                <dd id="MedVarSpherColorSampler.position_x" class="variable"><a href="#MedVarSampler.position_x">position_x</a></dd>
+                <dd id="MedVarSpherColorSampler.position_y" class="variable"><a href="#MedVarSampler.position_y">position_y</a></dd>
+                <dd id="MedVarSpherColorSampler.bg_color" class="variable"><a href="#MedVarSampler.bg_color">bg_color</a></dd>
+                <dd id="MedVarSpherColorSampler.bg_color_map" class="variable"><a href="#MedVarSampler.bg_color_map">bg_color_map</a></dd>
+                <dd id="MedVarSpherColorSampler.obj_color_map" class="variable"><a href="#MedVarSampler.obj_color_map">obj_color_map</a></dd>
+                <dd id="MedVarSpherColorSampler.obj_color" class="variable"><a href="#MedVarSampler.obj_color">obj_color</a></dd>
+
+            </div>
             <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="MedVarSpherColorSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="MedVarSpherColorSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
-                <dd id="MedVarSpherColorSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
-                <dd id="MedVarSpherColorSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
-                <dd id="MedVarSpherColorSampler.labeling_error" class="variable"><a href="#Sampler.labeling_error">labeling_error</a></dd>
                 <dd id="MedVarSpherColorSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
                 <dd id="MedVarSpherColorSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="MedVarSpherColorSampler.obj_rotation_yaw" class="variable"><a href="#Sampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
                 <dd id="MedVarSpherColorSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
-                <dd id="MedVarSpherColorSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
-                <dd id="MedVarSpherColorSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
-                <dd id="MedVarSpherColorSampler.bg_color" class="variable"><a href="#Sampler.bg_color">bg_color</a></dd>
-                <dd id="MedVarSpherColorSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
-                <dd id="MedVarSpherColorSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSpherColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -3160,8 +3187,7 @@ the model if it provides information on the challenging cases.</p>
             <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">MedVarNoArmsSampler</span><span class="p">(</span><span class="n">MedVarColorSampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler based on MedVar with spherical and color bias but no arm information.</span>
 
-<span class="sd">    This sampler uses interventional sampeling for the arm positon. The sampler is intended to</span>
-<span class="sd">    produce only validation and test data.</span>
+<span class="sd">    more documentation needed ...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">sample_arm_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">SceneParameters</span><span class="p">,</span> <span class="n">intervention</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Samples the ``arm_position``.</span>
@@ -3177,8 +3203,7 @@ the model if it provides information on the challenging cases.</p>
 
             <div class="docstring"><p>A sampler based on MedVar with spherical and color bias but no arm information.</p>
 
-<p>This sampler uses interventional sampeling for the arm positon. The sampler is intended to
-produce only validation and test data.</p>
+<p>more documentation needed ...</p>
 </div>
 
 
@@ -3251,25 +3276,28 @@ produce only validation and test data.</p>
                                 <h5>Inherited Members</h5>
                                 <dl>
                                     <div><dt><a href="#MedVarColorSampler">MedVarColorSampler</a></dt>
-                                <dd id="MedVarNoArmsSampler.obj_color" class="variable"><a href="#MedVarColorSampler.obj_color">obj_color</a></dd>
-                <dd id="MedVarNoArmsSampler.sample_obj_color" class="function"><a href="#MedVarColorSampler.sample_obj_color">sample_obj_color</a></dd>
+                                <dd id="MedVarNoArmsSampler.sample_obj_color" class="function"><a href="#MedVarColorSampler.sample_obj_color">sample_obj_color</a></dd>
+
+            </div>
+            <div><dt><a href="#MedVarSampler">MedVarSampler</a></dt>
+                                <dd id="MedVarNoArmsSampler.bending" class="variable"><a href="#MedVarSampler.bending">bending</a></dd>
+                <dd id="MedVarNoArmsSampler.arm_position" class="variable"><a href="#MedVarSampler.arm_position">arm_position</a></dd>
+                <dd id="MedVarNoArmsSampler.labeling_error" class="variable"><a href="#MedVarSampler.labeling_error">labeling_error</a></dd>
+                <dd id="MedVarNoArmsSampler.obj_rotation_yaw" class="variable"><a href="#MedVarSampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
+                <dd id="MedVarNoArmsSampler.position_x" class="variable"><a href="#MedVarSampler.position_x">position_x</a></dd>
+                <dd id="MedVarNoArmsSampler.position_y" class="variable"><a href="#MedVarSampler.position_y">position_y</a></dd>
+                <dd id="MedVarNoArmsSampler.bg_color" class="variable"><a href="#MedVarSampler.bg_color">bg_color</a></dd>
+                <dd id="MedVarNoArmsSampler.bg_color_map" class="variable"><a href="#MedVarSampler.bg_color_map">bg_color_map</a></dd>
+                <dd id="MedVarNoArmsSampler.obj_color_map" class="variable"><a href="#MedVarSampler.obj_color_map">obj_color_map</a></dd>
+                <dd id="MedVarNoArmsSampler.obj_color" class="variable"><a href="#MedVarSampler.obj_color">obj_color</a></dd>
 
             </div>
             <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="MedVarNoArmsSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="MedVarNoArmsSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
-                <dd id="MedVarNoArmsSampler.bending" class="variable"><a href="#Sampler.bending">bending</a></dd>
-                <dd id="MedVarNoArmsSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
-                <dd id="MedVarNoArmsSampler.labeling_error" class="variable"><a href="#Sampler.labeling_error">labeling_error</a></dd>
                 <dd id="MedVarNoArmsSampler.obj_rotation_roll" class="variable"><a href="#Sampler.obj_rotation_roll">obj_rotation_roll</a></dd>
                 <dd id="MedVarNoArmsSampler.obj_rotation_pitch" class="variable"><a href="#Sampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
-                <dd id="MedVarNoArmsSampler.obj_rotation_yaw" class="variable"><a href="#Sampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
                 <dd id="MedVarNoArmsSampler.fliplr" class="variable"><a href="#Sampler.fliplr">fliplr</a></dd>
-                <dd id="MedVarNoArmsSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
-                <dd id="MedVarNoArmsSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
-                <dd id="MedVarNoArmsSampler.bg_color" class="variable"><a href="#Sampler.bg_color">bg_color</a></dd>
-                <dd id="MedVarNoArmsSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
-                <dd id="MedVarNoArmsSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarNoArmsSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
