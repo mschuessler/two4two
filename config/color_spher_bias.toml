@@ -4,7 +4,7 @@
 sampler = 'two4two.bias.MedVarSpherColorSampler'
 
 # Save dataset to this directory.
-output_dir = 'datasets/medvar_tests/spherical_color_bias'
+output_dir = 'two4two_datasets/spherical_color_bias'
 
 # Should be an existing output_dir be overwritten? [Default: false]
 force_overwrite = false
@@ -31,7 +31,7 @@ n_samples = 500
 
 [no_arms]
 sampler = 'two4two.bias.MedVarNoArmsSampler'
-output_dir = 'datasets/medvar_tests/no_arms'
+output_dir = 'two4two_datasets/no_arms'
 n_processes = 6
 
 [no_arms.train]
@@ -45,7 +45,7 @@ n_samples = 500
 
 [no_bias]
 sampler = 'two4two.bias.MedVarSampler'
-output_dir = 'datasets/medvar_tests/no_bias'
+output_dir = 'two4two_datasets/no_bias'
 n_processes = 6
 
 [no_bias.train]
@@ -60,7 +60,7 @@ n_samples = 500
 
 [spherical_bias]
 sampler = 'two4two.bias.MedVarSpherSampler'
-output_dir = 'datasets/medvar_tests/spherical_bias'
+output_dir = 'two4two_datasets/spherical_bias'
 n_processes = 6
 
 [spherical_bias.train]
@@ -75,7 +75,7 @@ n_samples = 500
 
 [color_bias]
 sampler = 'two4two.bias.MedVarColorSampler'
-output_dir = 'datasets/medvar_tests/color_bias'
+output_dir = 'two4two_datasets/color_bias'
 n_processes = 6
 
 [color_bias.train]
