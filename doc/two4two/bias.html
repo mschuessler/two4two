@@ -172,18 +172,6 @@
                                 <a class="function" href="#HighVariationColorBiasedSampler.__init__">HighVariationColorBiasedSampler</a>
                         </li>
                         <li>
-                                <a class="variable" href="#HighVariationColorBiasedSampler.obj_rotation_roll">obj_rotation_roll</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#HighVariationColorBiasedSampler.obj_rotation_yaw">obj_rotation_yaw</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#HighVariationColorBiasedSampler.obj_rotation_pitch">obj_rotation_pitch</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#HighVariationColorBiasedSampler.bending">bending</a>
-                        </li>
-                        <li>
                                 <a class="variable" href="#HighVariationColorBiasedSampler.obj_color">obj_color</a>
                         </li>
                 </ul>
@@ -373,25 +361,25 @@
 
     <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">})</span>
-    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
+    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
     <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                            <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                             <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
-    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="n">fliplr</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
-    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
-    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">)</span>
-    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
-    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seismic&#39;</span>
+    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
+    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
+    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
 
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values.</span>
@@ -415,6 +403,7 @@
         <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">!=</span> <span class="n">obj_name</span><span class="p">:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -685,6 +674,8 @@
         <span class="p">})</span>
 
 
+
+
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
 <span class="k">class</span> <span class="nc">HighVariationSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler producing more challenging images.</span>
@@ -700,17 +691,12 @@
 
 
 <span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span><span class="p">()</span>
-<span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">HighVariationSampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler producing more challenging images with a color bias that is depent on obj_name.</span>
 
 <span class="sd">    This sampler allows for a higher variation in rotations and bending. Hence it creates a more</span>
 <span class="sd">    challenging datset. This dataset is more challenging. So the bias is more likely to be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-    <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -903,25 +889,25 @@
 
     <span class="n">obj_name</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">})</span>
     <span class="n">spherical</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
+    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">20</span><span class="p">,</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">10</span><span class="p">)</span>
     <span class="n">arm_position</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
-            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">0.52</span><span class="p">),</span>
+            <span class="s1">&#39;stretchy&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">lower</span><span class="o">=</span><span class="mf">0.48</span><span class="p">,</span> <span class="n">upper</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
         <span class="p">})</span>
-    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">})</span>
+    <span class="n">labeling_error</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
     <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.03</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                            <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
     <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span>
                                                             <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
-    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">,</span> <span class="o">*</span><span class="n">utils</span><span class="o">.</span><span class="n">QUARTER_CIRCLE</span><span class="p">)</span>
+    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
     <span class="n">fliplr</span><span class="p">:</span> <span class="n">Discrete</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">discrete</span><span class="p">({</span><span class="kc">True</span><span class="p">:</span> <span class="mf">0.</span><span class="p">,</span> <span class="kc">False</span><span class="p">:</span> <span class="mf">1.</span><span class="p">})</span>
-    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
-    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">position_x</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">position_y</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
-    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.80</span><span class="p">)</span>
-    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;binary&#39;</span>
-    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;seismic&#39;</span>
+    <span class="n">bg_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">)</span>
+    <span class="n">bg_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
+    <span class="n">obj_color_map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span>
 
     <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values.</span>
@@ -945,6 +931,7 @@
         <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">!=</span> <span class="n">obj_name</span><span class="p">:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -1273,8 +1260,8 @@ the only attribute considered in the intervention.</p>
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;binary&#39;,
-    obj_color_map: str = &#39;seismic&#39;
+    bg_color_map: str = &#39;coolwarm&#39;,
+    obj_color_map: str = &#39;coolwarm&#39;
 )</span>
     </div>
 
@@ -1402,7 +1389,7 @@ the only attribute considered in the intervention.</p>
                             <div id="Sampler.bg_color_map" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Sampler.bg_color_map">#&nbsp;&nbsp</a>
 
-        <span class="name">bg_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;binary&#39;</span>
+        <span class="name">bg_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;coolwarm&#39;</span>
     </div>
 
     
@@ -1411,7 +1398,7 @@ the only attribute considered in the intervention.</p>
                             <div id="Sampler.obj_color_map" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#Sampler.obj_color_map">#&nbsp;&nbsp</a>
 
-        <span class="name">obj_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;seismic&#39;</span>
+        <span class="name">obj_color_map</span><span class="annotation">: str</span><span class="default_value"> = &#39;coolwarm&#39;</span>
     </div>
 
     
@@ -1452,6 +1439,7 @@ the only attribute considered in the intervention.</p>
         <span class="k">if</span> <span class="n">obj_name</span> <span class="ow">and</span> <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">!=</span> <span class="n">obj_name</span><span class="p">:</span>
             <span class="n">params</span><span class="o">.</span><span class="n">obj_name</span> <span class="o">=</span> <span class="n">obj_name</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
@@ -2160,8 +2148,8 @@ the sampling of the attribute might be dependent on the label
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;binary&#39;,
-    obj_color_map: str = &#39;seismic&#39;
+    bg_color_map: str = &#39;coolwarm&#39;,
+    obj_color_map: str = &#39;coolwarm&#39;
 )</span>
     </div>
 
@@ -2269,8 +2257,8 @@ challenging datset.</p>
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;binary&#39;,
-    obj_color_map: str = &#39;seismic&#39;
+    bg_color_map: str = &#39;coolwarm&#39;,
+    obj_color_map: str = &#39;coolwarm&#39;
 )</span>
     </div>
 
@@ -2357,22 +2345,17 @@ challenging datset.</p>
 
         
         <span class="def">class</span>
-        <span class="name">HighVariationColorBiasedSampler</span><wbr>(<span class="base"><a href="#Sampler">Sampler</a></span>):
+        <span class="name">HighVariationColorBiasedSampler</span><wbr>(<span class="base"><a href="#HighVariationSampler">HighVariationSampler</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">Sampler</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">HighVariationColorBiasedSampler</span><span class="p">(</span><span class="n">HighVariationSampler</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A sampler producing more challenging images with a color bias that is depent on obj_name.</span>
 
 <span class="sd">    This sampler allows for a higher variation in rotations and bending. Hence it creates a more</span>
 <span class="sd">    challenging datset. This dataset is more challenging. So the bias is more likely to be used.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">obj_rotation_roll</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">obj_rotation_yaw</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-    <span class="n">obj_rotation_pitch</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">3</span><span class="p">)</span>
-    <span class="n">bending</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">scipy</span><span class="o">.</span><span class="n">stats</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">8</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span>
     <span class="n">obj_color</span><span class="p">:</span> <span class="n">Continouos</span> <span class="o">=</span> <span class="n">dataclasses</span><span class="o">.</span><span class="n">field</span><span class="p">(</span>
         <span class="n">default_factory</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">{</span>
             <span class="s1">&#39;peaky&#39;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">truncated_normal</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
@@ -2407,48 +2390,12 @@ challenging datset. This dataset is more challenging. So the bias is more likely
     position_y: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
     obj_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;factory&gt;,
     bg_color: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]] = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;,
-    bg_color_map: str = &#39;binary&#39;,
-    obj_color_map: str = &#39;seismic&#39;
+    bg_color_map: str = &#39;coolwarm&#39;,
+    obj_color_map: str = &#39;coolwarm&#39;
 )</span>
     </div>
 
         
-    
-
-                            </div>
-                            <div id="HighVariationColorBiasedSampler.obj_rotation_roll" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.obj_rotation_roll">#&nbsp;&nbsp</a>
-
-        <span class="name">obj_rotation_roll</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="HighVariationColorBiasedSampler.obj_rotation_yaw" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.obj_rotation_yaw">#&nbsp;&nbsp</a>
-
-        <span class="name">obj_rotation_yaw</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="HighVariationColorBiasedSampler.obj_rotation_pitch" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.obj_rotation_pitch">#&nbsp;&nbsp</a>
-
-        <span class="name">obj_rotation_pitch</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="HighVariationColorBiasedSampler.bending" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#HighVariationColorBiasedSampler.bending">#&nbsp;&nbsp</a>
-
-        <span class="name">bending</span><span class="annotation">: Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float, Dict[str, Union[scipy.stats._distn_infrastructure.rv_continuous, Callable[[], float], float]]]</span><span class="default_value"> = &lt;scipy.stats._distn_infrastructure.rv_frozen object&gt;</span>
-    </div>
-
     
 
                             </div>
@@ -2464,7 +2411,14 @@ challenging datset. This dataset is more challenging. So the bias is more likely
                             <div class="inherited">
                                 <h5>Inherited Members</h5>
                                 <dl>
-                                    <div><dt><a href="#Sampler">Sampler</a></dt>
+                                    <div><dt><a href="#HighVariationSampler">HighVariationSampler</a></dt>
+                                <dd id="HighVariationColorBiasedSampler.obj_rotation_roll" class="variable"><a href="#HighVariationSampler.obj_rotation_roll">obj_rotation_roll</a></dd>
+                <dd id="HighVariationColorBiasedSampler.obj_rotation_yaw" class="variable"><a href="#HighVariationSampler.obj_rotation_yaw">obj_rotation_yaw</a></dd>
+                <dd id="HighVariationColorBiasedSampler.obj_rotation_pitch" class="variable"><a href="#HighVariationSampler.obj_rotation_pitch">obj_rotation_pitch</a></dd>
+                <dd id="HighVariationColorBiasedSampler.bending" class="variable"><a href="#HighVariationSampler.bending">bending</a></dd>
+
+            </div>
+            <div><dt><a href="#Sampler">Sampler</a></dt>
                                 <dd id="HighVariationColorBiasedSampler.obj_name" class="variable"><a href="#Sampler.obj_name">obj_name</a></dd>
                 <dd id="HighVariationColorBiasedSampler.spherical" class="variable"><a href="#Sampler.spherical">spherical</a></dd>
                 <dd id="HighVariationColorBiasedSampler.arm_position" class="variable"><a href="#Sampler.arm_position">arm_position</a></dd>
