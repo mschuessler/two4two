@@ -1,13 +1,33 @@
-# two4two Image Dataset Generator
+# Two4Two: Evaluating Interpretable Machine Learning -- A Synthetic Dataset For Controlled Experiments
 
 ## Introduction
-This program utilizes [blender](https://www.blender.org/) to generate image datasets.
+This repositoy contains the source code, pregenerated datasets and example notebooks for two4two.
+
+Two4Two is a library to create sythetic image data crafted for human evaluations of interpretable ML apoaches (esp. image classification).
+The sythetic images show two abstract animals: **Peaky** (arms inwards) and **Stretchy** (arms outwards).
+<!-- TODO: add images here -->
+These animals are simple enough to be used in instructions for human-subject evaluations on crowd-sourcing platforms. We also provide segmentation masks so they can be used for algorithmic evaluations as well. The core functionality of this library is that you can correlate different parameters with an animal type to create biase in the data. We utilizes [blender](https://www.blender.org/) to generate these images.
+
+We created this library because we see the choiche of dataset and user study scenario as a mayor obstacle to human subject evaluations.
+If you want to use this dataset please for scientific purposes please cite our workshop paper (reference will be added after conference).
+
+
+
+
+
+
 Currently there are two classes.
 They are smilar looking, abstract animals, made of eight blocks.
 See [Section Classes](#classes) for details.
 You can either install the module and create your own datasets or download an [example dataset](#example-dataset) with 300,000 images.
 
+## Pregenerated datasets
+Before you generate your own data consider using our pregenerated data.
+
+<!-- ADD download links to data and brieg description -->
+
 ## Installation
+If you want to generate your own data follow these instructions.
 Currently this project is not available through pip but has to installed manually.
 
 Download this repository.
@@ -32,12 +52,16 @@ To install the **installation including all requirements for generating your own
 ```
 pip install .[example_notebooks_data_generation]
 ´´´
+
+## Training Models on two4two
 For training your own models you have two choices:
-1) *No GPU required and installation free*: Run our example notebook inside of Colab (this will download pregenerated datasets)
-2) Install the **installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available:
+1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets)
+2) Install the installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available:
 ```
 pip install .[example_notebooks_data_generation,example_notebooks_model_training]
 ´´´
+
+You'll find the example notebook to train
 
 ## Classes
 The two classes for classifcation are *peaky* and *stretchy*.
