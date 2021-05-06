@@ -75,25 +75,25 @@ class Sampler:
 
     obj_name: Discrete = utils.discrete({'peaky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
-            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
+            'peaky': utils.truncated_normal(mean=0.5, std=0.5, lower=0, upper=0.52),
+            'stretchy': utils.truncated_normal(mean=0.5, std=0.5, lower=0.48, upper=1.0)
         })
-    labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
+    labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
     obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4,
                                                            *utils.QUARTER_CIRCLE)
     obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4,
                                                             *utils.QUARTER_CIRCLE)
-    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
-    position_x: Continouos = scipy.stats.uniform(-0.5, 0.5)
-    position_y: Continouos = scipy.stats.uniform(-0.5, 0.5)
+    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
-    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_map: str = 'binary'
-    obj_color_map: str = 'seismic'
+    bg_color: Continouos = scipy.stats.uniform(0.05, 0.90)
+    bg_color_map: str = 'coolwarm'
+    obj_color_map: str = 'coolwarm'
 
     def sample(self, obj_name: Optional[str] = None) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -117,13 +117,13 @@ class Sampler:
         if obj_name and params.obj_name != obj_name:
             params.obj_name = obj_name
 
+        self.sample_arm_position(params)
         self.sample_labeling_error(params)
         self.sample_spherical(params)
         self.sample_bending(params)
         self.sample_rotation(params)
         self.sample_fliplr(params)
         self.sample_position(params)
-        self.sample_arm_position(params)
         self.sample_color(params)
         params.check_values()
         return params
@@ -173,6 +173,21 @@ class Sampler:
         if isinstance(value, np.ndarray):
             value = utils.numpy_to_python_scalar(value)
 
+        return value
+
+    @staticmethod
+    def _sample_truncated(
+        obj_name: Optional[str],
+        dist: Distribution,
+        size: int = 1,
+        min: float = float(-np.inf),
+        max: float = float(np.inf),
+    ) -> Any:
+        assert size == 1
+
+        value = Sampler._sample(obj_name, dist, size)
+        while not (min <= value <= max):
+            value = Sampler._sample(obj_name, dist, size)
         return value
 
     def _sample_name(self) -> str:
@@ -372,6 +387,8 @@ class ColorBiasedSampler(Sampler):
         })
 
 
+
+
 @dataclasses.dataclass()
 class HighVariationSampler(Sampler):
     """A sampler producing more challenging images.
@@ -387,17 +404,12 @@ class HighVariationSampler(Sampler):
 
 
 @dataclasses.dataclass()
-class HighVariationColorBiasedSampler(Sampler):
+class HighVariationColorBiasedSampler(HighVariationSampler):
     """A sampler producing more challenging images with a color bias that is depent on obj_name.
 
     This sampler allows for a higher variation in rotations and bending. Hence it creates a more
     challenging datset. This dataset is more challenging. So the bias is more likely to be used.
     """
-
-    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
-    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    bending: Continouos = scipy.stats.uniform(- np.pi / 8, np.pi / 4)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'peaky': utils.truncated_normal(1, 0.5, 0, 1),
