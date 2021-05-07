@@ -18,7 +18,7 @@ Before you generate your own data consider using our pregenerated data of 80,000
 
 We provide a [Colab Notebook](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) that illustrates how you can use this dataset to train your own model.
 
-If you would like to understand how this dataset was generated have a look at [the config that was used to generate it](config/)
+If you would like to understand how this dataset was generated have a look at [the config that was used to generate it](config/color_spher_bias.toml)
 
 ## Installation
 If you want to generate your own data follow these instructions.
@@ -26,15 +26,17 @@ Currently this project is not available through pip but has to installed manuall
 
 Download this repository:
 
-```
+```git
 git clone https://github.com/mschuessler/two4two.git
-´´´
+
+```
+
 We suggest to create a python3 or conda environment instead of using your system python.
 
 ```
 python3 -m venv ~/242_enviroment
 source ~/242_enviroment/bin/activate
-´´´
+```
 
 To install the **minimal installation** two4two package change into the cloned directory and run setuptools.
 
@@ -46,33 +48,29 @@ pip install .
 To install the **installation including all requirements for generating your own training data** run:
 ```
 pip install .[example_notebooks_data_generation]
-´´´
+```
 
 To generate the default dataset on your own use the following comands
 ```
 two4two_render_dataset config/color_spher_bias.toml
-´´´
+```
 
 To train and evaluate a model on the data you just generated install the required dependencies and execute the training script.
 ```
 pip install .[example_notebooks_model_training]
 python two4two/examples/train_lenet.py spherical_color_bias
-´´´
+```
 
 ## Training Models on two4two
 For training your own models you have two choices:
-1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets)
+1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets) - you can also run this notebook on your own machine you can find the notebook in [examples/GenerateData.ipynb](examples/GenerateData.ipynb)
 2) Install the installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available:
 ```
-pip install .[example_notebooks_data_generation,example_notebooks_model_training]
-´´´
-<!-- TODO: Add URL to dataset -->
-```
 pip install .[example_notebooks_model_training]
-wget xyz
+wget https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz
+tar -xf golden80k.tar.gz
 python two4two/examples/train_lenet.py spherical_color_bias
-´´´
-You'll find the example notebook to train
+```
 
 ## Classes
 The two classes for classifcation are *peaky* and *stretchy*.
