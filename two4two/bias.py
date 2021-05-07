@@ -75,25 +75,25 @@ class Sampler:
 
     obj_name: Discrete = utils.discrete({'peaky': 0.5, 'stretchy': 0.5})
     spherical: Continouos = scipy.stats.beta(0.3, 0.3)
-    bending: Continouos = utils.truncated_normal(0, 0.1 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
     arm_position: Continouos = dataclasses.field(
         default_factory=lambda: {
-            'peaky': utils.truncated_normal(mean=0, std=0.5, lower=0, upper=0.52),
-            'stretchy': utils.truncated_normal(mean=1, std=0.5, lower=0.48, upper=1.0)
+            'peaky': utils.truncated_normal(mean=0.5, std=0.2, lower=0, upper=0.52),
+            'stretchy': utils.truncated_normal(mean=0.5, std=0.2, lower=0.48, upper=1.0)
         })
-    labeling_error: Discrete = utils.discrete({True: 0.05, False: 0.95})
+    labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
     obj_rotation_roll: Continouos = utils.truncated_normal(0, 0.03 * np.pi / 4,
                                                            *utils.QUARTER_CIRCLE)
     obj_rotation_pitch: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4,
                                                             *utils.QUARTER_CIRCLE)
-    obj_rotation_yaw: Continouos = utils.truncated_normal(0, 0.3 * np.pi / 4, *utils.QUARTER_CIRCLE)
+    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
     fliplr: Discrete = utils.discrete({True: 0., False: 1.})
-    position_x: Continouos = scipy.stats.uniform(-0.5, 0.5)
-    position_y: Continouos = scipy.stats.uniform(-0.5, 0.5)
+    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
+    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
     obj_color: Continouos = scipy.stats.uniform(0., 1.)
-    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
-    bg_color_map: str = 'binary'
-    obj_color_map: str = 'seismic'
+    bg_color: Continouos = scipy.stats.uniform(0.05, 0.90)
+    bg_color_map: str = 'coolwarm'
+    obj_color_map: str = 'coolwarm'
 
     def sample(self, obj_name: Optional[str] = None) -> SceneParameters:
         """Returns a new SceneParameters with random values.
@@ -117,8 +117,8 @@ class Sampler:
         if obj_name and params.obj_name != obj_name:
             params.obj_name = obj_name
 
-        self.sample_labeling_error(params)
         self.sample_arm_position(params)
+        self.sample_labeling_error(params)
         self.sample_spherical(params)
         self.sample_bending(params)
         self.sample_rotation(params)
@@ -374,7 +374,19 @@ class Sampler:
 
 
 @dataclasses.dataclass()
-class ColorBiasedSampler(Sampler):
+class SimpleColorMapSampler(Sampler):
+    """An Sampler with a simpler colormap.
+
+    This colormap allows for very simple experiements with human subjects. The simple colormap makes
+    color biases easier to spot.
+    """
+    bg_color: Continouos = scipy.stats.uniform(0.05, 0.80)
+    bg_color_map: str = 'binary'
+    obj_color_map: str = 'seismic'
+
+
+@dataclasses.dataclass()
+class ColorBiasedSampler(SimpleColorMapSampler):
     """An example implementation of a color-biased SceneParameterSample.
 
     The color is sampled from a conditional distribution that is dependent on the object type.
@@ -402,17 +414,12 @@ class HighVariationSampler(Sampler):
 
 
 @dataclasses.dataclass()
-class HighVariationColorBiasedSampler(Sampler):
+class HighVariationColorBiasedSampler(HighVariationSampler):
     """A sampler producing more challenging images with a color bias that is depent on obj_name.
 
     This sampler allows for a higher variation in rotations and bending. Hence it creates a more
     challenging datset. This dataset is more challenging. So the bias is more likely to be used.
     """
-
-    obj_rotation_roll: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
-    obj_rotation_pitch: Continouos = scipy.stats.uniform(- np.pi / 3, 2 * np.pi / 3)
-    bending: Continouos = scipy.stats.uniform(- np.pi / 8, np.pi / 4)
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
             'peaky': utils.truncated_normal(1, 0.5, 0, 1),
@@ -421,26 +428,13 @@ class HighVariationColorBiasedSampler(Sampler):
 
 
 @dataclasses.dataclass()
-class MedVarSampler(Sampler):
-    """A sampler producing slightly more challenging images with an asthetically pleasing colormap.
+class MedVarColorSampler(Sampler):
+    """A sampler with a more sophisticated color bias.
 
-    This sampler allows for a slightly higher variation in rotations and bending. Hence it creates a
-    more challenging datset. Hence any bias added to this dataset is more likely to be used.
+    The sample introduces a color bias only for the challenging cases where the arm position is hard
+    to distinguish. Therefore, the bias is not evident in every image but informative enough to bias
+    a model.
     """
-
-    bending: Continouos = utils.truncated_normal(0, np.pi / 20, - np.pi / 10, np.pi / 10)
-    arm_position: Continouos = dataclasses.field(
-        default_factory=lambda: {
-            'peaky': utils.truncated_normal(mean=0.5, std=0.20, lower=0, upper=0.52),
-            'stretchy': utils.truncated_normal(mean=0.5, std=0.20, lower=0.48, upper=1.0)
-        })
-    labeling_error: Discrete = utils.discrete({True: 0., False: 1.})
-    obj_rotation_yaw: Continouos = scipy.stats.uniform(- np.pi, np.pi)
-    position_x: Continouos = scipy.stats.uniform(-0.8, 0.8)
-    position_y: Continouos = scipy.stats.uniform(-0.8, 0.8)
-    bg_color: Continouos = scipy.stats.uniform(0.05, 0.90)
-    bg_color_map: str = 'coolwarm'
-    obj_color_map: str = 'coolwarm'
 
     obj_color: Continouos = dataclasses.field(
         default_factory=lambda: {
@@ -457,8 +451,7 @@ class MedVarSampler(Sampler):
             params: SceneParameters for which the obj_color is sampled and updated in place.
             intervention: Flag whether interventional sampling is applied. Details: see class docu.
         """
-        # sample obj_color randomly
-        obj_name = self._sample_name()
+        obj_name = self._sample_name() if intervention else params.obj_name
         if params.arm_position > 0.45 and params.arm_position < 0.55:
             obj_name = obj_name + "_edge"
         params.obj_color = float(self._sample(obj_name, self.obj_color))
@@ -467,10 +460,31 @@ class MedVarSampler(Sampler):
 
 
 @dataclasses.dataclass()
+class MedVarSampler(Sampler):
+    """A sampler with a custom obj_color sampler that has no bias.
+
+    This sampler is the base class for ``MedVarColorSampler'' it uses interventional sampleing to
+    avoid introducing a bias.
+    """
+
+    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
+        """Samples the ``obj_color`` and ``obj_color_rgba``.
+
+        Attrs:
+            params: SceneParameters for which the obj_color is sampled and updated in place.
+            intervention: Flag for interventional sampling. False will be ignored for this class.
+        """
+        # Since the color should be independent of the class we use interventional sampeling.
+        super().sample_obj_color(params, intervention=True)
+
+
+@dataclasses.dataclass()
 class MedVarSpherSampler(MedVarSampler):
     """A sampler based on MedVar but with a Spherical bias.
 
-    more documentation needed ...
+    The sample introduces a spherical bias, but only for the cases that are not challing.
+    Since this bias is not informative for all cases another bias can be added that will be used by
+    the model if it provides information on the challenging cases.
     """
 
     def sample_spherical(self, params: SceneParameters, intervention: bool = False):
@@ -494,32 +508,10 @@ class MedVarSpherSampler(MedVarSampler):
 
 
 @dataclasses.dataclass()
-class MedVarColorSampler(MedVarSampler):
-    """A sampler based on MedVar but with a Color bias.
-
-    more documentation needed ...
-    """
-
-    def sample_obj_color(self, params: SceneParameters, intervention: bool = False):
-        """Samples the ``obj_color`` and ``obj_color_rgba``.
-
-        Attrs:
-            params: SceneParameters for which the obj_color is sampled and updated in place.
-            intervention: Flag whether interventional sampling is applied. Details: see class docu.
-        """
-        obj_name = self._sample_name() if intervention else params.obj_name
-        if params.arm_position > 0.45 and params.arm_position < 0.55:
-            obj_name = obj_name + "_edge"
-        params.obj_color = float(self._sample(obj_name, self.obj_color))
-        params.obj_color_rgba = tuple(self._object_cmap(params)(params.obj_color))  # type: ignore
-        params.mark_sampled('obj_color')
-
-
-@dataclasses.dataclass()
 class MedVarSpherColorSampler(MedVarColorSampler, MedVarSpherSampler):
-    """A sampler based on MedVar but with a Spherical and a color bias.
+    """A sampler that combines the biases of ``MedVarSpherSampler'' and ``MedVarColorSampler''.
 
-    more documentation needed ...
+    See the the other two classes for documentation.
     """
     pass
 
@@ -528,7 +520,8 @@ class MedVarSpherColorSampler(MedVarColorSampler, MedVarSpherSampler):
 class MedVarNoArmsSampler(MedVarColorSampler):
     """A sampler based on MedVar with spherical and color bias but no arm information.
 
-    more documentation needed ...
+    This sampler uses interventional sampeling for the arm positon. The sampler is intended to
+    produce only validation and test data.
     """
     def sample_arm_position(self, params: SceneParameters, intervention: bool = False):
         """Samples the ``arm_position``.
