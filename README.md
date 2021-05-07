@@ -5,7 +5,7 @@ This repositoy contains the source code, pregenerated datasets and example noteb
 
 Two4Two is a library to create sythetic image data crafted for human evaluations of interpretable ML apoaches (esp. image classification).
 The sythetic images show two abstract animals: **Peaky** (arms inwards) and **Stretchy** (arms outwards). They are smilar looking, abstract animals, made of eight blocks.
-<!-- TODO: add images here -->
+![peaky_and_strecthy](examples/images/peaky_stretchy.png)
 These animals are simple enough to be used in instructions for human-subject evaluations on crowd-sourcing platforms. We also provide segmentation masks so they can be used for algorithmic evaluations as well. The core functionality of this library is that you can correlate different parameters with an animal type to create biase in the data. We utilizes [blender](https://www.blender.org/) to generate these images.
 
 We created this library because we see the choiche of dataset and user study scenario as a mayor obstacle to human subject evaluations.
