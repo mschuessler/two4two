@@ -1,20 +1,24 @@
 # Two4Two: Evaluating Interpretable Machine Learning -- A Synthetic Dataset For Controlled Experiments
 
 ## Introduction
-This repositoy contains the source code, pregenerated datasets and example notebooks for two4two.
-
 Two4Two is a library to create sythetic image data crafted for human evaluations of interpretable ML apoaches (esp. image classification).
 The sythetic images show two abstract animals: **Peaky** (arms inwards) and **Stretchy** (arms outwards). They are smilar looking, abstract animals, made of eight blocks.
+
 ![peaky_and_strecthy](examples/images/peaky_stretchy.png)
-These animals are simple enough to be used in instructions for human-subject evaluations on crowd-sourcing platforms. We also provide segmentation masks so they can be used for algorithmic evaluations as well. The core functionality of this library is that you can correlate different parameters with an animal type to create biase in the data. We utilizes [blender](https://www.blender.org/) to generate these images.
+
+These animals are simple enough to be used in instructions for human-subject evaluations on crowd-sourcing platforms. We also provide segmentation masks so they can be used for algorithmic evaluations as well. The core functionality of this library is that one can correlate different parameters with an animal type to create biase in the data. This repositoy contains the source code which can be used to create custom biases as well as links to pregenerated datasets which may already be sufficent for some experiements.
 
 We created this library because we see the choiche of dataset and user study scenario as a mayor obstacle to human subject evaluations.
-If you want to use this dataset please for scientific purposes please cite our workshop paper (reference will be added after conference).
+If you find this dataset helful please cite our workshop paper (reference will be added after conference).
 
 ## Pregenerated datasets
 Before you generate your own data consider using our pregenerated data of 80,000 images. You do not need to install this software to use this data.
 
-<!-- ADD download links to data and brieg description -->
+[https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz)
+
+We provide a [Colab Notebook](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) that illustrates how you can use this dataset to train your own model.
+
+If you would like to understand how this dataset was generated have a look at [the config that was used to generate it](config/)
 
 ## Installation
 If you want to generate your own data follow these instructions.
