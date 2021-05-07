@@ -36,9 +36,9 @@ valid_generator = datagen.flow_from_dataframe(dataframe=valid_df, directory=vali
 STEP_SIZE_TRAIN = train_generator.n // train_generator.batch_size
 STEP_SIZE_VALID = valid_generator.n // valid_generator.batch_size
 
-checkpoint_filepath = os.path.join("models", "lenet_" + str(dataset_name))
+model_filepath = "lenet_" + str(dataset_name)
 model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
-    filepath=checkpoint_filepath,
+    filepath=model_filepath,
     save_weights_only=False,
     monitor='val_accuracy',
     mode='max',
@@ -46,7 +46,6 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
 
 strategy = tf.distribute.OneDeviceStrategy("device:GPU:0")
 
-model_filepath = "lenet_" + dataset_name
 trained_model_exists = os.path.exists(model_filepath)
 if trained_model_exists:
     modernLenetModel = keras.models.load_model(model_filepath)
