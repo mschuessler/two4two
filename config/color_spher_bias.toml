@@ -49,7 +49,7 @@ output_dir = 'two4two_datasets/no_bias'
 n_processes = 6
 
 [no_bias.train]
-n_samples = 10
+n_samples = 80_000
 
 [no_bias.test]
 n_samples = 3_000
@@ -64,7 +64,7 @@ output_dir = 'two4two_datasets/spherical_bias'
 n_processes = 6
 
 [spherical_bias.train]
-n_samples = 10
+n_samples = 80_000
 
 [spherical_bias.test]
 n_samples = 3_000
@@ -79,7 +79,7 @@ output_dir = 'two4two_datasets/color_bias'
 n_processes = 6
 
 [color_bias.train]
-n_samples = 10
+n_samples = 80_000
 
 [color_bias.test]
 n_samples = 3_000
