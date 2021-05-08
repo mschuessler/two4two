@@ -26,7 +26,12 @@ If you find this dataset helpful, please cite our **[workshop paper](https://arx
 ## Pregenerated datasets
 Before you generate your own data, consider using our **three default datas set of 80,000 images each**. You do not need to install this software to use this data.
 
-[https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz)
+The following package contains training data for 4 datasets, one with no bias, one with a bias on the object color, one with a bias on spherical, and one with the two baises combined.
+- **[https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz)** (7.6 GB)
+
+If you only want the dataset with the two biases the following smaller package is sufficient:
+- **[https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz)** (2.2 GB)
+
 
 We provide a [Colab Notebook](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) that illustrates how you can use this dataset to **train a model that has two biases**.
 
