@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import dataclasses
-from typing import Any, Callable, Dict, Optional, Union
+from typing import Any, Callable, Dict, Optional, Sequence, Union
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -189,6 +189,31 @@ class Sampler:
         while not (min <= value <= max):
             value = Sampler._sample(obj_name, dist, size)
         return value
+
+    def make_interventions(
+        self,
+        params: Sequence[SceneParameters],
+        interventions: Sequence[str],
+    ) -> list[SceneParameters]:
+        """Make multiple interventions on a list of scene parameters.
+
+        Args:
+            sampler: The sampler to use for the interventions.
+            params: SceneParameters to modify.
+            interventions: A list of resampled attributes, e.g `['spherical', 'obj_color']`
+                will first resample spherical and then obj_color.
+
+        Returns:
+            A list of modified `SceneParameters`.
+        """
+
+        copied_params = [param.clone() for param in params]
+
+        for intervention in interventions:
+            for param in copied_params:
+                sample_func = getattr(self, f'sample_{intervention}')
+                sample_func(param, intervention=True)
+        return copied_params
 
     def _sample_name(self) -> str:
         """Convienience function. Returns a sampled obj_name."""
