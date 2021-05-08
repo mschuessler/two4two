@@ -1,4 +1,5 @@
 # Two4Two: Evaluating Interpretable Machine Learning -- A Synthetic Dataset For Controlled Experiments
+![example_images_with_color_bias](examples/images/colorbiased_examples.png)
 
 ## Introduction
 Two4Two is a library to create sythetic image data crafted for human evaluations of interpretable ML apoaches (esp. image classification).
@@ -68,8 +69,8 @@ two4two_render_dataset config/color_spher_bias.toml
 
 ## Training Models on two4two
 For training your own models you have two choices:
-1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets) - you can also run this notebook on your own machine you can find the notebook in [examples/GenerateData.ipynb](examples/GenerateData.ipynb)
-2) Install the installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available:
+1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets) - you can also run this notebook on your own machine you can find the notebook in [examples/train_lenet_colab.ipynb](examples/train_lenet_colab.ipynb)
+2) Install the installation including all requirements for generating your own training data and training your own models**. This will install tensoflow and we recommend to have your own GPU available. After that you can user our [training script](examples/train_lenet.py) (we also have an [untested ResNet implementation](examples/train_resnet.py))
 ```
 pip install .[example_notebooks_model_training]
 wget https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz
