@@ -37,12 +37,20 @@ def render_grid(
         max_number_samples = max(len(peaky_params), len(stretchy_params))
         num_rows = int(math.ceil(max_number_samples / num_cols_per_class))
 
-    fig, ax = plt.subplots(nrows=num_rows,
-                           ncols=num_cols_per_class * 2,
-                           figsize=(20., 20. * num_rows / (num_cols_per_class * 2)))
+    num_cols = num_cols_per_class * 2 + 1
+    fig, ax = plt.subplots(
+        nrows=num_rows,
+        ncols=num_cols,
+        figsize=(2 * num_cols, 2 * num_rows),
+    )
 
     peaky_ax = ax[:, :num_cols_per_class].flatten().tolist()[::-1]
-    stretchy_ax = ax[:, num_cols_per_class:].flatten().tolist()[::-1]
+    ax_title_peaky = ax[0, num_cols_per_class // 2]
+    ax_title_peaky.set_title('Peaky', fontsize=20)
+
+    stretchy_ax = ax[:, num_cols_per_class + 1:].flatten().tolist()[::-1]
+    ax_title_stretchy = ax[0, num_cols_per_class + num_cols_per_class // 2 + 1]
+    ax_title_stretchy.set_title('Stretchy', fontsize=20)
 
     for (img, mask, param) in blender.render(
             params=peaky_params + stretchy_params,
@@ -53,7 +61,7 @@ def render_grid(
         ax1.set_aspect('equal')
         ax1.imshow(img)
 
-    [ax.axis('off') for ax in stretchy_ax + peaky_ax]
+    [a.axis('off') for a in ax.flatten()]
     fig.subplots_adjust(wspace=0, hspace=0)
     return fig, ax
 
