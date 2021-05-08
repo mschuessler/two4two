@@ -2,7 +2,6 @@ blender.tar.xz
 get-pip.py
 blender/
 datasets/
-*.png
 
 
 # Byte-compiled / optimized / DLL files
