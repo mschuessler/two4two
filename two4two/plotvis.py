@@ -48,9 +48,9 @@ def render_grid(
     )
 
     if label_class_axis:
-        ax_title_peaky = ax[0, num_cols_per_class + num_cols_per_class // 2 + 1]
+        ax_title_peaky = ax[0, num_cols_per_class // 2]
         ax_title_peaky.set_title('Peaky', fontsize=20)
-        ax_title_stretchy = ax[0, num_cols_per_class // 2]
+        ax_title_stretchy = ax[0, num_cols_per_class + num_cols_per_class // 2 + 1]
         ax_title_stretchy.set_title('Stretchy', fontsize=20)
 
     peaky_ax = ax[:, :num_cols_per_class].flatten().tolist()[::-1]
