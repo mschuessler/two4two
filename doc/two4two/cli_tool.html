@@ -37,10 +37,13 @@
                                 <a class="variable" href="#RenderSplitArgs.sampler">sampler</a>
                         </li>
                         <li>
-                                <a class="variable" href="#RenderSplitArgs.n_samples">n_samples</a>
+                                <a class="variable" href="#RenderSplitArgs.split">split</a>
                         </li>
                         <li>
                                 <a class="variable" href="#RenderSplitArgs.output_dir">output_dir</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RenderSplitArgs.n_samples">n_samples</a>
                         </li>
                         <li>
                                 <a class="variable" href="#RenderSplitArgs.force_overwrite">force_overwrite</a>
@@ -52,10 +55,7 @@
                                 <a class="variable" href="#RenderSplitArgs.blender_dir">blender_dir</a>
                         </li>
                         <li>
-                                <a class="variable" href="#RenderSplitArgs.resample_attributes">resample_attributes</a>
-                        </li>
-                        <li>
-                                <a class="variable" href="#RenderSplitArgs.n_resample">n_resample</a>
+                                <a class="variable" href="#RenderSplitArgs.interventions">interventions</a>
                         </li>
                         <li>
                                 <a class="variable" href="#RenderSplitArgs.download_blender">download_blender</a>
@@ -63,8 +63,50 @@
                         <li>
                                 <a class="variable" href="#RenderSplitArgs.debug">debug</a>
                         </li>
+                        <li>
+                                <a class="variable" href="#RenderSplitArgs.xgb_n_train">xgb_n_train</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#RenderSplitArgs.xgb_n_test">xgb_n_test</a>
+                        </li>
                 </ul>
 
+            </li>
+            <li>
+                    <a class="class" href="#XGBResult">XGBResult</a>
+                            <ul class="memberlist">
+                        <li>
+                                <a class="function" href="#XGBResult.__init__">XGBResult</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.sampler">sampler</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.interventions">interventions</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.model">model</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.feature_importance">feature_importance</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.accuracy">accuracy</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.n_train">n_train</a>
+                        </li>
+                        <li>
+                                <a class="variable" href="#XGBResult.n_test">n_test</a>
+                        </li>
+                        <li>
+                                <a class="function" href="#XGBResult.print_summary">print_summary</a>
+                        </li>
+                </ul>
+
+            </li>
+            <li>
+                    <a class="function" href="#run_xgb">run_xgb</a>
             </li>
             <li>
                     <a class="function" href="#render_dataset_split">render_dataset_split</a>
@@ -103,10 +145,13 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">pickle</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span>
 
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">toml</span>
 <span class="kn">import</span> <span class="nn">tqdm</span>
+<span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="nn">xgb</span>
 
 <span class="kn">import</span> <span class="nn">two4two</span>
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">utils</span>
@@ -127,15 +172,94 @@
 <span class="sd">        debug: print blender debug information</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sampler</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">split</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">n_processes</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">resample_attributes</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">n_resample</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">interventions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="n">download_blender</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">xgb_n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span>
+    <span class="n">xgb_n_test</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2_000</span>
+
+
+<span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="k">class</span> <span class="nc">XGBResult</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Result of a XGB classifier fitted on a dataset.&quot;&quot;&quot;</span>
+
+    <span class="n">sampler</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBModel</span>
+    <span class="n">feature_importance</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="n">accuracy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">n_train</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_test</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="nf">print_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints summary of the result.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Summary for XGB classifier </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interventions</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interventions: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interventions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test Accuracy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature importances: &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature Name, Importance&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">importance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_importance</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">importance</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">run_xgb</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="p">:</span> <span class="n">two4two</span><span class="o">.</span><span class="n">Sampler</span><span class="p">,</span>
+    <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
+    <span class="n">n_test</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2_000</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">XGBResult</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Trains a XGB model on the given dataset.&quot;&quot;&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_train</span> <span class="o">+</span> <span class="n">n_test</span><span class="p">)]</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">make_interventions</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">interventions</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;spherical&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bending&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_rotation_roll&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_rotation_pitch&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_rotation_yaw&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;fliplr&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;position_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;position_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;arm_position&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_color&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bg_color&#39;</span>
+    <span class="p">]</span>
+
+    <span class="n">df_feat</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">feature_names</span><span class="p">]</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">two4two</span><span class="o">.</span><span class="n">scene_parameters</span><span class="o">.</span><span class="n">OBJ_NAME_TO_INT</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;obj_name&#39;</span><span class="p">]])</span>
+
+    <span class="n">train_X</span> <span class="o">=</span> <span class="n">df_feat</span><span class="p">[:</span><span class="o">-</span><span class="n">n_test</span><span class="p">]</span>
+    <span class="n">test_X</span> <span class="o">=</span> <span class="n">df_feat</span><span class="p">[</span><span class="o">-</span><span class="n">n_test</span><span class="p">:]</span>
+    <span class="n">train_y</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:</span><span class="o">-</span><span class="n">n_test</span><span class="p">]</span>
+    <span class="n">test_y</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="o">-</span><span class="n">n_test</span><span class="p">:]</span>
+
+    <span class="n">xgb_cls</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">gbm</span> <span class="o">=</span> <span class="n">xgb_cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_y</span><span class="p">))</span>
+
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">gbm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">test_X</span><span class="p">)))</span>
+    <span class="n">sampler_cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">XGBResult</span><span class="p">(</span>
+        <span class="n">sampler</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sampler_cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">sampler_cls</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">interventions</span><span class="o">=</span><span class="n">interventions</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">gbm</span><span class="p">,</span>
+        <span class="n">feature_importance</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df_feat</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                    <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">gbm</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">))),</span>
+        <span class="n">accuracy</span><span class="o">=</span><span class="nb">float</span><span class="p">((</span><span class="n">predictions</span> <span class="o">==</span> <span class="n">test_y</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="n">n_train</span><span class="o">=</span><span class="n">n_train</span><span class="p">,</span>
+        <span class="n">n_test</span><span class="o">=</span><span class="n">n_test</span><span class="p">,</span>
+    <span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">render_dataset_split</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">RenderSplitArgs</span><span class="p">):</span>
@@ -146,40 +270,67 @@
     <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">ensure_blender_available</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sampling Parameters...&quot;</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
-    <span class="n">original_params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
 
-    <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">resample_attributes</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_resample</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">original_param</span> <span class="ow">in</span> <span class="n">original_params</span><span class="p">:</span>
-                <span class="c1"># TODO(leon) this is unfortunatly not what we want to do.</span>
-                <span class="c1"># We need to sample from the marginal distribution.</span>
-                <span class="n">param</span> <span class="o">=</span> <span class="n">original_param</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-                <span class="n">sample_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="s1">&#39;sample_&#39;</span> <span class="o">+</span> <span class="n">attr_name</span><span class="p">)</span>
-                <span class="n">sample_method</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
-                <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="n">params_per_split</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">:</span> <span class="n">original_params</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span><span class="p">:</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">intervention_attributes</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">interventions</span><span class="p">:</span>
+        <span class="n">intervention_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">intervention_attributes</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">params_per_split</span><span class="p">[</span><span class="n">intervention_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">make_interventions</span><span class="p">(</span>
+            <span class="n">original_params</span><span class="p">,</span> <span class="n">intervention_attributes</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;sampler.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_pickle</span><span class="p">:</span>
-        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">f_pickle</span><span class="p">)</span>
+    <span class="c1"># first split has no interventions</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;args.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_json</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">f_json</span><span class="p">)</span>
+    <span class="n">interventionss</span> <span class="o">=</span> <span class="p">[(),</span> <span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">interventions</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rendering </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2"> images...&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-        <span class="n">params</span><span class="p">,</span>
-        <span class="n">n_processes</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">n_processes</span><span class="p">,</span>
-        <span class="n">output_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
-        <span class="n">blender_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span>
-        <span class="n">download_blender</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">,</span>
-        <span class="n">print_output</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
-        <span class="n">print_cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
-    <span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)):</span>
-        <span class="k">pass</span>
+    <span class="n">xgb_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">XGBResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">split_name</span><span class="p">,</span> <span class="n">params</span><span class="p">),</span> <span class="n">interventions</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">params_per_split</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">interventionss</span><span class="p">):</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">split_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;sampler.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_pickle</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">f_pickle</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;args.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_json</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">f_json</span><span class="p">)</span>
+
+        <span class="n">xgb_result</span> <span class="o">=</span> <span class="n">run_xgb</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">interventions</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">.</span><span class="n">xgb_n_train</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">xgb_n_test</span><span class="p">)</span>
+        <span class="n">xgb_result</span><span class="o">.</span><span class="n">print_summary</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;xgb_results.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_pickle</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">xgb_result</span><span class="p">,</span> <span class="n">f_pickle</span><span class="p">)</span>
+        <span class="n">xgb_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xgb_result</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rendering </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2"> images...&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+            <span class="n">params</span><span class="p">,</span>
+            <span class="n">n_processes</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">n_processes</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">blender_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span>
+            <span class="n">download_blender</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">,</span>
+            <span class="n">print_output</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+            <span class="n">print_cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+        <span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="n">split_name</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;xgb_accuracies.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_json</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;sampler&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">sampler</span><span class="p">,</span>
+                <span class="s1">&#39;interventions&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">interventions</span><span class="p">,</span>
+                <span class="s1">&#39;feature_importance&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">feature_importance</span><span class="p">,</span>
+                <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">accuracy</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">xgb_results</span><span class="p">],</span> <span class="n">f_json</span><span class="p">)</span>
+    <span class="n">xgb_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xgb_result</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">render_dataset</span><span class="p">(</span>
@@ -214,21 +365,23 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">dataset_configs</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-    <span class="n">config_none_ok</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;resample_attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;n_resample&#39;</span><span class="p">]</span>
+    <span class="n">config_none_ok</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;interventions&#39;</span><span class="p">,</span> <span class="s1">&#39;n_resample&#39;</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">dataset_configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">dataset_configs</span><span class="p">[</span><span class="s1">&#39;dataset&#39;</span><span class="p">]:</span>
         <span class="n">sampler</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sampler&#39;</span><span class="p">)</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;output_dir&#39;</span><span class="p">)</span>
         <span class="n">blender_dir</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="n">default_blender_dir</span><span class="p">)</span>
         <span class="n">n_processes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">n_samples</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">resample_attributes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;resample_attributes&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">())</span>
-        <span class="n">n_resample</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_resample&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">force_overwrite</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">download_blender</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">default_download_blender</span>
         <span class="n">debug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">xgb_n_train</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xgb_n_train&#39;</span><span class="p">,</span> <span class="mi">10_000</span><span class="p">)</span>
+        <span class="n">xgb_n_test</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xgb_n_test&#39;</span><span class="p">,</span> <span class="mi">2_000</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">dset_name</span><span class="p">,</span> <span class="n">dset_args</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">dset_args</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]:</span>
+            <span class="n">dset_name</span> <span class="o">=</span> <span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+
             <span class="k">def</span> <span class="nf">get_arg</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config_none_ok</span><span class="p">:</span>
@@ -238,18 +391,20 @@
 
             <span class="n">cli_args</span> <span class="o">=</span> <span class="n">RenderSplitArgs</span><span class="p">(</span>
                 <span class="n">sampler</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;sampler&#39;</span><span class="p">,</span> <span class="n">sampler</span><span class="p">),</span>
+                <span class="n">split</span><span class="o">=</span><span class="n">dset_name</span><span class="p">,</span>
+                <span class="n">interventions</span><span class="o">=</span><span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;interventions&#39;</span><span class="p">,</span> <span class="p">[]),</span>
                 <span class="n">n_samples</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">),</span>
-                <span class="n">output_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">dset_name</span><span class="p">),</span>
+                <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                 <span class="n">force_overwrite</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="p">),</span>
                 <span class="n">n_processes</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="n">n_processes</span><span class="p">),</span>
                 <span class="n">blender_dir</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="n">blender_dir</span><span class="p">),</span>
-                <span class="n">resample_attributes</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;resample_attributes&#39;</span><span class="p">,</span> <span class="n">resample_attributes</span><span class="p">),</span>
-                <span class="n">n_resample</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_resample&#39;</span><span class="p">,</span> <span class="n">n_resample</span><span class="p">),</span>
                 <span class="n">download_blender</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="n">download_blender</span><span class="p">),</span>
+                <span class="n">xgb_n_train</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;xgb_n_train&#39;</span><span class="p">,</span> <span class="n">xgb_n_train</span><span class="p">),</span>
+                <span class="n">xgb_n_test</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;xgb_n_test&#39;</span><span class="p">,</span> <span class="n">xgb_n_test</span><span class="p">),</span>
                 <span class="n">debug</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dset_args</span><span class="p">):</span>
-                <span class="n">unparsed_keys</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="n">unparsed_keys</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dset_args</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The following keys where to not parsed: </span><span class="si">{</span><span class="n">unparsed_keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">render_dataset_split</span><span class="p">(</span><span class="n">cli_args</span><span class="p">)</span>
 </pre></div>
@@ -282,15 +437,17 @@
 <span class="sd">        debug: print blender debug information</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">sampler</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">split</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">output_dir</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">n_samples</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">force_overwrite</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">n_processes</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">resample_attributes</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="n">n_resample</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">interventions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span>
     <span class="n">download_blender</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">xgb_n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span>
+    <span class="n">xgb_n_test</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2_000</span>
 </pre></div>
 
         </details>
@@ -318,15 +475,17 @@
         
             <span class="name">RenderSplitArgs</span><span class="signature">(
     sampler: str,
-    n_samples: int,
+    split: str,
     output_dir: str,
+    n_samples: int,
     force_overwrite: bool,
     n_processes: int,
     blender_dir: Union[str, NoneType],
-    resample_attributes: Tuple[str],
-    n_resample: int,
+    interventions: &#39;tuple[tuple[str]]&#39;,
     download_blender: bool,
-    debug: bool
+    debug: bool,
+    xgb_n_train: int = 10000,
+    xgb_n_test: int = 2000
 )</span>
     </div>
 
@@ -343,10 +502,10 @@
     
 
                             </div>
-                            <div id="RenderSplitArgs.n_samples" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.n_samples">#&nbsp;&nbsp</a>
+                            <div id="RenderSplitArgs.split" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.split">#&nbsp;&nbsp</a>
 
-        <span class="name">n_samples</span><span class="annotation">: int</span>
+        <span class="name">split</span><span class="annotation">: str</span>
     </div>
 
     
@@ -356,6 +515,15 @@
                                             <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.output_dir">#&nbsp;&nbsp</a>
 
         <span class="name">output_dir</span><span class="annotation">: str</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="RenderSplitArgs.n_samples" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.n_samples">#&nbsp;&nbsp</a>
+
+        <span class="name">n_samples</span><span class="annotation">: int</span>
     </div>
 
     
@@ -388,19 +556,10 @@
     
 
                             </div>
-                            <div id="RenderSplitArgs.resample_attributes" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.resample_attributes">#&nbsp;&nbsp</a>
+                            <div id="RenderSplitArgs.interventions" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.interventions">#&nbsp;&nbsp</a>
 
-        <span class="name">resample_attributes</span><span class="annotation">: Tuple[str]</span>
-    </div>
-
-    
-
-                            </div>
-                            <div id="RenderSplitArgs.n_resample" class="classattr">
-                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.n_resample">#&nbsp;&nbsp</a>
-
-        <span class="name">n_resample</span><span class="annotation">: int</span>
+        <span class="name">interventions</span><span class="annotation">: &#39;tuple[tuple[str]]&#39;</span>
     </div>
 
     
@@ -424,6 +583,251 @@
     
 
                             </div>
+                            <div id="RenderSplitArgs.xgb_n_train" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.xgb_n_train">#&nbsp;&nbsp</a>
+
+        <span class="name">xgb_n_train</span><span class="annotation">: int</span><span class="default_value"> = 10000</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="RenderSplitArgs.xgb_n_test" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.xgb_n_test">#&nbsp;&nbsp</a>
+
+        <span class="name">xgb_n_test</span><span class="annotation">: int</span><span class="default_value"> = 2000</span>
+    </div>
+
+    
+
+                            </div>
+                </section>
+                <section id="XGBResult">
+                                <div class="attr class">
+        <a class="headerlink" href="#XGBResult">#&nbsp;&nbsp</a>
+
+        
+        <span class="def">class</span>
+        <span class="name">XGBResult</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">XGBResult</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Result of a XGB classifier fitted on a dataset.&quot;&quot;&quot;</span>
+
+    <span class="n">sampler</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="n">model</span><span class="p">:</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBModel</span>
+    <span class="n">feature_importance</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
+    <span class="n">accuracy</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">n_train</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">n_test</span><span class="p">:</span> <span class="nb">int</span>
+
+    <span class="k">def</span> <span class="nf">print_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints summary of the result.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Summary for XGB classifier </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interventions</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interventions: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interventions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test Accuracy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature importances: &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature Name, Importance&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">importance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_importance</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">importance</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Result of a XGB classifier fitted on a dataset.</p>
+</div>
+
+
+                            <div id="XGBResult.__init__" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#XGBResult.__init__">#&nbsp;&nbsp</a>
+
+        
+            <span class="name">XGBResult</span><span class="signature">(
+    sampler: str,
+    interventions: Sequence[str],
+    model: xgboost.sklearn.XGBModel,
+    feature_importance: &#39;dict[str, float]&#39;,
+    accuracy: float,
+    n_train: int,
+    n_test: int
+)</span>
+    </div>
+
+        
+    
+
+                            </div>
+                            <div id="XGBResult.sampler" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.sampler">#&nbsp;&nbsp</a>
+
+        <span class="name">sampler</span><span class="annotation">: str</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.interventions" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.interventions">#&nbsp;&nbsp</a>
+
+        <span class="name">interventions</span><span class="annotation">: Sequence[str]</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.model" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.model">#&nbsp;&nbsp</a>
+
+        <span class="name">model</span><span class="annotation">: xgboost.sklearn.XGBModel</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.feature_importance" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.feature_importance">#&nbsp;&nbsp</a>
+
+        <span class="name">feature_importance</span><span class="annotation">: &#39;dict[str, float]&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.accuracy" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.accuracy">#&nbsp;&nbsp</a>
+
+        <span class="name">accuracy</span><span class="annotation">: float</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.n_train" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.n_train">#&nbsp;&nbsp</a>
+
+        <span class="name">n_train</span><span class="annotation">: int</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.n_test" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#XGBResult.n_test">#&nbsp;&nbsp</a>
+
+        <span class="name">n_test</span><span class="annotation">: int</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="XGBResult.print_summary" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#XGBResult.print_summary">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">print_summary</span><span class="signature">(self)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">print_summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prints summary of the result.&quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# Summary for XGB classifier </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sampler</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interventions</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Interventions: </span><span class="si">{</span><span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interventions</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Test Accuracy: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature importances: &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature Name, Importance&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">importance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">feature_importance</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">importance</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Prints summary of the result.</p>
+</div>
+
+
+                            </div>
+                </section>
+                <section id="run_xgb">
+                            <div class="attr function"><a class="headerlink" href="#run_xgb">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">run_xgb</span><span class="signature">(
+    sampler: <a href="bias.html#Sampler">two4two.bias.Sampler</a>,
+    interventions: Sequence[str] = [],
+    n_train: int = 10000,
+    n_test: int = 2000
+) -&gt; <a href="#XGBResult">two4two.cli_tool.XGBResult</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">run_xgb</span><span class="p">(</span>
+    <span class="n">sampler</span><span class="p">:</span> <span class="n">two4two</span><span class="o">.</span><span class="n">Sampler</span><span class="p">,</span>
+    <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span>
+    <span class="n">n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span><span class="p">,</span>
+    <span class="n">n_test</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2_000</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">XGBResult</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Trains a XGB model on the given dataset.&quot;&quot;&quot;</span>
+
+    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_train</span> <span class="o">+</span> <span class="n">n_test</span><span class="p">)]</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">make_interventions</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">interventions</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
+    <span class="n">feature_names</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s1">&#39;spherical&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bending&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_rotation_roll&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_rotation_pitch&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_rotation_yaw&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;fliplr&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;position_x&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;position_y&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;arm_position&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;obj_color&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bg_color&#39;</span>
+    <span class="p">]</span>
+
+    <span class="n">df_feat</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">feature_names</span><span class="p">]</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="n">two4two</span><span class="o">.</span><span class="n">scene_parameters</span><span class="o">.</span><span class="n">OBJ_NAME_TO_INT</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;obj_name&#39;</span><span class="p">]])</span>
+
+    <span class="n">train_X</span> <span class="o">=</span> <span class="n">df_feat</span><span class="p">[:</span><span class="o">-</span><span class="n">n_test</span><span class="p">]</span>
+    <span class="n">test_X</span> <span class="o">=</span> <span class="n">df_feat</span><span class="p">[</span><span class="o">-</span><span class="n">n_test</span><span class="p">:]</span>
+    <span class="n">train_y</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[:</span><span class="o">-</span><span class="n">n_test</span><span class="p">]</span>
+    <span class="n">test_y</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="o">-</span><span class="n">n_test</span><span class="p">:]</span>
+
+    <span class="n">xgb_cls</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+    <span class="n">gbm</span> <span class="o">=</span> <span class="n">xgb_cls</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">train_y</span><span class="p">))</span>
+
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">gbm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">test_X</span><span class="p">)))</span>
+    <span class="n">sampler_cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">sampler</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">XGBResult</span><span class="p">(</span>
+        <span class="n">sampler</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">sampler_cls</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">sampler_cls</span><span class="o">.</span><span class="vm">__qualname__</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="n">interventions</span><span class="o">=</span><span class="n">interventions</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">gbm</span><span class="p">,</span>
+        <span class="n">feature_importance</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">df_feat</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+                                    <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">gbm</span><span class="o">.</span><span class="n">feature_importances_</span><span class="p">))),</span>
+        <span class="n">accuracy</span><span class="o">=</span><span class="nb">float</span><span class="p">((</span><span class="n">predictions</span> <span class="o">==</span> <span class="n">test_y</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()),</span>
+        <span class="n">n_train</span><span class="o">=</span><span class="n">n_train</span><span class="p">,</span>
+        <span class="n">n_test</span><span class="o">=</span><span class="n">n_test</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Trains a XGB model on the given dataset.</p>
+</div>
+
+
                 </section>
                 <section id="render_dataset_split">
                             <div class="attr function"><a class="headerlink" href="#render_dataset_split">#&nbsp;&nbsp</a>
@@ -443,40 +847,67 @@
     <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">ensure_blender_available</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sampling Parameters...&quot;</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
-    <span class="n">original_params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+    <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
 
-    <span class="k">for</span> <span class="n">attr_name</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">resample_attributes</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_resample</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">original_param</span> <span class="ow">in</span> <span class="n">original_params</span><span class="p">:</span>
-                <span class="c1"># TODO(leon) this is unfortunatly not what we want to do.</span>
-                <span class="c1"># We need to sample from the marginal distribution.</span>
-                <span class="n">param</span> <span class="o">=</span> <span class="n">original_param</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
-                <span class="n">sample_method</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="s1">&#39;sample_&#39;</span> <span class="o">+</span> <span class="n">attr_name</span><span class="p">)</span>
-                <span class="n">sample_method</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
-                <span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+    <span class="n">params_per_split</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">:</span> <span class="n">original_params</span><span class="p">,</span>
+    <span class="p">}</span>
 
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span><span class="p">:</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">intervention_attributes</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">interventions</span><span class="p">:</span>
+        <span class="n">intervention_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">intervention_attributes</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">params_per_split</span><span class="p">[</span><span class="n">intervention_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">make_interventions</span><span class="p">(</span>
+            <span class="n">original_params</span><span class="p">,</span> <span class="n">intervention_attributes</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;sampler.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_pickle</span><span class="p">:</span>
-        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">f_pickle</span><span class="p">)</span>
+    <span class="c1"># first split has no interventions</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;args.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_json</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">f_json</span><span class="p">)</span>
+    <span class="n">interventionss</span> <span class="o">=</span> <span class="p">[(),</span> <span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">interventions</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rendering </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2"> images...&quot;</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-        <span class="n">params</span><span class="p">,</span>
-        <span class="n">n_processes</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">n_processes</span><span class="p">,</span>
-        <span class="n">output_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
-        <span class="n">blender_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span>
-        <span class="n">download_blender</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">,</span>
-        <span class="n">print_output</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
-        <span class="n">print_cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
-    <span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)):</span>
-        <span class="k">pass</span>
+    <span class="n">xgb_results</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">XGBResult</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">split_name</span><span class="p">,</span> <span class="n">params</span><span class="p">),</span> <span class="n">interventions</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+            <span class="n">params_per_split</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">interventionss</span><span class="p">):</span>
+        <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">split_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">force_overwrite</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">output_dir</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;sampler.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_pickle</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">f_pickle</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;args.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_json</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataclasses</span><span class="o">.</span><span class="n">asdict</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="n">f_json</span><span class="p">)</span>
+
+        <span class="n">xgb_result</span> <span class="o">=</span> <span class="n">run_xgb</span><span class="p">(</span><span class="n">sampler</span><span class="p">,</span> <span class="n">interventions</span><span class="p">,</span>
+                             <span class="n">args</span><span class="o">.</span><span class="n">xgb_n_train</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">xgb_n_test</span><span class="p">)</span>
+        <span class="n">xgb_result</span><span class="o">.</span><span class="n">print_summary</span><span class="p">()</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;xgb_results.pickle&#39;</span><span class="p">),</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_pickle</span><span class="p">:</span>
+            <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">xgb_result</span><span class="p">,</span> <span class="n">f_pickle</span><span class="p">)</span>
+        <span class="n">xgb_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xgb_result</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rendering </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="si">}</span><span class="s2"> images...&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">tqdm</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+            <span class="n">params</span><span class="p">,</span>
+            <span class="n">n_processes</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">n_processes</span><span class="p">,</span>
+            <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">blender_dir</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span>
+            <span class="n">download_blender</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">,</span>
+            <span class="n">print_output</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+            <span class="n">print_cmd</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">debug</span><span class="p">,</span>
+        <span class="p">),</span> <span class="n">total</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="n">split_name</span><span class="p">):</span>
+            <span class="k">pass</span>
+
+    <span class="n">output_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">split</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;xgb_accuracies.json&#39;</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f_json</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">([</span>
+            <span class="p">{</span>
+                <span class="s1">&#39;sampler&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">sampler</span><span class="p">,</span>
+                <span class="s1">&#39;interventions&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">interventions</span><span class="p">,</span>
+                <span class="s1">&#39;feature_importance&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">feature_importance</span><span class="p">,</span>
+                <span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">accuracy</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">xgb_results</span><span class="p">],</span> <span class="n">f_json</span><span class="p">)</span>
+    <span class="n">xgb_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xgb_result</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -532,21 +963,23 @@
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">dataset_configs</span> <span class="o">=</span> <span class="n">toml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-    <span class="n">config_none_ok</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;resample_attributes&#39;</span><span class="p">,</span> <span class="s1">&#39;n_resample&#39;</span><span class="p">]</span>
+    <span class="n">config_none_ok</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="s1">&#39;interventions&#39;</span><span class="p">,</span> <span class="s1">&#39;n_resample&#39;</span><span class="p">]</span>
 
-    <span class="k">for</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">dataset_configs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">dataset_configs</span><span class="p">[</span><span class="s1">&#39;dataset&#39;</span><span class="p">]:</span>
         <span class="n">sampler</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sampler&#39;</span><span class="p">)</span>
         <span class="n">output_dir</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;output_dir&#39;</span><span class="p">)</span>
         <span class="n">blender_dir</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="n">default_blender_dir</span><span class="p">)</span>
         <span class="n">n_processes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">n_samples</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="n">resample_attributes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;resample_attributes&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">())</span>
-        <span class="n">n_resample</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_resample&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="n">force_overwrite</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">download_blender</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">default_download_blender</span>
         <span class="n">debug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">xgb_n_train</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xgb_n_train&#39;</span><span class="p">,</span> <span class="mi">10_000</span><span class="p">)</span>
+        <span class="n">xgb_n_test</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xgb_n_test&#39;</span><span class="p">,</span> <span class="mi">2_000</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">dset_name</span><span class="p">,</span> <span class="n">dset_args</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">dset_args</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;split&#39;</span><span class="p">]:</span>
+            <span class="n">dset_name</span> <span class="o">=</span> <span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+
             <span class="k">def</span> <span class="nf">get_arg</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config_none_ok</span><span class="p">:</span>
@@ -556,18 +989,20 @@
 
             <span class="n">cli_args</span> <span class="o">=</span> <span class="n">RenderSplitArgs</span><span class="p">(</span>
                 <span class="n">sampler</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;sampler&#39;</span><span class="p">,</span> <span class="n">sampler</span><span class="p">),</span>
+                <span class="n">split</span><span class="o">=</span><span class="n">dset_name</span><span class="p">,</span>
+                <span class="n">interventions</span><span class="o">=</span><span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;interventions&#39;</span><span class="p">,</span> <span class="p">[]),</span>
                 <span class="n">n_samples</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">),</span>
-                <span class="n">output_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">dset_name</span><span class="p">),</span>
+                <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                 <span class="n">force_overwrite</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="p">),</span>
                 <span class="n">n_processes</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="n">n_processes</span><span class="p">),</span>
                 <span class="n">blender_dir</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="n">blender_dir</span><span class="p">),</span>
-                <span class="n">resample_attributes</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;resample_attributes&#39;</span><span class="p">,</span> <span class="n">resample_attributes</span><span class="p">),</span>
-                <span class="n">n_resample</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_resample&#39;</span><span class="p">,</span> <span class="n">n_resample</span><span class="p">),</span>
                 <span class="n">download_blender</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="n">download_blender</span><span class="p">),</span>
+                <span class="n">xgb_n_train</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;xgb_n_train&#39;</span><span class="p">,</span> <span class="n">xgb_n_train</span><span class="p">),</span>
+                <span class="n">xgb_n_test</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;xgb_n_test&#39;</span><span class="p">,</span> <span class="n">xgb_n_test</span><span class="p">),</span>
                 <span class="n">debug</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="n">debug</span><span class="p">),</span>
             <span class="p">)</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dset_args</span><span class="p">):</span>
-                <span class="n">unparsed_keys</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+                <span class="n">unparsed_keys</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">dset_args</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The following keys where to not parsed: </span><span class="si">{</span><span class="n">unparsed_keys</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="n">render_dataset_split</span><span class="p">(</span><span class="n">cli_args</span><span class="p">)</span>
 </pre></div>
