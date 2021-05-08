@@ -26,7 +26,7 @@ If you find this dataset helpful, please cite our **[workshop paper](https://arx
 ## Pregenerated datasets
 Before you generate your own data, consider using our **suggested default data set of 80,000 images**. You do not need to install this software to use this data.
 
-[https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz)
+[https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz)
 
 We provide a [Colab Notebook](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) that illustrates how you can use this dataset to **train a model that has two biases**.
 
@@ -73,9 +73,12 @@ For training your own models, you have two choices:
 2) Install the installation, including all requirements for generating your own training data and training your own models**. This will install TensorFlow, and we recommend having a GPU available. After that you can user our [training script](examples/train_lenet.py) (we also have an [untested ResNet implementation](examples/train_resnet.py))
 ```
 pip install .[example_notebooks_model_training]
-wget https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz
-tar -xf golden80k.tar.gz
+wget https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz
+tar -xf golden240k.tar.gz
 python two4two/examples/train_lenet.py spherical_color_bias
+python two4two/examples/train_lenet.py color_bias
+python two4two/examples/train_lenet.py spherical_bias
+python two4two/examples/train_lenet.py no_bias
 ```
 
 ## Generate your own dataset
