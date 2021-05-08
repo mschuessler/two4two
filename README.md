@@ -24,7 +24,7 @@ We created this library because we see the choice of dataset and user study scen
 If you find this dataset helpful, please cite our **[workshop paper](https://arxiv.org/abs/2105.02825)** (full reference will be added after the conference).
 
 ## Pregenerated datasets
-Before you generate your own data, consider using our **suggested default data set of 80,000 images**. You do not need to install this software to use this data.
+Before you generate your own data, consider using our **three default datas set of 80,000 images each**. You do not need to install this software to use this data.
 
 [https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz)
 
