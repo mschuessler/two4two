@@ -81,6 +81,7 @@ python two4two/examples/train_lenet.py spherical_color_bias
 ## Generate your own dataset
 The jupyter-notebook **[examples/GenerateData.ipynb](examples/GenerateData.ipynb)** provides extensive details on how you can create your own *custom* data.
 There are countless option to add biases to your custom dataset. The notebook is a great place to get started.
+More code-savy folks may want got get started with *[bias.py](two4two/bias.py)* directly.
 
 
 ### Funding
