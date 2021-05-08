@@ -19,9 +19,10 @@ def test_cli_tool(tmp_path: pathlib.Path):
 
     cli_tool.render_dataset(config_fname)
 
-    assert (tmp_path / 'no_bias' / 'train').exists()
-    assert (tmp_path / 'no_bias' / 'train' / 'parameters.jsonl').exists()
-    assert len(list((tmp_path / 'no_bias' / 'train').iterdir())) > 3
+    for split in ['train', 'train_spherical', 'train_spherical_arm_position']:
+        assert (tmp_path / 'no_bias' / split).exists()
+        assert (tmp_path / 'no_bias' / split / 'parameters.jsonl').exists()
+        assert len(list((tmp_path / 'no_bias' / split).iterdir())) > 3
 
     param_fname = str(tmp_path / 'no_bias' / 'train' / 'parameters.jsonl')
     dataset_dir = str(tmp_path / 'no_bias' / 'train')

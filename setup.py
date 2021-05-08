@@ -38,8 +38,10 @@ setuptools.setup(
         'numpy',
         'pandas',
         'scipy',
+        'sklearn',
         'toml',
         'tqdm',
+        'xgboost',
     ],
     extras_require={
         'dev': [
