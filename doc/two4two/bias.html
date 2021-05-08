@@ -82,9 +82,6 @@
                                 <a class="function" href="#Sampler.sample">sample</a>
                         </li>
                         <li>
-                                <a class="function" href="#Sampler.make_interventions">make_interventions</a>
-                        </li>
-                        <li>
                                 <a class="function" href="#Sampler.sample_obj_name">sample_obj_name</a>
                         </li>
                         <li>
@@ -283,7 +280,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">dataclasses</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">matplotlib</span> <span class="k">as</span> <span class="nn">mpl</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -469,31 +466,6 @@
         <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">min</span> <span class="o">&lt;=</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="nb">max</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="n">Sampler</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
-
-    <span class="k">def</span> <span class="nf">make_interventions</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-        <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Make multiple interventions on a list of scene parameters.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            sampler: The sampler to use for the interventions.</span>
-<span class="sd">            params: SceneParameters to modify.</span>
-<span class="sd">            interventions: A list of resampled attributes, e.g `[&#39;spherical&#39;, &#39;obj_color&#39;]`</span>
-<span class="sd">                will first resample spherical and then obj_color.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A list of modified `SceneParameters`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">copied_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">intervention</span> <span class="ow">in</span> <span class="n">interventions</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">copied_params</span><span class="p">:</span>
-                <span class="n">sample_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;sample_</span><span class="si">{</span><span class="n">intervention</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">sample_func</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">copied_params</span>
 
     <span class="k">def</span> <span class="nf">_sample_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convienience function. Returns a sampled obj_name.&quot;&quot;&quot;</span>
@@ -1018,31 +990,6 @@
             <span class="n">value</span> <span class="o">=</span> <span class="n">Sampler</span><span class="o">.</span><span class="n">_sample</span><span class="p">(</span><span class="n">obj_name</span><span class="p">,</span> <span class="n">dist</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span>
 
-    <span class="k">def</span> <span class="nf">make_interventions</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-        <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Make multiple interventions on a list of scene parameters.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            sampler: The sampler to use for the interventions.</span>
-<span class="sd">            params: SceneParameters to modify.</span>
-<span class="sd">            interventions: A list of resampled attributes, e.g `[&#39;spherical&#39;, &#39;obj_color&#39;]`</span>
-<span class="sd">                will first resample spherical and then obj_color.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A list of modified `SceneParameters`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">copied_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">intervention</span> <span class="ow">in</span> <span class="n">interventions</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">copied_params</span><span class="p">:</span>
-                <span class="n">sample_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;sample_</span><span class="si">{</span><span class="n">intervention</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">sample_func</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">copied_params</span>
-
     <span class="k">def</span> <span class="nf">_sample_name</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Convienience function. Returns a sampled obj_name.&quot;&quot;&quot;</span>
         <span class="c1"># obj_name is set to none, because the sampleing of the name should be, per definitiion,</span>
@@ -1506,68 +1453,6 @@ the sampling of the attribute might be dependent on the label
 <blockquote>
   <p>obj_name: Overides the sampled obj_name with the given namen. Usally only useful for
       manual sampling. Not recommeded when samplign larger sets.</p>
-</blockquote>
-</div>
-
-
-                            </div>
-                            <div id="Sampler.make_interventions" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#Sampler.make_interventions">#&nbsp;&nbsp</a>
-
-        
-            <span class="def">def</span>
-            <span class="name">make_interventions</span><span class="signature">(
-    self,
-    params: Sequence[<a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a>],
-    interventions: Sequence[str]
-) -&gt; &#39;list[SceneParameters]&#39;</span>:
-    </div>
-
-                <details>
-            <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">make_interventions</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">params</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">],</span>
-        <span class="n">interventions</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SceneParameters</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Make multiple interventions on a list of scene parameters.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            sampler: The sampler to use for the interventions.</span>
-<span class="sd">            params: SceneParameters to modify.</span>
-<span class="sd">            interventions: A list of resampled attributes, e.g `[&#39;spherical&#39;, &#39;obj_color&#39;]`</span>
-<span class="sd">                will first resample spherical and then obj_color.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            A list of modified `SceneParameters`.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">copied_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">]</span>
-
-        <span class="k">for</span> <span class="n">intervention</span> <span class="ow">in</span> <span class="n">interventions</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">copied_params</span><span class="p">:</span>
-                <span class="n">sample_func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;sample_</span><span class="si">{</span><span class="n">intervention</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">sample_func</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">copied_params</span>
-</pre></div>
-
-        </details>
-
-            <div class="docstring"><p>Make multiple interventions on a list of scene parameters.</p>
-
-<h6 id="args">Args</h6>
-
-<ul>
-<li><strong>sampler:</strong>  The sampler to use for the interventions.</li>
-<li><strong>params:</strong>  SceneParameters to modify.</li>
-<li><strong>interventions:</strong>  A list of resampled attributes, e.g <code>['spherical', 'obj_color']</code>
-will first resample spherical and then obj_color.</li>
-</ul>
-
-<h6 id="returns">Returns</h6>
-
-<blockquote>
-  <p>A list of modified <code>SceneParameters</code>.</p>
 </blockquote>
 </div>
 
@@ -2299,7 +2184,6 @@ color biases easier to spot.</p>
                 <dd id="SimpleColorMapSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
                 <dd id="SimpleColorMapSampler.obj_color" class="variable"><a href="#Sampler.obj_color">obj_color</a></dd>
                 <dd id="SimpleColorMapSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="SimpleColorMapSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="SimpleColorMapSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="SimpleColorMapSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="SimpleColorMapSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
@@ -2411,7 +2295,6 @@ color biases easier to spot.</p>
                 <dd id="ColorBiasedSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
                 <dd id="ColorBiasedSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
                 <dd id="ColorBiasedSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="ColorBiasedSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="ColorBiasedSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="ColorBiasedSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="ColorBiasedSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
@@ -2545,7 +2428,6 @@ challenging datset.</p>
                 <dd id="HighVariationSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="HighVariationSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="HighVariationSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="HighVariationSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="HighVariationSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="HighVariationSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="HighVariationSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
@@ -2658,7 +2540,6 @@ challenging datset. This dataset is more challenging. So the bias is more likely
                 <dd id="HighVariationColorBiasedSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="HighVariationColorBiasedSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="HighVariationColorBiasedSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
@@ -2830,7 +2711,6 @@ a model.</p>
                 <dd id="MedVarColorSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarColorSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="MedVarColorSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="MedVarColorSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
@@ -2975,7 +2855,6 @@ avoid introducing a bias.</p>
                 <dd id="MedVarSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="MedVarSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="MedVarSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
@@ -3144,7 +3023,6 @@ the model if it provides information on the challenging cases.</p>
                 <dd id="MedVarSpherSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarSpherSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSpherSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="MedVarSpherSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarSpherSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="MedVarSpherSampler.sample_bending" class="function"><a href="#Sampler.sample_bending">sample_bending</a></dd>
@@ -3246,7 +3124,6 @@ the model if it provides information on the challenging cases.</p>
                 <dd id="MedVarSpherColorSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarSpherColorSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSpherColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="MedVarSpherColorSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_bending" class="function"><a href="#Sampler.sample_bending">sample_bending</a></dd>
@@ -3391,7 +3268,6 @@ produce only validation and test data.</p>
                 <dd id="MedVarNoArmsSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarNoArmsSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarNoArmsSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
-                <dd id="MedVarNoArmsSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_spherical" class="function"><a href="#Sampler.sample_spherical">sample_spherical</a></dd>
