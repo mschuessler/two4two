@@ -185,7 +185,7 @@ class SceneParameters:
         state = copy.copy(state)
         module = state.pop('__module__')
         cls_name = state.pop('__name__')
-        state.pop('label')
+        state.pop('label', None)
 
         module = importlib.import_module(module)
         cls = getattr(module, cls_name)
