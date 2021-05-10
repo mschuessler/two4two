@@ -77,7 +77,7 @@ else:
 datasets = ["spherical_color_bias", "no_arms", "no_bias", "spherical_bias", "color_bias"]
 results = pd.DataFrame(index=datasets, columns=datasets)
 for test_dataset_name in datasets:
-    data_dir = os.path.join("datasets", test_dataset_name)
+    data_dir = os.path.join("two4two_datasets", test_dataset_name)
     data_dir = pathlib.Path(data_dir)
 
     test_dir = os.path.join(data_dir, "test")
