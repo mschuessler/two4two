@@ -41,7 +41,7 @@ setuptools.setup(
         'sklearn',
         'toml',
         'tqdm',
-        'xgboost',
+        'xgboost<1.4.0',
     ],
     extras_require={
         'dev': [
