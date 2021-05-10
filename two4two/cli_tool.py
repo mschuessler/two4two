@@ -37,16 +37,63 @@ class RenderSplitArgs:
     """
     sampler: str
     split: str
+    split_interventions: tuple[str, ...]
     output_dir: str
     n_samples: int
     force_overwrite: bool
     n_processes: int
     blender_dir: Optional[str]
-    interventions: tuple[tuple[str]]
+    interventions: tuple[tuple[str, ...], ...]
     download_blender: bool
     debug: bool
     xgb_n_train: int = 10_000
     xgb_n_test: int = 2_000
+
+    def get_original(self) -> InterventionArgs:
+        """Returns the original split without any interventions."""
+        return InterventionArgs(
+            modified_attributes=self.split_interventions,
+            split_args=self,
+            dirname=self.split,
+
+        )
+
+    def get_interventions(self) -> Sequence[InterventionArgs]:
+        """Returns the all the interventions."""
+        return [
+            InterventionArgs(
+                modified_attributes=interventions,
+                split_args=self,
+                dirname=f'{self.split}_{"_".join(interventions)}',
+            )
+            for interventions in self.interventions]
+
+
+@dataclasses.dataclass(frozen=True)
+class InterventionArgs:
+    """Arguments for a single intervention split.
+
+    Args:
+        modified_attributes: List of attributes to resample.
+        split_args: The render arguments of the split.
+        dirname: Directory name
+    """
+    modified_attributes: tuple[str, ...]
+    split_args: RenderSplitArgs
+    dirname: str
+
+    def is_original(self) -> bool:
+        """Returns `True` if not interventions are done."""
+        return (self.modified_attributes == self.split_args
+                and self.dirname == self.split_args.split)
+
+    def get_original_split(self) -> InterventionArgs:
+        """Returns the original split without any interventions."""
+        return InterventionArgs(
+            modified_attributes=self.split_args.split_interventions,
+            split_args=self.split_args,
+            dirname=self.split_args.split,
+        )
 
 
 @dataclasses.dataclass
@@ -137,21 +184,18 @@ def render_dataset_split(args: RenderSplitArgs):
     original_params = [sampler.sample() for _ in tqdm.trange(args.n_samples)]
 
     params_per_split = {
-        args.split: original_params,
+        args.get_original(): original_params,
     }
 
-    for intervention_attributes in args.interventions:
-        intervention_key = f'{args.split}_{"_".join(intervention_attributes)}'
-        params_per_split[intervention_key] = sampler.make_interventions(
-            original_params, intervention_attributes)
+    interventions = args.get_interventions()
 
-    # first split has no interventions
-
-    interventionss = [(), ] + list(args.interventions)  # type: ignore
+    for intervention in interventions:
+        params_per_split[intervention] = sampler.make_interventions(
+            original_params, intervention.modified_attributes)
 
     xgb_results: list[XGBResult] = []
-    for (split_name, params), interventions in zip(
-            params_per_split.items(), interventionss):
+    for (intervention, params) in params_per_split.items():
+        split_name = intervention.dirname
         output_dir = os.path.join(args.output_dir, split_name)
         if os.path.exists(output_dir) and args.force_overwrite:
             shutil.rmtree(output_dir)
@@ -161,10 +205,10 @@ def render_dataset_split(args: RenderSplitArgs):
         with open(os.path.join(output_dir, 'sampler.pickle'), 'wb') as f_pickle:
             pickle.dump(sampler, f_pickle)
 
-        with open(os.path.join(output_dir, 'args.json'), 'w') as f_json:
-            json.dump(dataclasses.asdict(args), f_json)
+        with open(os.path.join(output_dir, 'intervention.json'), 'w') as f_json:
+            json.dump(dataclasses.asdict(intervention), f_json)
 
-        xgb_result = run_xgb(sampler, interventions,
+        xgb_result = run_xgb(sampler, intervention.modified_attributes,
                              args.xgb_n_train, args.xgb_n_test)
         xgb_result.print_summary()
 
@@ -194,6 +238,10 @@ def render_dataset_split(args: RenderSplitArgs):
                 'accuracy': r.accuracy,
             }
             for r in xgb_results], f_json)
+
+    with open(os.path.join(output_dir, 'split_args.json'), 'w') as f_json:
+        json.dump(dataclasses.asdict(args), f_json)
+
     xgb_results.append(xgb_result)
 
 
@@ -233,6 +281,7 @@ def render_dataset(
 
     for config in dataset_configs['dataset']:
         sampler = config.pop('sampler')
+        split_interventions = tuple(config.pop('split_interventions', []))
         output_dir = config.pop('output_dir')
         blender_dir = config.pop('blender_dir', default_blender_dir)
         n_processes = config.pop('n_processes', 6)
@@ -253,10 +302,17 @@ def render_dataset(
                         f"No value given for {name} in dataset {dset_name}.")
                 return val
 
+            interventions_list = dset_args.pop('interventions', [])
+            interventions = tuple(tuple(intervention)
+                                  for intervention in interventions_list)
+
+            split_interventions = tuple(get_arg(
+                'split_interventions', split_interventions))
             cli_args = RenderSplitArgs(
                 sampler=get_arg('sampler', sampler),
                 split=dset_name,
-                interventions=dset_args.pop('interventions', []),
+                split_interventions=split_interventions,
+                interventions=interventions,
                 n_samples=get_arg('n_samples', n_samples),
                 output_dir=output_dir,
                 force_overwrite=get_arg('force_overwrite', force_overwrite),
