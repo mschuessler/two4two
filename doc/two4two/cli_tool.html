@@ -262,6 +262,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">InterventionArgs</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Loads InterventionArgs from dictonary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">InterventionArgs</span><span class="p">(</span>
             <span class="n">modified_attributes</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;modified_attributes&#39;</span><span class="p">]),</span>
             <span class="n">split_args</span><span class="o">=</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;split_args&#39;</span><span class="p">]),</span>
@@ -283,6 +284,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a unique key of split and all interventions.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_attributes</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_args</span><span class="o">.</span><span class="n">split</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified_attributes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -825,6 +827,7 @@
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">InterventionArgs</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Loads InterventionArgs from dictonary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">InterventionArgs</span><span class="p">(</span>
             <span class="n">modified_attributes</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;modified_attributes&#39;</span><span class="p">]),</span>
             <span class="n">split_args</span><span class="o">=</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;split_args&#39;</span><span class="p">]),</span>
@@ -846,6 +849,7 @@
         <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a unique key of split and all interventions.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_attributes</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_args</span><span class="o">.</span><span class="n">split</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified_attributes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -921,6 +925,7 @@
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="n">state</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">InterventionArgs</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Loads InterventionArgs from dictonary.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">InterventionArgs</span><span class="p">(</span>
             <span class="n">modified_attributes</span><span class="o">=</span><span class="nb">tuple</span><span class="p">(</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;modified_attributes&#39;</span><span class="p">]),</span>
             <span class="n">split_args</span><span class="o">=</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">state</span><span class="p">[</span><span class="s1">&#39;split_args&#39;</span><span class="p">]),</span>
@@ -930,7 +935,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Loads InterventionArgs from dictonary.</p>
+</div>
+
 
                             </div>
                             <div id="InterventionArgs.is_original" class="classattr">
@@ -994,6 +1001,7 @@
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">get_key</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a unique key of split and all interventions.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_attributes</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">split_args</span><span class="o">.</span><span class="n">split</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">modified_attributes</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1002,7 +1010,9 @@
 
         </details>
 
-    
+            <div class="docstring"><p>Returns a unique key of split and all interventions.</p>
+</div>
+
 
                             </div>
                 </section>
