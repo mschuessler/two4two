@@ -82,10 +82,20 @@ class InterventionArgs:
     split_args: RenderSplitArgs
     dirname: str
 
+    @staticmethod
+    def from_dict(state: dict[str, Any]) -> InterventionArgs:
+        """Loads InterventionArgs from dictonary."""
+        return InterventionArgs(
+            modified_attributes=tuple(state['modified_attributes']),
+            split_args=RenderSplitArgs(**state['split_args']),
+            dirname=state['dirname'],
+        )
+
     def is_original(self) -> bool:
-        """Returns `True` if not interventions are done."""
-        return (self.modified_attributes == self.split_args
-                and self.dirname == self.split_args.split)
+        """Returns `True` if no interventions are done."""
+        return (
+            self.modified_attributes == tuple(self.split_args.split_interventions)
+            and self.dirname == self.split_args.split)
 
     def get_original_split(self) -> InterventionArgs:
         """Returns the original split without any interventions."""
@@ -94,6 +104,13 @@ class InterventionArgs:
             split_args=self.split_args,
             dirname=self.split_args.split,
         )
+
+    def get_key(self) -> str:
+        """Returns a unique key of split and all interventions."""
+        if self.modified_attributes:
+            return self.split_args.split + '_' + '_'.join(self.modified_attributes)
+        else:
+            return self.split_args.split
 
 
 @dataclasses.dataclass
