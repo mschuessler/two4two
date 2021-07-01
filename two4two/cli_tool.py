@@ -21,7 +21,7 @@ import two4two
 from two4two import utils
 
 
-@dataclasses.dataclass(frozen=True)
+@dataclasses.dataclass
 class RenderSplitArgs:
     """Comand line arguments.
 
@@ -69,8 +69,13 @@ class RenderSplitArgs:
             )
             for interventions in self.interventions]
 
+    def load_sampler(self) -> two4two.Sampler:
+        """Returns the sampler object."""
+        sampler_cls = utils.import_class(*utils.split_class(self.sampler))
+        return sampler_cls(**self.sampler_config)
 
-@dataclasses.dataclass(frozen=True)
+
+@dataclasses.dataclass
 class InterventionArgs:
     """Arguments for a single intervention split.
 
@@ -193,26 +198,27 @@ def run_xgb(
 
 def render_dataset_split(args: RenderSplitArgs):
     """Samples and renders a single split of the dataset."""
-    sampler_cls = utils.import_class(*utils.split_class(args.sampler))
-    sampler: two4two.Sampler = sampler_cls(**args.sampler_config)
+    sampler = args.load_sampler()
 
     two4two.blender.ensure_blender_available(args.blender_dir, args.download_blender)
 
     print("Sampling Parameters...")
     original_params = [sampler.sample() for _ in tqdm.trange(args.n_samples)]
 
+    original_args = args.get_original()
     params_per_split = {
-        args.get_original(): original_params,
+        original_args.get_key(): (original_args, original_params)
     }
 
     interventions = args.get_interventions()
 
     for intervention in interventions:
-        params_per_split[intervention] = sampler.make_interventions(
+        intervention_params = sampler.make_interventions(
             original_params, intervention.modified_attributes)
 
+        params_per_split[intervention.get_key()] = (intervention, intervention_params)
     xgb_results: list[XGBResult] = []
-    for (intervention, params) in params_per_split.items():
+    for key, (intervention, params) in params_per_split.items():
         split_name = intervention.dirname
         output_dir = os.path.join(args.output_dir, split_name)
         if os.path.exists(output_dir) and args.force_overwrite:
@@ -263,6 +269,69 @@ def render_dataset_split(args: RenderSplitArgs):
     xgb_results.append(xgb_result)
 
 
+def load_configs(
+    config_file: str,
+    default_blender_dir: Optional[str] = None,
+    default_download_blender: bool = False,
+) -> list[RenderSplitArgs]:
+    """Loads the config to render each dataset split."""
+    with open(config_file) as f:
+        dataset_configs = toml.load(f)
+
+    config_none_ok = ['blender_dir', 'interventions', 'n_resample']
+
+    args = []
+    for config in dataset_configs['dataset']:
+        sampler = config.pop('sampler')
+        sampler_config = config.pop('sampler_config', {})
+        split_interventions = tuple(config.pop('split_interventions', []))
+        output_dir = config.pop('output_dir')
+        blender_dir = config.pop('blender_dir', default_blender_dir)
+        n_processes = config.pop('n_processes', 6)
+        n_samples = config.pop('n_samples', None)
+        force_overwrite = config.pop('force_overwrite', False)
+        download_blender = config.pop('download_blender', False) or default_download_blender
+        debug = config.pop('debug', False)
+        xgb_n_train = config.pop('xgb_n_train', 10_000)
+        xgb_n_test = config.pop('xgb_n_test', 2_000)
+
+        for dset_args in config['split']:
+            dset_name = dset_args.pop('name')
+
+            def get_arg(name: str, default: Any) -> Any:
+                val = dset_args.pop(name, default)
+                if val is None and name not in config_none_ok:
+                    raise ValueError(
+                        f"No value given for {name} in dataset {dset_name}.")
+                return val
+
+            interventions_list = dset_args.pop('interventions', [])
+            interventions = tuple(tuple(intervention)
+                                  for intervention in interventions_list)
+
+            split_interventions = tuple(get_arg(
+                'split_interventions', split_interventions))
+            sampler_config.update(dset_args.pop('sampler_config', {}))
+            cli_args = RenderSplitArgs(
+                sampler=get_arg('sampler', sampler),
+                sampler_config=sampler_config,
+                split=dset_name,
+                split_interventions=split_interventions,
+                interventions=interventions,
+                n_samples=get_arg('n_samples', n_samples),
+                output_dir=output_dir,
+                force_overwrite=get_arg('force_overwrite', force_overwrite),
+                n_processes=get_arg('n_processes', n_processes),
+                blender_dir=get_arg('blender_dir', blender_dir),
+                download_blender=get_arg('download_blender', download_blender),
+                xgb_n_train=get_arg('xgb_n_train', xgb_n_train),
+                xgb_n_test=get_arg('xgb_n_test', xgb_n_test),
+                debug=get_arg('debug', debug),
+            )
+            args.append(cli_args)
+    return args
+
+
 def render_dataset(
     config_file: Optional[str] = None,
     default_blender_dir: Optional[str] = None,
@@ -292,58 +361,10 @@ def render_dataset(
         default_blender_dir = args.blender_dir
         default_download_blender = args.download_blender
 
-    with open(config_file) as f:
-        dataset_configs = toml.load(f)
+    configs = load_configs(
+        config_file,
+        default_blender_dir,
+        default_download_blender)
 
-    config_none_ok = ['blender_dir', 'interventions', 'n_resample']
-
-    for config in dataset_configs['dataset']:
-        sampler = config.pop('sampler')
-        sampler_config = config.pop('sampler_config ', {})
-        split_interventions = tuple(config.pop('split_interventions', []))
-        output_dir = config.pop('output_dir')
-        blender_dir = config.pop('blender_dir', default_blender_dir)
-        n_processes = config.pop('n_processes', 6)
-        n_samples = config.pop('n_samples', None)
-        force_overwrite = config.pop('force_overwrite', False)
-        download_blender = config.pop('download_blender', False) or default_download_blender
-        debug = config.pop('debug', False)
-        xgb_n_train = config.pop('xgb_n_train', 10_000)
-        xgb_n_test = config.pop('xgb_n_test', 2_000)
-
-        for dset_args in config['split']:
-            dset_name = dset_args.pop('name')
-
-            def get_arg(name: str, default: Any) -> Any:
-                val = dset_args.pop(name, default)
-                if val is None and name not in config_none_ok:
-                    raise ValueError(
-                        f"No value given for {name} in dataset {dset_name}.")
-                return val
-
-            interventions_list = dset_args.pop('interventions', [])
-            interventions = tuple(tuple(intervention)
-                                  for intervention in interventions_list)
-
-            split_interventions = tuple(get_arg(
-                'split_interventions', split_interventions))
-            cli_args = RenderSplitArgs(
-                sampler=get_arg('sampler', sampler),
-                sampler_config=get_arg('sampler_config', sampler_config),
-                split=dset_name,
-                split_interventions=split_interventions,
-                interventions=interventions,
-                n_samples=get_arg('n_samples', n_samples),
-                output_dir=output_dir,
-                force_overwrite=get_arg('force_overwrite', force_overwrite),
-                n_processes=get_arg('n_processes', n_processes),
-                blender_dir=get_arg('blender_dir', blender_dir),
-                download_blender=get_arg('download_blender', download_blender),
-                xgb_n_train=get_arg('xgb_n_train', xgb_n_train),
-                xgb_n_test=get_arg('xgb_n_test', xgb_n_test),
-                debug=get_arg('debug', debug),
-            )
-            if len(dset_args):
-                unparsed_keys = ", ".join(list(dset_args.keys()))
-                raise ValueError(f"The following keys where to not parsed: {unparsed_keys}")
-            render_dataset_split(cli_args)
+    for cli_args in configs:
+        render_dataset_split(cli_args)
