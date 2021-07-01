@@ -36,6 +36,7 @@ class RenderSplitArgs:
         debug: print blender debug information
     """
     sampler: str
+    sampler_config: dict[str, Any]
     split: str
     split_interventions: tuple[str, ...]
     output_dir: str
@@ -193,7 +194,7 @@ def run_xgb(
 def render_dataset_split(args: RenderSplitArgs):
     """Samples and renders a single split of the dataset."""
     sampler_cls = utils.import_class(*utils.split_class(args.sampler))
-    sampler: two4two.Sampler = sampler_cls()
+    sampler: two4two.Sampler = sampler_cls(**args.sampler_config)
 
     two4two.blender.ensure_blender_available(args.blender_dir, args.download_blender)
 
@@ -298,6 +299,7 @@ def render_dataset(
 
     for config in dataset_configs['dataset']:
         sampler = config.pop('sampler')
+        sampler_config = config.pop('sampler_config ', {})
         split_interventions = tuple(config.pop('split_interventions', []))
         output_dir = config.pop('output_dir')
         blender_dir = config.pop('blender_dir', default_blender_dir)
@@ -327,6 +329,7 @@ def render_dataset(
                 'split_interventions', split_interventions))
             cli_args = RenderSplitArgs(
                 sampler=get_arg('sampler', sampler),
+                sampler_config=get_arg('sampler_config', sampler_config),
                 split=dset_name,
                 split_interventions=split_interventions,
                 interventions=interventions,
