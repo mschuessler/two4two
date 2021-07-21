@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import dataclasses
 from typing import Any, Callable, Dict, Optional, Sequence, Union
 
@@ -125,6 +126,26 @@ class Sampler:
         self.sample_fliplr(params)
         self.sample_position(params)
         self.sample_color(params)
+        params.check_values()
+        return params
+
+    def sample_unbiased(self) -> SceneParameters:
+        """Returns a new SceneParameters with random values (unbiased).
+
+        Any bias in the Sampler is removed by running the sampling with
+        `intervention=True` flag.
+        """
+        params = self.sample()
+        status = copy.deepcopy(params._attributes_status)
+        self.sample_arm_position(params, intervention=True)
+        self.sample_labeling_error(params, intervention=True)
+        self.sample_spherical(params, intervention=True)
+        self.sample_bending(params, intervention=True)
+        self.sample_rotation(params, intervention=True)
+        self.sample_fliplr(params, intervention=True)
+        self.sample_position(params, intervention=True)
+        self.sample_color(params, intervention=True)
+        params._attributes_status = status
         params.check_values()
         return params
 

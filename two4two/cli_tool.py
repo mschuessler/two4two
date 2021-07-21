@@ -45,6 +45,7 @@ class RenderSplitArgs:
     n_processes: int
     blender_dir: Optional[str]
     interventions: tuple[tuple[str, ...], ...]
+    unbiased: bool
     download_blender: bool
     debug: bool
     xgb_n_train: int = 10_000
@@ -196,6 +197,20 @@ def run_xgb(
     )
 
 
+all_attributes = [
+    'arm_position',
+    'bending',
+    'bg_color',
+    'obj_color',
+    'obj_rotation_pitch',
+    'obj_rotation_roll',
+    'obj_rotation_yaw',
+    'position_x',
+    'position_y',
+    'spherical',
+]
+
+
 def render_dataset_split(args: RenderSplitArgs):
     """Samples and renders a single split of the dataset."""
     sampler = args.load_sampler()
@@ -203,7 +218,10 @@ def render_dataset_split(args: RenderSplitArgs):
     two4two.blender.ensure_blender_available(args.blender_dir, args.download_blender)
 
     print("Sampling Parameters...")
-    original_params = [sampler.sample() for _ in tqdm.trange(args.n_samples)]
+    if args.unbiased:
+        original_params = [sampler.sample_unbiased() for _ in tqdm.trange(args.n_samples)]
+    else:
+        original_params = [sampler.sample() for _ in tqdm.trange(args.n_samples)]
 
     original_args = args.get_original()
     params_per_split = {
@@ -273,6 +291,7 @@ def load_configs(
     config_file: str,
     default_blender_dir: Optional[str] = None,
     default_download_blender: bool = False,
+    split_by: int = 1,
 ) -> list[RenderSplitArgs]:
     """Loads the config to render each dataset split."""
     with open(config_file) as f:
@@ -290,6 +309,7 @@ def load_configs(
         n_processes = config.pop('n_processes', 6)
         n_samples = config.pop('n_samples', None)
         force_overwrite = config.pop('force_overwrite', False)
+        unbiased = config.pop('unbiased', False)
         download_blender = config.pop('download_blender', False) or default_download_blender
         debug = config.pop('debug', False)
         xgb_n_train = config.pop('xgb_n_train', 10_000)
@@ -312,15 +332,21 @@ def load_configs(
             split_interventions = tuple(get_arg(
                 'split_interventions', split_interventions))
             sampler_config.update(dset_args.pop('sampler_config', {}))
+
+            n_samples = get_arg('n_samples', n_samples)
+            assert n_samples % split_by == 0
+            n_samples = n_samples // split_by
+
             cli_args = RenderSplitArgs(
                 sampler=get_arg('sampler', sampler),
                 sampler_config=sampler_config,
                 split=dset_name,
                 split_interventions=split_interventions,
                 interventions=interventions,
-                n_samples=get_arg('n_samples', n_samples),
+                n_samples=n_samples,
                 output_dir=output_dir,
                 force_overwrite=get_arg('force_overwrite', force_overwrite),
+                unbiased=get_arg('unbiased', unbiased),
                 n_processes=get_arg('n_processes', n_processes),
                 blender_dir=get_arg('blender_dir', blender_dir),
                 download_blender=get_arg('download_blender', download_blender),
@@ -336,6 +362,7 @@ def render_dataset(
     config_file: Optional[str] = None,
     default_blender_dir: Optional[str] = None,
     default_download_blender: bool = False,
+    split_by: int = 1,
 ):
     """Entry point to render a dataset."""
 
@@ -356,15 +383,30 @@ def render_dataset(
             default=None,
             help='Download blender to this directory.',
         )
+        parser.add_argument(
+            '--split_by',
+            default=1,
+            type=int,
+            help='Divide number of samples (usefull for distributed sampling).',
+        )
         args = parser.parse_args()
         config_file = args.config_file[0]
         default_blender_dir = args.blender_dir
         default_download_blender = args.download_blender
+        split_by = args.split_by
 
     configs = load_configs(
         config_file,
         default_blender_dir,
-        default_download_blender)
+        default_download_blender,
+        split_by,
+    )
 
     for cli_args in configs:
         render_dataset_split(cli_args)
+
+    output_dirs = set([cli_args.output_dir for cli_args in configs])
+    print(output_dirs)
+
+    for output_dir in output_dirs:
+        utils.make_tarfile(f'{output_dir}.tar', output_dir)

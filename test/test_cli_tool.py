@@ -30,3 +30,5 @@ def test_cli_tool(tmp_path: pathlib.Path):
     for param in two4two.scene_parameters.load_jsonl(param_fname):
         assert os.path.exists(os.path.join(dataset_dir, param.filename))
         assert os.path.exists(os.path.join(dataset_dir, param.mask_filename))
+
+    assert (tmp_path / 'no_bias.tar').exists()
