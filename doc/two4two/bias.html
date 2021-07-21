@@ -85,6 +85,9 @@
                                 <a class="function" href="#Sampler.sample">sample</a>
                         </li>
                         <li>
+                                <a class="function" href="#Sampler.sample_unbiased">sample_unbiased</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Sampler.make_interventions">make_interventions</a>
                         </li>
                         <li>
@@ -285,6 +288,7 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">dataclasses</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
@@ -408,6 +412,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_fliplr</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_color</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">check_values</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">params</span>
+
+    <span class="k">def</span> <span class="nf">sample_unbiased</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values (unbiased).</span>
+
+<span class="sd">        Any bias in the Sampler is removed by running the sampling with</span>
+<span class="sd">        `intervention=True` flag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">_attributes_status</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_bending</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rotation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_fliplr</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_position</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_color</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">_attributes_status</span> <span class="o">=</span> <span class="n">status</span>
         <span class="n">params</span><span class="o">.</span><span class="n">check_values</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">params</span>
 
@@ -956,6 +980,26 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_fliplr</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_position</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sample_color</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">check_values</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">params</span>
+
+    <span class="k">def</span> <span class="nf">sample_unbiased</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values (unbiased).</span>
+
+<span class="sd">        Any bias in the Sampler is removed by running the sampling with</span>
+<span class="sd">        `intervention=True` flag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">_attributes_status</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_bending</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rotation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_fliplr</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_position</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_color</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">_attributes_status</span> <span class="o">=</span> <span class="n">status</span>
         <span class="n">params</span><span class="o">.</span><span class="n">check_values</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">params</span>
 
@@ -1510,6 +1554,47 @@ the sampling of the attribute might be dependent on the label
   <p>obj_name: Overides the sampled obj_name with the given namen. Usally only useful for
       manual sampling. Not recommeded when samplign larger sets.</p>
 </blockquote>
+</div>
+
+
+                            </div>
+                            <div id="Sampler.sample_unbiased" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Sampler.sample_unbiased">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">sample_unbiased</span><span class="signature">(self) -&gt; <a href="scene_parameters.html#SceneParameters">two4two.scene_parameters.SceneParameters</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">sample_unbiased</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneParameters</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns a new SceneParameters with random values (unbiased).</span>
+
+<span class="sd">        Any bias in the Sampler is removed by running the sampling with</span>
+<span class="sd">        `intervention=True` flag.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="n">status</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">_attributes_status</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_arm_position</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_labeling_error</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_spherical</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_bending</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_rotation</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_fliplr</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_position</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_color</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">intervention</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">_attributes_status</span> <span class="o">=</span> <span class="n">status</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">check_values</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">params</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Returns a new SceneParameters with random values (unbiased).</p>
+
+<p>Any bias in the Sampler is removed by running the sampling with
+<code>intervention=True</code> flag.</p>
 </div>
 
 
@@ -2302,6 +2387,7 @@ color biases easier to spot.</p>
                 <dd id="SimpleColorMapSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
                 <dd id="SimpleColorMapSampler.obj_color" class="variable"><a href="#Sampler.obj_color">obj_color</a></dd>
                 <dd id="SimpleColorMapSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="SimpleColorMapSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="SimpleColorMapSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="SimpleColorMapSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="SimpleColorMapSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2414,6 +2500,7 @@ color biases easier to spot.</p>
                 <dd id="ColorBiasedSampler.position_x" class="variable"><a href="#Sampler.position_x">position_x</a></dd>
                 <dd id="ColorBiasedSampler.position_y" class="variable"><a href="#Sampler.position_y">position_y</a></dd>
                 <dd id="ColorBiasedSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="ColorBiasedSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="ColorBiasedSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="ColorBiasedSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="ColorBiasedSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2548,6 +2635,7 @@ challenging datset.</p>
                 <dd id="HighVariationSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="HighVariationSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="HighVariationSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="HighVariationSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="HighVariationSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="HighVariationSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="HighVariationSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2661,6 +2749,7 @@ challenging datset. This dataset is more challenging. So the bias is more likely
                 <dd id="HighVariationColorBiasedSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="HighVariationColorBiasedSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="HighVariationColorBiasedSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="HighVariationColorBiasedSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="HighVariationColorBiasedSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2833,6 +2922,7 @@ a model.</p>
                 <dd id="MedVarColorSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarColorSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="MedVarColorSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="MedVarColorSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -2978,6 +3068,7 @@ avoid introducing a bias.</p>
                 <dd id="MedVarSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="MedVarSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="MedVarSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -3147,6 +3238,7 @@ the model if it provides information on the challenging cases.</p>
                 <dd id="MedVarSpherSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarSpherSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSpherSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="MedVarSpherSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="MedVarSpherSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarSpherSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -3249,6 +3341,7 @@ the model if it provides information on the challenging cases.</p>
                 <dd id="MedVarSpherColorSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarSpherColorSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarSpherColorSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="MedVarSpherColorSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="MedVarSpherColorSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarSpherColorSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>
@@ -3394,6 +3487,7 @@ produce only validation and test data.</p>
                 <dd id="MedVarNoArmsSampler.bg_color_map" class="variable"><a href="#Sampler.bg_color_map">bg_color_map</a></dd>
                 <dd id="MedVarNoArmsSampler.obj_color_map" class="variable"><a href="#Sampler.obj_color_map">obj_color_map</a></dd>
                 <dd id="MedVarNoArmsSampler.sample" class="function"><a href="#Sampler.sample">sample</a></dd>
+                <dd id="MedVarNoArmsSampler.sample_unbiased" class="function"><a href="#Sampler.sample_unbiased">sample_unbiased</a></dd>
                 <dd id="MedVarNoArmsSampler.make_interventions" class="function"><a href="#Sampler.make_interventions">make_interventions</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_obj_name" class="function"><a href="#Sampler.sample_obj_name">sample_obj_name</a></dd>
                 <dd id="MedVarNoArmsSampler.sample_labeling_error" class="function"><a href="#Sampler.sample_labeling_error">sample_labeling_error</a></dd>

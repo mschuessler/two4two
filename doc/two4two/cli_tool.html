@@ -67,6 +67,9 @@
                                 <a class="variable" href="#RenderSplitArgs.interventions">interventions</a>
                         </li>
                         <li>
+                                <a class="variable" href="#RenderSplitArgs.unbiased">unbiased</a>
+                        </li>
+                        <li>
                                 <a class="variable" href="#RenderSplitArgs.download_blender">download_blender</a>
                         </li>
                         <li>
@@ -232,6 +235,7 @@
     <span class="n">n_processes</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">interventions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">unbiased</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">download_blender</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">xgb_n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span>
@@ -383,6 +387,20 @@
     <span class="p">)</span>
 
 
+<span class="n">all_attributes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;arm_position&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bending&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bg_color&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;obj_color&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;obj_rotation_pitch&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;obj_rotation_roll&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;obj_rotation_yaw&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;position_x&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;position_y&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;spherical&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+
+
 <span class="k">def</span> <span class="nf">render_dataset_split</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">RenderSplitArgs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Samples and renders a single split of the dataset.&quot;&quot;&quot;</span>
     <span class="n">sampler</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">load_sampler</span><span class="p">()</span>
@@ -390,7 +408,10 @@
     <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">ensure_blender_available</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sampling Parameters...&quot;</span><span class="p">)</span>
-    <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">unbiased</span><span class="p">:</span>
+        <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample_unbiased</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
 
     <span class="n">original_args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get_original</span><span class="p">()</span>
     <span class="n">params_per_split</span> <span class="o">=</span> <span class="p">{</span>
@@ -460,6 +481,7 @@
     <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">default_blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_download_blender</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">split_by</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RenderSplitArgs</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Loads the config to render each dataset split.&quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -477,6 +499,7 @@
         <span class="n">n_processes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">n_samples</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">force_overwrite</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">unbiased</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;unbiased&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">download_blender</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">default_download_blender</span>
         <span class="n">debug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">xgb_n_train</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xgb_n_train&#39;</span><span class="p">,</span> <span class="mi">10_000</span><span class="p">)</span>
@@ -499,15 +522,21 @@
             <span class="n">split_interventions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">get_arg</span><span class="p">(</span>
                 <span class="s1">&#39;split_interventions&#39;</span><span class="p">,</span> <span class="n">split_interventions</span><span class="p">))</span>
             <span class="n">sampler_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sampler_config&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+
+            <span class="n">n_samples</span> <span class="o">=</span> <span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">n_samples</span> <span class="o">%</span> <span class="n">split_by</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">split_by</span>
+
             <span class="n">cli_args</span> <span class="o">=</span> <span class="n">RenderSplitArgs</span><span class="p">(</span>
                 <span class="n">sampler</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;sampler&#39;</span><span class="p">,</span> <span class="n">sampler</span><span class="p">),</span>
                 <span class="n">sampler_config</span><span class="o">=</span><span class="n">sampler_config</span><span class="p">,</span>
                 <span class="n">split</span><span class="o">=</span><span class="n">dset_name</span><span class="p">,</span>
                 <span class="n">split_interventions</span><span class="o">=</span><span class="n">split_interventions</span><span class="p">,</span>
                 <span class="n">interventions</span><span class="o">=</span><span class="n">interventions</span><span class="p">,</span>
-                <span class="n">n_samples</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">),</span>
+                <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                 <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                 <span class="n">force_overwrite</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="p">),</span>
+                <span class="n">unbiased</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;unbiased&#39;</span><span class="p">,</span> <span class="n">unbiased</span><span class="p">),</span>
                 <span class="n">n_processes</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="n">n_processes</span><span class="p">),</span>
                 <span class="n">blender_dir</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="n">blender_dir</span><span class="p">),</span>
                 <span class="n">download_blender</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="n">download_blender</span><span class="p">),</span>
@@ -523,6 +552,7 @@
     <span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_download_blender</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">split_by</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Entry point to render a dataset.&quot;&quot;&quot;</span>
 
@@ -543,18 +573,33 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Download blender to this directory.&#39;</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--split_by&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Divide number of samples (usefull for distributed sampling).&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
         <span class="n">config_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">config_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">default_blender_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span>
         <span class="n">default_download_blender</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span>
+        <span class="n">split_by</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">split_by</span>
 
     <span class="n">configs</span> <span class="o">=</span> <span class="n">load_configs</span><span class="p">(</span>
         <span class="n">config_file</span><span class="p">,</span>
         <span class="n">default_blender_dir</span><span class="p">,</span>
-        <span class="n">default_download_blender</span><span class="p">)</span>
+        <span class="n">default_download_blender</span><span class="p">,</span>
+        <span class="n">split_by</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">cli_args</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
         <span class="n">render_dataset_split</span><span class="p">(</span><span class="n">cli_args</span><span class="p">)</span>
+
+    <span class="n">output_dirs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">cli_args</span><span class="o">.</span><span class="n">output_dir</span> <span class="k">for</span> <span class="n">cli_args</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">output_dirs</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">output_dir</span> <span class="ow">in</span> <span class="n">output_dirs</span><span class="p">:</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">make_tarfile</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s1">.tar&#39;</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -594,6 +639,7 @@
     <span class="n">n_processes</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
     <span class="n">interventions</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span>
+    <span class="n">unbiased</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">download_blender</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">xgb_n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span>
@@ -658,6 +704,7 @@
     n_processes: int,
     blender_dir: Union[str, NoneType],
     interventions: &#39;tuple[tuple[str, ...], ...]&#39;,
+    unbiased: bool,
     download_blender: bool,
     debug: bool,
     xgb_n_train: int = 10000,
@@ -754,6 +801,15 @@
                                             <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.interventions">#&nbsp;&nbsp</a>
 
         <span class="name">interventions</span><span class="annotation">: &#39;tuple[tuple[str, ...], ...]&#39;</span>
+    </div>
+
+    
+
+                            </div>
+                            <div id="RenderSplitArgs.unbiased" class="classattr">
+                                            <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.unbiased">#&nbsp;&nbsp</a>
+
+        <span class="name">unbiased</span><span class="annotation">: bool</span>
     </div>
 
     
@@ -1332,7 +1388,10 @@
     <span class="n">two4two</span><span class="o">.</span><span class="n">blender</span><span class="o">.</span><span class="n">ensure_blender_available</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span><span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Sampling Parameters...&quot;</span><span class="p">)</span>
-    <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">unbiased</span><span class="p">:</span>
+        <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample_unbiased</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">original_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">sampler</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="o">.</span><span class="n">trange</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">n_samples</span><span class="p">)]</span>
 
     <span class="n">original_args</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get_original</span><span class="p">()</span>
     <span class="n">params_per_split</span> <span class="o">=</span> <span class="p">{</span>
@@ -1413,7 +1472,8 @@
             <span class="name">load_configs</span><span class="signature">(
     config_file: str,
     default_blender_dir: Union[str, NoneType] = None,
-    default_download_blender: bool = False
+    default_download_blender: bool = False,
+    split_by: int = 1
 ) -&gt; &#39;list[RenderSplitArgs]&#39;</span>:
     </div>
 
@@ -1423,6 +1483,7 @@
     <span class="n">config_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">default_blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_download_blender</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">split_by</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RenderSplitArgs</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;Loads the config to render each dataset split.&quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_file</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -1440,6 +1501,7 @@
         <span class="n">n_processes</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">n_samples</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="n">force_overwrite</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">unbiased</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;unbiased&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">download_blender</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">or</span> <span class="n">default_download_blender</span>
         <span class="n">debug</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;debug&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
         <span class="n">xgb_n_train</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;xgb_n_train&#39;</span><span class="p">,</span> <span class="mi">10_000</span><span class="p">)</span>
@@ -1462,15 +1524,21 @@
             <span class="n">split_interventions</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">get_arg</span><span class="p">(</span>
                 <span class="s1">&#39;split_interventions&#39;</span><span class="p">,</span> <span class="n">split_interventions</span><span class="p">))</span>
             <span class="n">sampler_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dset_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sampler_config&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+
+            <span class="n">n_samples</span> <span class="o">=</span> <span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">n_samples</span> <span class="o">%</span> <span class="n">split_by</span> <span class="o">==</span> <span class="mi">0</span>
+            <span class="n">n_samples</span> <span class="o">=</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">split_by</span>
+
             <span class="n">cli_args</span> <span class="o">=</span> <span class="n">RenderSplitArgs</span><span class="p">(</span>
                 <span class="n">sampler</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;sampler&#39;</span><span class="p">,</span> <span class="n">sampler</span><span class="p">),</span>
                 <span class="n">sampler_config</span><span class="o">=</span><span class="n">sampler_config</span><span class="p">,</span>
                 <span class="n">split</span><span class="o">=</span><span class="n">dset_name</span><span class="p">,</span>
                 <span class="n">split_interventions</span><span class="o">=</span><span class="n">split_interventions</span><span class="p">,</span>
                 <span class="n">interventions</span><span class="o">=</span><span class="n">interventions</span><span class="p">,</span>
-                <span class="n">n_samples</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_samples&#39;</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">),</span>
+                <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                 <span class="n">output_dir</span><span class="o">=</span><span class="n">output_dir</span><span class="p">,</span>
                 <span class="n">force_overwrite</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;force_overwrite&#39;</span><span class="p">,</span> <span class="n">force_overwrite</span><span class="p">),</span>
+                <span class="n">unbiased</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;unbiased&#39;</span><span class="p">,</span> <span class="n">unbiased</span><span class="p">),</span>
                 <span class="n">n_processes</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;n_processes&#39;</span><span class="p">,</span> <span class="n">n_processes</span><span class="p">),</span>
                 <span class="n">blender_dir</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;blender_dir&#39;</span><span class="p">,</span> <span class="n">blender_dir</span><span class="p">),</span>
                 <span class="n">download_blender</span><span class="o">=</span><span class="n">get_arg</span><span class="p">(</span><span class="s1">&#39;download_blender&#39;</span><span class="p">,</span> <span class="n">download_blender</span><span class="p">),</span>
@@ -1497,7 +1565,8 @@
             <span class="name">render_dataset</span><span class="signature">(
     config_file: Union[str, NoneType] = None,
     default_blender_dir: Union[str, NoneType] = None,
-    default_download_blender: bool = False
+    default_download_blender: bool = False,
+    split_by: int = 1
 )</span>:
     </div>
 
@@ -1507,6 +1576,7 @@
     <span class="n">config_file</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_blender_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">default_download_blender</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">split_by</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Entry point to render a dataset.&quot;&quot;&quot;</span>
 
@@ -1527,18 +1597,33 @@
             <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Download blender to this directory.&#39;</span><span class="p">,</span>
         <span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s1">&#39;--split_by&#39;</span><span class="p">,</span>
+            <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span>
+            <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Divide number of samples (usefull for distributed sampling).&#39;</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
         <span class="n">config_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">config_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">default_blender_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">blender_dir</span>
         <span class="n">default_download_blender</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span>
+        <span class="n">split_by</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">split_by</span>
 
     <span class="n">configs</span> <span class="o">=</span> <span class="n">load_configs</span><span class="p">(</span>
         <span class="n">config_file</span><span class="p">,</span>
         <span class="n">default_blender_dir</span><span class="p">,</span>
-        <span class="n">default_download_blender</span><span class="p">)</span>
+        <span class="n">default_download_blender</span><span class="p">,</span>
+        <span class="n">split_by</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">for</span> <span class="n">cli_args</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">:</span>
         <span class="n">render_dataset_split</span><span class="p">(</span><span class="n">cli_args</span><span class="p">)</span>
+
+    <span class="n">output_dirs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">cli_args</span><span class="o">.</span><span class="n">output_dir</span> <span class="k">for</span> <span class="n">cli_args</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">output_dirs</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">output_dir</span> <span class="ow">in</span> <span class="n">output_dirs</span><span class="p">:</span>
+        <span class="n">utils</span><span class="o">.</span><span class="n">make_tarfile</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">output_dir</span><span class="si">}</span><span class="s1">.tar&#39;</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">)</span>
 </pre></div>
 
         </details>

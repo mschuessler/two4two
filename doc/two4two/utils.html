@@ -66,6 +66,9 @@
             <li>
                     <a class="function" href="#get">get</a>
             </li>
+            <li>
+                    <a class="function" href="#make_tarfile">make_tarfile</a>
+            </li>
     </ul>
 
 
@@ -91,6 +94,8 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">tarfile</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -137,7 +142,7 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Probability mass function.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]],</span>
@@ -224,6 +229,20 @@
         <span class="k">return</span> <span class="n">maybe_none</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">default</span>
+
+
+<span class="k">def</span> <span class="nf">make_tarfile</span><span class="p">(</span>
+    <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">source_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">compression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gz&#39;</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates are tarfile.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">compression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;w:</span><span class="si">{</span><span class="n">compression</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;wb&quot;</span>
+    <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+        <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">source_dir</span><span class="p">))</span>
 </pre></div>
 
         </details>
@@ -271,7 +290,7 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Probability mass function.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">logpmf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                <span class="n">k</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">T</span><span class="p">]],</span>
@@ -371,7 +390,7 @@
             <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
             <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Probability mass function.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logpmf</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 </pre></div>
 
         </details>
@@ -482,7 +501,7 @@
     std: float = 1,
     lower: float = -3,
     upper: float = 3
-) -&gt; &lt;scipy.stats._continuous_distns.truncnorm_gen object at 0x7f771cb43810&gt;</span>:
+) -&gt; &lt;scipy.stats._continuous_distns.truncnorm_gen object at 0x7f4e13d77510&gt;</span>:
     </div>
 
                 <details>
@@ -623,6 +642,41 @@
             <div class="docstring"><p>Returns either the given value if not <code>None</code> or a default value.</p>
 
 <p>Useful helper function to deconstruct Optional values in a typesafe way.</p>
+</div>
+
+
+                </section>
+                <section id="make_tarfile">
+                            <div class="attr function"><a class="headerlink" href="#make_tarfile">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">make_tarfile</span><span class="signature">(
+    output_filename: str,
+    source_dir: str,
+    compression: Union[str, NoneType] = &#39;gz&#39;
+)</span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">make_tarfile</span><span class="p">(</span>
+    <span class="n">output_filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">source_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">compression</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;gz&#39;</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates are tarfile.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">compression</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;w:</span><span class="si">{</span><span class="n">compression</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;wb&quot;</span>
+    <span class="k">with</span> <span class="n">tarfile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span> <span class="k">as</span> <span class="n">tar</span><span class="p">:</span>
+        <span class="n">tar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">source_dir</span><span class="p">,</span> <span class="n">arcname</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">source_dir</span><span class="p">))</span>
+</pre></div>
+
+        </details>
+
+            <div class="docstring"><p>Creates are tarfile.</p>
 </div>
 
 
