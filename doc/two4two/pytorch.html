@@ -43,6 +43,9 @@
                                 <a class="function" href="#Two4Two.__init__">Two4Two</a>
                         </li>
                         <li>
+                                <a class="function" href="#Two4Two.split_args">split_args</a>
+                        </li>
+                        <li>
                                 <a class="function" href="#Two4Two.set_return_attributes">set_return_attributes</a>
                         </li>
                         <li>
@@ -98,6 +101,7 @@
 <span class="kn">from</span> <span class="nn">torchvision</span> <span class="kn">import</span> <span class="n">transforms</span>
 
 <span class="kn">import</span> <span class="nn">two4two</span>
+<span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">cli_tool</span>
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">scene_parameters</span>
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">utils</span>
 <span class="kn">import</span> <span class="nn">two4two.blender</span>
@@ -188,6 +192,11 @@
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
                 <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">split_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">:</span>
+        <span class="n">args_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="s2">&quot;split_args.json&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args_fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">set_return_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Set the labels to return.&quot;&quot;&quot;</span>
@@ -418,6 +427,11 @@
                 <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
 
+    <span class="k">def</span> <span class="nf">split_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">:</span>
+        <span class="n">args_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="s2">&quot;split_args.json&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args_fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+
     <span class="k">def</span> <span class="nf">set_return_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">labels</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
         <span class="sd">&quot;&quot;&quot;Set the labels to return.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_return_attributes</span> <span class="o">=</span> <span class="n">labels</span>
@@ -584,6 +598,27 @@ labels. See <code><a href="#Two4Two.get_label_names">get_label_names</a></code> 
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
                 <span class="n">state</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
+</pre></div>
+
+        </details>
+
+    
+
+                            </div>
+                            <div id="Two4Two.split_args" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#Two4Two.split_args">#&nbsp;&nbsp</a>
+
+        
+            <span class="def">def</span>
+            <span class="name">split_args</span><span class="signature">(self) -&gt; <a href="cli_tool.html#RenderSplitArgs">two4two.cli_tool.RenderSplitArgs</a></span>:
+    </div>
+
+                <details>
+            <summary>View Source</summary>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">split_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">:</span>
+        <span class="n">args_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="s2">&quot;split_args.json&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args_fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
 </pre></div>
 
         </details>
