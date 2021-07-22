@@ -13,6 +13,7 @@ from torch.utils.data import Dataset
 from torchvision import transforms
 
 import two4two
+from two4two import cli_tool
 from two4two import scene_parameters
 from two4two import utils
 import two4two.blender
@@ -103,6 +104,11 @@ class Two4Two(Dataset):
             for line in f.readlines():
                 state = json.loads(line)
                 self.params.append(two4two.SceneParameters.load(state))
+
+    def split_args(self) -> cli_tool.RenderSplitArgs:
+        args_fname = os.path.join(self.root_dir, self.split, "split_args.json")
+        with open(args_fname) as f:
+            return cli_tool.RenderSplitArgs(**json.load(f))
 
     def set_return_attributes(self, labels: Sequence[str]):
         """Set the labels to return."""
