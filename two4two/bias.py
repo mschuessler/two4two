@@ -132,12 +132,13 @@ class Sampler:
     def sample_unbiased(self) -> SceneParameters:
         """Returns a new SceneParameters with random values (unbiased).
 
+        Only the arm position is sampled dependent on the object class.
         Any bias in the Sampler is removed by running the sampling with
         `intervention=True` flag.
         """
         params = self.sample()
         status = copy.deepcopy(params._attributes_status)
-        self.sample_arm_position(params, intervention=True)
+        self.sample_arm_position(params)
         self.sample_labeling_error(params, intervention=True)
         self.sample_spherical(params, intervention=True)
         self.sample_bending(params, intervention=True)
