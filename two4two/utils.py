@@ -149,6 +149,6 @@ def make_tarfile(
     if compression is not None:
         mode = f"w:{compression}"
     else:
-        mode = "wb"
+        mode = "w"
     with tarfile.open(output_filename, mode) as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
