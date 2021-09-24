@@ -7,6 +7,7 @@ import copy
 import dataclasses
 import json
 import os
+import pdb
 import pickle
 import shutil
 from typing import Any, Optional, Sequence
@@ -15,7 +16,6 @@ import numpy as np
 import pandas as pd
 import toml
 import tqdm
-import xgboost as xgb
 
 import two4two
 from two4two import utils
@@ -48,6 +48,7 @@ class RenderSplitArgs:
     unbiased: bool
     download_blender: bool
     debug: bool
+    run_xgb: bool
     xgb_n_train: int = 10_000
     xgb_n_test: int = 2_000
 
@@ -126,7 +127,7 @@ class XGBResult:
 
     sampler: str
     interventions: Sequence[str]
-    model: xgb.XGBModel
+    model: 'xgb.XGBModel'
     feature_importance: dict[str, float]
     accuracy: float
     n_train: int
@@ -146,13 +147,20 @@ class XGBResult:
 
 def run_xgb(
     sampler: two4two.Sampler,
+    unbiased: bool = False,
     interventions: Sequence[str] = [],
     n_train: int = 10_000,
     n_test: int = 2_000,
 ) -> XGBResult:
+    import xgboost as xgb
     """Trains a XGB model on the given dataset."""
 
-    params = [sampler.sample() for _ in range(n_train + n_test)]
+    n_samples = n_train + n_test
+    if unbiased:
+        params = [sampler.sample_unbiased() for _ in tqdm.trange(n_samples)]
+    else:
+        params = [sampler.sample() for _ in tqdm.trange(n_samples)]
+
     params = sampler.make_interventions(params, interventions)
     df = pd.DataFrame([dataclasses.asdict(param) for param in params])
     feature_names = [
@@ -250,13 +258,16 @@ def render_dataset_split(args: RenderSplitArgs):
         with open(os.path.join(output_dir, 'intervention.json'), 'w') as f_json:
             json.dump(dataclasses.asdict(intervention), f_json)
 
-        xgb_result = run_xgb(sampler, intervention.modified_attributes,
-                             args.xgb_n_train, args.xgb_n_test)
-        xgb_result.print_summary()
+        if args.run_xgb:
+            xgb_result = run_xgb(sampler,
+                                 args.unbiased,
+                                 intervention.modified_attributes,
+                                 args.xgb_n_train, args.xgb_n_test)
+            xgb_result.print_summary()
 
-        with open(os.path.join(output_dir, 'xgb_results.pickle'), 'wb') as f_pickle:
-            pickle.dump(xgb_result, f_pickle)
-        xgb_results.append(xgb_result)
+            with open(os.path.join(output_dir, 'xgb_results.pickle'), 'wb') as f_pickle:
+                pickle.dump(xgb_result, f_pickle)
+            xgb_results.append(xgb_result)
 
         print(f"Rendering {len(params)} images...")
         for _ in tqdm.tqdm(two4two.render(
@@ -292,6 +303,7 @@ def load_configs(
     default_blender_dir: Optional[str] = None,
     default_download_blender: bool = False,
     split_by: int = 1,
+    run_xgb: bool = False,
 ) -> list[RenderSplitArgs]:
     """Loads the config to render each dataset split."""
     with open(config_file) as f:
@@ -350,6 +362,7 @@ def load_configs(
                 n_processes=get_arg('n_processes', n_processes),
                 blender_dir=get_arg('blender_dir', blender_dir),
                 download_blender=get_arg('download_blender', download_blender),
+                run_xgb=run_xgb,
                 xgb_n_train=get_arg('xgb_n_train', xgb_n_train),
                 xgb_n_test=get_arg('xgb_n_test', xgb_n_test),
                 debug=get_arg('debug', debug),
@@ -363,50 +376,77 @@ def render_dataset(
     default_blender_dir: Optional[str] = None,
     default_download_blender: bool = False,
     split_by: int = 1,
+    keep_only_tar: bool = False,
 ):
     """Entry point to render a dataset."""
 
-    if config_file is None:
-        parser = argparse.ArgumentParser()
-        parser.add_argument(
-            'config_file',
-            help='Path to the config file. See `datasets.toml` for an example.',
-            nargs=1)
-        parser.add_argument(
-            '--download_blender',
-            default=False,
-            action='store_true',
-            help='Download blender if not found.',
+    try:
+        if config_file is None:
+            parser = argparse.ArgumentParser()
+            parser.add_argument(
+                'config_file',
+                help='Path to the config file. See `datasets.toml` for an example.',
+                nargs=1)
+            parser.add_argument(
+                '--download_blender',
+                default=False,
+                action='store_true',
+                help='Download blender if not found.',
+            )
+            parser.add_argument(
+                '--blender_dir',
+                default=None,
+                help='Download blender to this directory.',
+            )
+            parser.add_argument(
+                '--split_by',
+                default=1,
+                type=int,
+                help='Divide number of samples (usefull for distributed sampling).',
+            )
+            parser.add_argument(
+                '--keep-only-tar',
+                default=False,
+                action='store_true',
+                help='Remove output dir and only keep `.tar` file.',
+            )
+            parser.add_argument(
+                '--skip-xgb',
+                default=False,
+                action='store_true',
+                help='Run xgb model.',
+            )
+            args = parser.parse_args()
+            config_file = args.config_file[0]
+            default_blender_dir = args.blender_dir
+            default_download_blender = args.download_blender
+            keep_only_tar = args.keep_only_tar
+            split_by = args.split_by
+            run_xgb = not args.skip_xgb
+
+        configs = load_configs(
+            config_file,
+            default_blender_dir,
+            default_download_blender,
+            split_by,
+            run_xgb,
         )
-        parser.add_argument(
-            '--blender_dir',
-            default=None,
-            help='Download blender to this directory.',
-        )
-        parser.add_argument(
-            '--split_by',
-            default=1,
-            type=int,
-            help='Divide number of samples (usefull for distributed sampling).',
-        )
-        args = parser.parse_args()
-        config_file = args.config_file[0]
-        default_blender_dir = args.blender_dir
-        default_download_blender = args.download_blender
-        split_by = args.split_by
 
-    configs = load_configs(
-        config_file,
-        default_blender_dir,
-        default_download_blender,
-        split_by,
-    )
+        for cli_args in configs:
+            print("Rendering:")
+            print(cli_args)
+            print()
+            render_dataset_split(cli_args)
 
-    for cli_args in configs:
-        render_dataset_split(cli_args)
+        output_dirs = set([cli_args.output_dir for cli_args in configs])
+        print(output_dirs)
 
-    output_dirs = set([cli_args.output_dir for cli_args in configs])
-    print(output_dirs)
-
-    for output_dir in output_dirs:
-        utils.make_tarfile(f'{output_dir}.tar', output_dir)
+        for output_dir in output_dirs:
+            tar_name = f'{output_dir.rstrip("/")}.tar'
+            utils.make_tarfile(tar_name, output_dir, compression=None)
+            if keep_only_tar:
+                print(f'Removing `{output_dir}`.')
+                print(f'Keeping tar file: {tar_name}')
+                shutil.rmtree(output_dir)
+    except Exception:
+        pdb.post_mortem()
