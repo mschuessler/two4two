@@ -48,7 +48,7 @@ class RenderSplitArgs:
     unbiased: bool
     download_blender: bool
     debug: bool
-    run_xgb: bool
+    run_xgb: bool = True
     xgb_n_train: int = 10_000
     xgb_n_test: int = 2_000
 
