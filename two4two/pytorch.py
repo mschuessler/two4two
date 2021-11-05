@@ -106,6 +106,7 @@ class Two4Two(Dataset):
                 self.params.append(two4two.SceneParameters.load(state))
 
     def split_args(self) -> cli_tool.RenderSplitArgs:
+        """Returns the arguments used to render this dataset split."""
         args_fname = os.path.join(self.root_dir, self.split, "split_args.json")
         with open(args_fname) as f:
             return cli_tool.RenderSplitArgs(**json.load(f))
