@@ -311,8 +311,6 @@ def render_dataset_split(args: RenderSplitArgs):
     with open(os.path.join(output_dir, "split_args.json"), "w") as f_json:
         json.dump(dataclasses.asdict(args), f_json)
 
-    xgb_results.append(xgb_result)
-
 
 def load_configs(
     config_file: str,
@@ -320,6 +318,7 @@ def load_configs(
     default_download_blender: bool = False,
     split_by: int = 1,
     run_xgb: bool = False,
+    debug: bool = False,
 ) -> list[RenderSplitArgs]:
     """Loads the config to render each dataset split."""
     with open(config_file) as f:
@@ -398,6 +397,8 @@ def render_dataset(
     default_download_blender: bool = False,
     split_by: int = 1,
     keep_only_tar: bool = False,
+    run_xgb: bool = False,
+    debug: bool = False,
 ):
     """Entry point to render a dataset."""
 
@@ -438,6 +439,12 @@ def render_dataset(
                 action="store_true",
                 help="Run xgb model.",
             )
+            parser.add_argument(
+                "--debug",
+                default=False,
+                action="store_true",
+                help="Print debug information and enter pdb on error.",
+            )
             args = parser.parse_args()
             config_file = args.config_file[0]
             default_blender_dir = args.blender_dir
@@ -445,6 +452,7 @@ def render_dataset(
             keep_only_tar = args.keep_only_tar
             split_by = args.split_by
             run_xgb = not args.skip_xgb
+            debug = args.debug
 
         configs = load_configs(
             config_file,
@@ -452,6 +460,7 @@ def render_dataset(
             default_download_blender,
             split_by,
             run_xgb,
+            debug,
         )
 
         for cli_args in configs:
@@ -471,4 +480,7 @@ def render_dataset(
                 print(f"Keeping tar file: {tar_name}")
                 shutil.rmtree(output_dir)
     except Exception:
-        pdb.post_mortem()
+        if debug:
+            pdb.post_mortem()
+        else:
+            raise
