@@ -44,6 +44,24 @@ mkdir -p "$OUTDIR"
     $PIP3 install -U pip
     $PYTHON -m venv "$OUTDIR/venv"
     source "$OUTDIR/venv/bin/activate"
-    # print installation to stdout
-    >&2 python -m pip install numpy==1.17.0 scipy==1.6.1 matplotlib==3.3.4 scikit-image==0.18.0 coverage==5.5
+    # use a fixed pip version that fits to the libraries below
+    >&2 python -m pip install pip==19.0.3
+    # >&2 prints installation to stdout
+    >&2 python -m pip install \
+            coverage==5.5      \
+            cycler==0.10.0     \
+            decorator==4.4.2   \
+            imageio==2.9.0     \
+            kiwisolver==1.3.1  \
+            matplotlib==3.3.4  \
+            networkx==2.5      \
+            numpy==1.17.0      \
+            Pillow==8.1.2      \
+            pyparsing==2.4.7   \
+            python-dateutil==2.8.1  \
+            PyWavelets==1.1.1       \
+            scikit-image==0.18.0    \
+            scipy==1.6.1            \
+            six==1.15.0             \
+            tifffile==2021.3.17
 )
