@@ -195,6 +195,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">split_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the arguments used to render this dataset split.&quot;&quot;&quot;</span>
         <span class="n">args_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="s2">&quot;split_args.json&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args_fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
@@ -429,6 +430,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">two4two</span><span class="o">.</span><span class="n">SceneParameters</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">state</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">split_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the arguments used to render this dataset split.&quot;&quot;&quot;</span>
         <span class="n">args_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="s2">&quot;split_args.json&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args_fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
@@ -617,6 +619,7 @@ labels. See <code><a href="#Two4Two.get_label_names">get_label_names</a></code> 
                 <details>
             <summary>View Source</summary>
             <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">split_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Returns the arguments used to render this dataset split.&quot;&quot;&quot;</span>
         <span class="n">args_fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_dir</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">,</span> <span class="s2">&quot;split_args.json&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args_fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">cli_tool</span><span class="o">.</span><span class="n">RenderSplitArgs</span><span class="p">(</span><span class="o">**</span><span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
@@ -624,7 +627,9 @@ labels. See <code><a href="#Two4Two.get_label_names">get_label_names</a></code> 
 
         </details>
 
-    
+            <div class="docstring"><p>Returns the arguments used to render this dataset split.</p>
+</div>
+
 
                             </div>
                             <div id="Two4Two.set_return_attributes" class="classattr">
