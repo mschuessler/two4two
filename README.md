@@ -92,5 +92,47 @@ There are countless options to add biases to your custom dataset. The notebook i
 More code-savy folks may want got get started with *[bias.py](two4two/bias.py)* directly.
 
 
+There is also a comand line script:
+
+```
+    two4two_render_dataset config/color_spher_bias.toml
+```
+The comand line script has different options:
+```
+  -h, --help            show this help message and exit
+  --download_blender    Download blender if not found.
+  --blender_dir BLENDER_DIR
+                        Download blender to this directory.
+  --split_by SPLIT_BY   Divide number of samples (usefull for distributed sampling).
+  --keep-only-tar       Remove output dir and only keep `.tar` file.
+  --skip-xgb            Run xgb model.
+  --debug               Print debug information and enter pdb on error.
+```
+
+## PyTorch data loader
+
+We provide a ready to use PyTorch dataloader.
+
+```python
+
+from two4two.pytorch import Two4Two
+
+
+train_set = Two4Two(
+    "path/to/dataset/dir/",
+    split="train",
+    return_attributes=['obj_name', 'obj_color']
+)
+train_loader = Dataloader(train_set, batch_size=30)
+
+img, mask, label = train_set[0]
+
+# returns name to the label dimensions
+train_set.get_label_names()
+
+# get all labels as pandas dataframe
+df = train_set.get_dataframe()
+```
+
 ### Funding
 Funded by the GermanFederal Ministry of Education and Research(BMBF) - NR 16DII113.
