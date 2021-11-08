@@ -141,7 +141,16 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">toml</span>
 <span class="kn">import</span> <span class="nn">tqdm</span>
-<span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="nn">xgb</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">xgboost</span> <span class="k">as</span> <span class="nn">xgb</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+
+    <span class="k">class</span> <span class="nc">xgb</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+        <span class="sd">&quot;&quot;&quot;Stub to support type annotations.&quot;&quot;&quot;</span>
+
+        <span class="n">XGBModel</span> <span class="o">=</span> <span class="nb">object</span><span class="p">()</span>
+
 
 <span class="kn">import</span> <span class="nn">two4two</span>
 <span class="kn">from</span> <span class="nn">two4two</span> <span class="kn">import</span> <span class="n">utils</span>
@@ -175,7 +184,7 @@
     <span class="n">unbiased</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">download_blender</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">run_xgb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">run_xgb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">xgb_n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span>
     <span class="n">xgb_n_test</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2_000</span>
 
@@ -559,10 +568,10 @@
                 <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Remove output dir and only keep `.tar` file.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-                <span class="s2">&quot;--skip-xgb&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;--run-xgb&quot;</span><span class="p">,</span>
                 <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run xgb model.&quot;</span><span class="p">,</span>
+                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run xgb model on generated dataset.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
                 <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
@@ -576,7 +585,7 @@
             <span class="n">default_download_blender</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span>
             <span class="n">keep_only_tar</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">keep_only_tar</span>
             <span class="n">split_by</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">split_by</span>
-            <span class="n">run_xgb</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">skip_xgb</span>
+            <span class="n">run_xgb</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">run_xgb</span>
             <span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
 
         <span class="n">configs</span> <span class="o">=</span> <span class="n">load_configs</span><span class="p">(</span>
@@ -652,7 +661,7 @@
     <span class="n">unbiased</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">download_blender</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span>
-    <span class="n">run_xgb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">run_xgb</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">xgb_n_train</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10_000</span>
     <span class="n">xgb_n_test</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2_000</span>
 
@@ -718,7 +727,7 @@
     unbiased: bool,
     download_blender: bool,
     debug: bool,
-    run_xgb: bool = True,
+    run_xgb: bool = False,
     xgb_n_train: int = 10000,
     xgb_n_test: int = 2000
 )</span>
@@ -731,7 +740,7 @@
                             <div id="RenderSplitArgs.run_xgb" class="classattr">
                                             <div class="attr variable"><a class="headerlink" href="#RenderSplitArgs.run_xgb">#&nbsp;&nbsp</a>
 
-        <span class="name">run_xgb</span><span class="annotation">: bool</span><span class="default_value"> = True</span>
+        <span class="name">run_xgb</span><span class="annotation">: bool</span><span class="default_value"> = False</span>
     </div>
 
     
@@ -1466,10 +1475,10 @@
                 <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Remove output dir and only keep `.tar` file.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-                <span class="s2">&quot;--skip-xgb&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;--run-xgb&quot;</span><span class="p">,</span>
                 <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
-                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run xgb model.&quot;</span><span class="p">,</span>
+                <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Run xgb model on generated dataset.&quot;</span><span class="p">,</span>
             <span class="p">)</span>
             <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
                 <span class="s2">&quot;--debug&quot;</span><span class="p">,</span>
@@ -1483,7 +1492,7 @@
             <span class="n">default_download_blender</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">download_blender</span>
             <span class="n">keep_only_tar</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">keep_only_tar</span>
             <span class="n">split_by</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">split_by</span>
-            <span class="n">run_xgb</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">skip_xgb</span>
+            <span class="n">run_xgb</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">run_xgb</span>
             <span class="n">debug</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span>
 
         <span class="n">configs</span> <span class="o">=</span> <span class="n">load_configs</span><span class="p">(</span>
