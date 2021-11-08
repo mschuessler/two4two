@@ -16,7 +16,16 @@ import numpy as np
 import pandas as pd
 import toml
 import tqdm
-import xgboost as xgb
+
+try:
+    import xgboost as xgb
+except ImportError:
+
+    class xgb:  # type: ignore
+        """Stub to support type annotations."""
+
+        XGBModel = object()
+
 
 import two4two
 from two4two import utils
@@ -50,7 +59,7 @@ class RenderSplitArgs:
     unbiased: bool
     download_blender: bool
     debug: bool
-    run_xgb: bool = True
+    run_xgb: bool = False
     xgb_n_train: int = 10_000
     xgb_n_test: int = 2_000
 
@@ -434,10 +443,10 @@ def render_dataset(
                 help="Remove output dir and only keep `.tar` file.",
             )
             parser.add_argument(
-                "--skip-xgb",
+                "--run-xgb",
                 default=False,
                 action="store_true",
-                help="Run xgb model.",
+                help="Run xgb model on generated dataset.",
             )
             parser.add_argument(
                 "--debug",
@@ -451,7 +460,7 @@ def render_dataset(
             default_download_blender = args.download_blender
             keep_only_tar = args.keep_only_tar
             split_by = args.split_by
-            run_xgb = not args.skip_xgb
+            run_xgb = args.run_xgb
             debug = args.debug
 
         configs = load_configs(

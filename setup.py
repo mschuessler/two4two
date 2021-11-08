@@ -41,7 +41,6 @@ setuptools.setup(
         "sklearn",
         "toml",
         "tqdm",
-        "xgboost",
     ],
     extras_require={
         "dev": [
@@ -55,6 +54,7 @@ setuptools.setup(
             "pytest-cov",
             "torch",
             "torchvision",
+            "xgboost",
         ],
         "example_notebooks_data_generation": ["numpy", "pandas", "notebook"],
         "example_notebooks_model_training": [
