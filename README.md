@@ -21,10 +21,31 @@ spherical to cubic
 This repository contains the source code that can be used to create custom biases and links to ready-to-download datasets that may already be sufficient for some experiments.
 
 We created this library because we see the choice of dataset and user study scenario as a major obstacle to human subject evaluations.
-If you find this dataset helpful, please cite our **[workshop paper](https://arxiv.org/abs/2105.02825)** (full reference will be added after the conference).
+If you find this dataset helpful, please cite our paper:
+```
+@inproceedings{sixt2022,
+	title = {Do {Users} {Benefit} {From} {Interpretable} {Vision}? {A} {User} {Study}, {Baseline}, {And} {Dataset}},
+	url = {https://openreview.net/forum?id=v6s3HVjPerv},
+	booktitle = {International {Conference} on {Learning} {Representations}},
+	author = {Sixt, Leon and Schuessler, Martin and Popescu, Oana-Iuliana and Weiß, Philipp and Landgraf, Tim},
+	year = {2022},
+}
+```
 
-## Pregenerated datasets
-Before you generate your own data, consider using our **three default datas set of 80,000 images each**. You do not need to install this software to use this data.
+## Pregenerated datasets and models
+Before you generate your own data, consider using our pregenerated datasets. You do not need to install this software to use this data.
+
+The following package contains the biased dataset which we used in our own study. It has one easy to spot bias and one that is difficult to spot (for details please refer to the paper)
+- **[https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15.tar](https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15.tar)**
+
+If you want the same dataset without any biases use this download:
+- **[https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15_unbiased.tar](https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15_unbiased.tar)**
+
+If you would like to reproduce our results consider using our invertible neural network model:
+- **[https://f002.backblazeb2.com/file/iclr2022/do_users_benefit_from_interpretable_vision_model.tar.gz](https://f002.backblazeb2.com/file/iclr2022/do_users_benefit_from_interpretable_vision_model.tar.gz)**
+
+Adavnced: To obtain grund truth feature importance please refer to the following repositiory:
+- **[https://github.com/berleon/do_users_benefit_from_interpretable_vision](https://github.com/berleon/do_users_benefit_from_interpretable_vision)**
 
 The following package contains training data for 4 datasets, one with no bias, one with a bias on the object color, one with a bias on spherical, and one with the two baises combined.
 - **[https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz)** (7.6 GB)
@@ -33,7 +54,7 @@ If you only want the dataset with the two biases the following smaller package i
 - **[https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden80k.tar.gz)** (2.2 GB)
 
 
-We provide a [Colab Notebook](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) that illustrates how you can use this dataset to **train a model that has two biases**.
+We provide a [Colab Notebook](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) that illustrates how you can use this dataset to **train a simple model that has two biases**.
 
 If you would like to understand how this dataset was generated have a look at [the config that was used to generate it](config/color_spher_bias.toml) and *[bias.py](two4two/bias.py)*.
 
