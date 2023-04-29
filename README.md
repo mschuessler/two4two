@@ -36,16 +36,16 @@ If you find this dataset helpful, please cite our paper:
 Before you generate your own data, consider using our pregenerated datasets. You do not need to install this software to use this data.
 
 The following package contains the biased dataset which we used in our own study. It has one easy to spot bias and one that is difficult to spot (for details please refer to the paper)
-- **[https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15.tar](https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15.tar)**
+- **[https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15.tar](https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15.tar)** (3.3 GB)
 
 If you want the same dataset without any biases use this download:
-- **[https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15_unbiased.tar](https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15_unbiased.tar)**
+- **[https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15_unbiased.tar](https://f002.backblazeb2.com/file/iclr2022/two4two_obj_color_and_spherical_finer_search_spherical_uniform_0.33_uniform_0.15_unbiased.tar)** (1.85 GB)
 
 If you would like to reproduce our results consider using our invertible neural network model:
-- **[https://f002.backblazeb2.com/file/iclr2022/do_users_benefit_from_interpretable_vision_model.tar.gz](https://f002.backblazeb2.com/file/iclr2022/do_users_benefit_from_interpretable_vision_model.tar.gz)**
+- **[https://f002.backblazeb2.com/file/iclr2022/do_users_benefit_from_interpretable_vision_model.tar.gz](https://f002.backblazeb2.com/file/iclr2022/do_users_benefit_from_interpretable_vision_model.tar.gz)** (2.66 GB)
 
-Adavnced: To obtain grund truth feature importance please refer to the following repositiory:
-- **[https://github.com/berleon/do_users_benefit_from_interpretable_vision](https://github.com/berleon/do_users_benefit_from_interpretable_vision)**
+Advanced: To obtain ground truth feature importance please refer to the following repository:
+- **[https://github.com/berleon/do_users_benefit_from_interpretable_vision](https://github.com/berleon/do_users_benefit_from_interpretable_vision)** (Link)
 
 The following package contains training data for 4 datasets, one with no bias, one with a bias on the object color, one with a bias on spherical, and one with the two baises combined.
 - **[https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz](https://f001.backblazeb2.com/file/two4two/datasets_models/golden240k.tar.gz)** (7.6 GB)
