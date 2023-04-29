@@ -23,12 +23,13 @@ This repository contains the source code that can be used to create custom biase
 We created this library because we see the choice of dataset and user study scenario as a major obstacle to human subject evaluations.
 If you find this dataset helpful, please cite our paper:
 ```
-@inproceedings{sixt2022,
-	title = {Do {Users} {Benefit} {From} {Interpretable} {Vision}? {A} {User} {Study}, {Baseline}, {And} {Dataset}},
-	url = {https://openreview.net/forum?id=v6s3HVjPerv},
-	booktitle = {International {Conference} on {Learning} {Representations}},
-	author = {Sixt, Leon and Schuessler, Martin and Popescu, Oana-Iuliana and Weiß, Philipp and Landgraf, Tim},
-	year = {2022},
+@inproceedings{
+    sixt2022do,
+    title={Do Users Benefit From Interpretable Vision? A User Study, Baseline, And Dataset},
+    author={Leon Sixt and Martin Schuessler and Oana-Iuliana Popescu and Philipp Wei{\ss} and Tim Landgraf},
+    booktitle={International Conference on Learning Representations},
+    year={2022},
+    url={https://openreview.net/forum?id=v6s3HVjPerv}
 }
 ```
 
