@@ -89,11 +89,6 @@ To install the **installation including all requirements for generating your own
 pip install .[example_notebooks_data_generation]
 ```
 
-To generate the default dataset on your own use the following commands:
-```
-two4two_render_dataset config/color_spher_bias.toml
-```
-
 ## Training Models on two4two
 For training your own models, you have two choices:
 1) *No GPU required and installation free*: Run our example notebook inside of [Colab](https://colab.research.google.com/drive/1-_sp1_eCc1ToeTQRxrXxGzaW-FLbGHxN?usp=sharing) (this will download pregenerated datasets) - you can also run this notebook on your own machine you can find the notebook in [examples/train_lenet_colab.ipynb](examples/train_lenet_colab.ipynb)
@@ -113,6 +108,51 @@ The jupyter-notebook **[examples/GenerateData.ipynb](examples/GenerateData.ipynb
 There are countless options to add biases to your custom dataset. The notebook is a great place to get started.
 More code-savy folks may want got get started with *[bias.py](two4two/bias.py)* directly.
 
+There is also a comand line script:
+```
+    two4two_render_dataset config/color_spher_bias.toml
+```
+The comand line script has different options:
+```
+  -h, --help            show this help message and exit
+  --download_blender    Download blender if not found.
+  --blender_dir BLENDER_DIR
+                        Download blender to this directory.
+  --split_by SPLIT_BY   Divide number of samples (usefull for distributed sampling).
+  --keep-only-tar       Remove output dir and only keep `.tar` file.
+  --skip-xgb            Run xgb model.
+  --debug               Print debug information and enter pdb on error.
+```
+
+An example for a config file can be found at [config/color_spher_bias.toml](config/color_spher_bias.toml).
+It allows to specify your sampler class, how many samples to generate and 
+also to run simple interventions.
+
+
+## PyTorch data loader
+
+We provide a ready to use PyTorch dataloader.
+
+```python
+
+from two4two.pytorch import Two4Two
+
+
+train_set = Two4Two(
+    "path/to/dataset/dir/",
+    split="train",
+    return_attributes=['obj_name', 'obj_color']
+)
+train_loader = Dataloader(train_set, batch_size=30)
+
+img, mask, label = train_set[0]
+
+# returns name to the label dimensions
+train_set.get_label_names()
+
+# get all labels as pandas dataframe
+df = train_set.get_dataframe()
+```
 
 ### Funding
 Funded by the GermanFederal Ministry of Education and Research(BMBF) - NR 16DII113.

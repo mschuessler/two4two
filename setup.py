@@ -11,7 +11,7 @@ setuptools.setup(
     author="Martin Schuessler, Leon Sixt, Philipp Weiss",
     author_email="dev@mschuessler.de",
     description="Generate biased image data to train and test classifiers.",
-    license='MIT',
+    license="MIT",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/mschuessler/two4two",
@@ -21,8 +21,8 @@ setuptools.setup(
         "two4two": ["py.typed"],
     },
     entry_points={
-        'console_scripts': [
-            'two4two_render_dataset=two4two.cli_tool:render_dataset',
+        "console_scripts": [
+            "two4two_render_dataset=two4two.cli_tool:render_dataset",
         ],
     },
     classifiers=[
@@ -33,38 +33,36 @@ setuptools.setup(
         "Operating System :: MacOS :: MacOS X",
     ],
     install_requires=[
-        'imageio',
-        'matplotlib',
-        'numpy',
-        'pandas',
-        'scipy',
-        'toml',
-        'tqdm',
+        "imageio",
+        "matplotlib",
+        "numpy",
+        "pandas",
+        "scipy",
+        "sklearn",
+        "toml",
+        "tqdm",
     ],
     extras_require={
-        'dev': [
-            'flake8',
-            'flake8-annotations',
-            'flake8-docstrings',
-            'flake8-import-order',
-            'mypy',
-            'pdoc',
-            'pytest',
-            'pytest-cov',
-            'torch',
-            'torchvision',
+        "dev": [
+            "flake8",
+            "flake8-annotations",
+            "flake8-docstrings",
+            "flake8-import-order",
+            "mypy",
+            "pdoc",
+            "pytest",
+            "pytest-cov",
+            "torch",
+            "torchvision",
+            "xgboost",
         ],
-        'example_notebooks_data_generation': [
-            'numpy',
-            'pandas',
-            'notebook'
+        "example_notebooks_data_generation": ["numpy", "pandas", "notebook"],
+        "example_notebooks_model_training": [
+            "tensorflow",
+            "pandas",
+            "notebook",
+            "livelossplot",
         ],
-        'example_notebooks_model_training': [
-            'tensorflow',
-            'pandas',
-            'notebook',
-            'livelossplot'
-        ]
     },
-    python_requires='>=3.7'
+    python_requires=">=3.7",
 )

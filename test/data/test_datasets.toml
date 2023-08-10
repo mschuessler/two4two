@@ -1,10 +1,17 @@
-[nobias]
+[[dataset]]
 sampler = 'two4two.Sampler'
 output_dir = 'OUTPUT_DIR_PLACEHOLDER'
 n_processes = 4
 download_blender = true
 force_overwrite = true
 debug = false
+xgb_n_train=100
+xgb_n_test=100
 
-[nobias.train]
+[[dataset.split]]
+name='train'
 n_samples = 2
+interventions = [
+    ['spherical',],
+    ['spherical', 'arm_position'],
+]
