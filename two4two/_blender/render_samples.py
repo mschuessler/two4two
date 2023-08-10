@@ -24,6 +24,11 @@ from two4two.scene_parameters import SceneParameters  # noqa: E402
 
 
 def _render_files(param_file: str, save_location: str, save_blender_file: str):
+    save_location = os.path.abspath(save_location)
+    print("Rendering parameters from file: ", param_file)
+    print("Saving file to : ", save_location)
+    print("Should save blender state : ", save_blender_file)
+
     with open(param_file) as fparam:
         for line in fparam.readlines():
             params = SceneParameters.load(json.loads(line))

@@ -1,8 +1,7 @@
-[spherical_color_bias]
+[[dataset]]
 # Class of the sampler. Must be of the form "your.module.YourSampler".
 # The module must be importable from the current enviroment.
 sampler = 'two4two.bias.MedVarSpherColorSampler'
-
 # Save dataset to this directory.
 output_dir = 'two4two_datasets/spherical_color_bias'
 
@@ -16,73 +15,23 @@ n_processes = 6
 download_blender = true
 
 # Should the blender output be printed? [Default: false]
- debug = false
+debug = false
 
 # creates new dataset split names `train`.
-[spherical_color_bias.train]
-n_samples = 80_000
+[[dataset.split]]
+name = 'train'
+n_samples = 60_000
 
-[spherical_color_bias.test]
+[[dataset.split]]
+name = 'validation'
 n_samples = 3_000
 
-[spherical_color_bias.validation]
-n_samples = 500
-
-
-[no_arms]
-sampler = 'two4two.bias.MedVarNoArmsSampler'
-output_dir = 'two4two_datasets/no_arms'
-n_processes = 6
-
-[no_arms.train]
-n_samples = 10
-
-[no_arms.test]
+[[dataset.split]]
+name = 'test'
 n_samples = 3_000
-
-[no_arms.validation]
-n_samples = 500
-
-[no_bias]
-sampler = 'two4two.bias.MedVarSampler'
-output_dir = 'two4two_datasets/no_bias'
-n_processes = 6
-
-[no_bias.train]
-n_samples = 80_000
-
-[no_bias.test]
-n_samples = 3_000
-
-[no_bias.validation]
-n_samples = 500
-
-
-[spherical_bias]
-sampler = 'two4two.bias.MedVarSpherSampler'
-output_dir = 'two4two_datasets/spherical_bias'
-n_processes = 6
-
-[spherical_bias.train]
-n_samples = 80_000
-
-[spherical_bias.test]
-n_samples = 3_000
-
-[spherical_bias.validation]
-n_samples = 500
-
-
-[color_bias]
-sampler = 'two4two.bias.MedVarColorSampler'
-output_dir = 'two4two_datasets/color_bias'
-n_processes = 6
-
-[color_bias.train]
-n_samples = 80_000
-
-[color_bias.test]
-n_samples = 3_000
-
-[color_bias.validation]
-n_samples = 500
+interventions = [
+    ['spherical'],
+    ['obj_color'],
+    ['spherical', 'obj_color'],
+    ['arm_position'],
+]

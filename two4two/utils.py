@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import importlib
+import os
+import tarfile
 from typing import Any, Dict, Optional, Sequence, Tuple, Type, TypeVar, Union
 
 import numpy as np
@@ -49,7 +51,7 @@ class discrete():
             **kwargs: Dict[str, Any]
             ) -> Sequence[float]:
         """Probability mass function."""
-        return np.exp(self.logpmf(k, *args, **kwargs))
+        return np.exp(self.logpmf(k, *args, **kwargs)).tolist()
 
     def logpmf(self,
                k: Union[T, Sequence[T]],
@@ -136,3 +138,17 @@ def get(maybe_none: Optional[T], default: T) -> T:
         return maybe_none
     else:
         return default
+
+
+def make_tarfile(
+    output_filename: str,
+    source_dir: str,
+    compression: Optional[str] = 'gz'
+):
+    """Creates are tarfile."""
+    if compression is not None:
+        mode = f"w:{compression}"
+    else:
+        mode = "w"
+    with tarfile.open(output_filename, mode) as tar:
+        tar.add(source_dir, arcname=os.path.basename(source_dir))

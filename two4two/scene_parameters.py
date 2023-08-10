@@ -8,7 +8,7 @@ import importlib
 import json
 import math
 import pprint
-from typing import Any, ClassVar, Dict, List, Optional, Tuple, Union
+from typing import Any, ClassVar, Dict, List, Optional, TextIO, Tuple, Union
 import uuid
 
 from two4two import utils
@@ -174,6 +174,14 @@ class SceneParameters:
             self.obj_color_rgba = tuple(self.obj_color_rgba)
         if type(self.resolution) == list:
             self.resolution = tuple(self.resolution)
+
+    @staticmethod
+    def load_jsonl(f: TextIO) -> list[SceneParameters]:
+        """Reads SceneParameters from a jsonl file."""
+        return [
+            SceneParameters.load(json.loads(line))
+            for line in f.readlines()
+        ]
 
     @staticmethod
     def load(state: Dict[str, Any]) -> SceneParameters:
